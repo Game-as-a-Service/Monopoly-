@@ -1,0 +1,40 @@
+﻿
+.Go {
+    position: absolute;
+    width: calc(257 * var(--unit));
+    height: calc(224 * var(--unit));
+    top: calc(840 * var(--unit));
+    left: calc(1632 * var(--unit));
+    /*background-color: coral;*/
+}
+
+.GoBetton {
+        position: absolute;
+        width: calc(224 * var(--unit));
+        height: calc(224 * var(--unit));
+        top: 0;
+        left: 0;
+        background-image: url('./images/gamepage/Go_Default.svg');
+        background-size: cover;
+        background-position: center;
+
+    }
+
+    .GoBetton.Pressed {
+        background-image: url('./images/gamepage/Go_Pressed.svg');
+    }
+
+.AutoBetton {
+    position: absolute;
+    width: calc(72 * var(--unit));
+    height: calc(32 * var(--unit));
+    top: calc(177 * var(--unit));
+    left: calc(185 * var(--unit));
+    background-image: url('./images/gamepage/AutoButtun_Off.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+    .AutoBetton.Open {
+        background-image: url('./images/gamepage/AutoButtun_On.svg');
+    }

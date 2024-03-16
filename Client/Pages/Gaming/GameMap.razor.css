@@ -1,0 +1,9 @@
+﻿
+.content.map {
+    position: absolute;
+    width: calc(1469 * var(--unit));
+    height: calc(851 * var(--unit));
+    top: calc(113 * var(--unit));
+    left: calc(240 * var(--unit));
+    background-color: rgb(226, 129, 129);
+}

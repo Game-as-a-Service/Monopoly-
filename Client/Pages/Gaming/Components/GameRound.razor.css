@@ -1,0 +1,84 @@
+﻿
+.GameRound {
+    position: absolute;
+    width: calc(170 * var(--unit));
+    height: calc(135 * var(--unit));
+    top: calc(24 * var(--unit));
+    left: calc(32 * var(--unit));
+}
+
+.Round_Info {
+    position: absolute;
+    width: calc(170 * var(--unit));
+    height: calc(135 * var(--unit));
+    top: 0;
+    left: 0;
+    /*background-image: url('./images/gamepage/Round.svg');*/
+    background-size: cover;
+    background-position: center;
+}
+
+.TimeBox {
+    width: calc(170 * var(--unit));
+    height: calc(52 * var(--unit));
+    background-color: #B67171; /* 底色 */
+    border: calc(3 * var(--unit)) solid #5B5B5B; /* 方框邊框寬度和顏色 */
+    border-bottom: none; /* 下方框邊框寬度和顏色*/
+    border-top-left-radius: calc(10 * var(--unit)); /* 左上角方框圓角半徑 */
+    border-top-right-radius: calc(10 * var(--unit)); /* 右上角方框圓角半徑 */
+}
+
+    .TimeBox .Alarm_Clock {
+        position: absolute;
+        width: calc(24 * var(--unit));
+        height: calc(24 * var(--unit));
+        top: calc(15 * var(--unit));
+        left: calc(30 * var(--unit));
+        background-image: url('./images/gamepage/alarm_clock.svg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .TimeBox .Time_Str {
+        position: absolute;
+        width: calc(78 * var(--unit));
+        height: calc(33 * var(--unit));
+        top: calc(15 * var(--unit));
+        left: calc(62 * var(--unit));
+        color: white;
+        font-size: calc(24 * var(--unit));
+        text-align: center;
+    }
+
+.RoundBox {
+    width: calc(170 * var(--unit));
+    height: calc(77 * var(--unit));
+    background-color: white; /* 底色 */
+    border: calc(3 * var(--unit)) solid #5B5B5B; /* 方框邊框寬度和顏色 */
+    border-top: none; /* 上方框線框寬度和顏色 */
+    border-bottom-left-radius: calc(10 * var(--unit)); /* 右下角方框圓角半徑 */
+    border-bottom-right-radius: calc(10 * var(--unit)); /* 右下角方框圓角半徑 */
+}
+    .RoundBox .Round_Str {
+        position: absolute;
+        color: #595959;
+        font-size: calc(20 * var(--unit));
+    }
+        .RoundBox .Round_Str.Start {
+            top: calc(94 * var(--unit));
+            left: calc(23 * var(--unit));
+        }
+        .RoundBox .Round_Str.End {
+            top: calc(94 * var(--unit));
+            left: calc(108 * var(--unit));
+        }
+    .RoundBox .Round_Number {
+        position: absolute;
+        width: calc(59 * var(--unit));
+        height: calc(58 * var(--unit));
+        top: calc(67 * var(--unit));
+        left: calc(46 * var(--unit));
+        color: #595959;
+        font-size: calc(48 * var(--unit));
+        text-align: center;
+    }

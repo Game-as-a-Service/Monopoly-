@@ -1,0 +1,68 @@
+﻿
+.PlayerInfo {
+    display: inline-flex;
+    flex-direction: column;
+    position: absolute;
+    top: calc(213 * var(--unit));
+    left: calc(1644 * var(--unit));
+    border-radius: calc(20 * var(--unit)); /* 方框圓角半徑 */
+    border: calc(4 * var(--unit)) solid white; /* 方框邊框寬度和顏色 */
+    background-color: #5B5B5B; /* 底色 */
+}
+
+    .PlayerInfo .money {
+        display: inline-flex;
+        flex-direction: row;
+        width: calc(206 * var(--unit));
+        color: white;
+        font-size: calc(20 * var(--unit));
+        margin-left: calc(10 * var(--unit));
+    }
+        .PlayerInfo .money .icon {
+            width: calc(15 * var(--unit));
+            height: calc(15 * var(--unit));
+            background-image: url('./images/gamepage/icon_mini_money.svg');
+            background-size: auto;
+            background-position: left bottom;
+            background-position-y: calc(5 * var(--unit));
+            background-repeat: no-repeat;
+        }
+
+/*        .PlayerInfo .Money::before {
+            content: "";
+            width: calc(15 * var(--unit));
+            height: calc(15 * var(--unit));
+            margin-right: calc(4 * var(--unit));
+            margin-bottom: calc(-3 * var(--unit));
+            background-image: url('./images/gamepage/icon_mini_money.svg');
+            background-size: cover;
+            background-position: center;
+        }*/
+
+    .PlayerInfo .TotalMoney {
+        display: inline-flex;
+        flex-direction: row;
+        width: calc(206 * var(--unit));
+        color: white;
+        font-size: calc(20 * var(--unit));
+    }
+
+        .PlayerInfo .TotalMoney::before {
+            content: "";
+            display: inline-block;
+            width: calc(15 * var(--unit));
+            height: calc(15 * var(--unit));
+            margin-right: calc(4 * var(--unit));
+            margin-bottom: calc(-3 * var(--unit));
+            background-image: url('./images/gamepage/icon_mini_home.svg');
+            background-size: cover;
+            background-position: center;
+        }
+
+    .PlayerInfo .MortgageList {
+/*        position: absolute;*/
+        top: calc(121 * var(--unit));
+        left: calc(25 * var(--unit));
+        color: #D8C292;
+        font-size: 20px;
+    }
