@@ -6,7 +6,7 @@ namespace Client.Pages.Ready.Components;
 public partial class ColorChoicePanel
 {
     [CascadingParameter] public ReadyPage Parent { get; set; } = default!;
-    IEnumerable<Player> Players => Parent.Players;
+    private IEnumerable<Player> Players => Parent.Players;
     private Player? CurrentPlayer => Parent.CurrentPlayer;
 
     private void ChangeColor(ColorEnum color)
@@ -22,11 +22,9 @@ public partial class ColorChoicePanel
     private string GetChoiceWrapperCss(ColorEnum color)
     {
         var player = GetPlayerWithColor(color);
-        if (player is null)
-        {
-            return string.Empty;
-        }
-        return $"color-selected {(color == CurrentPlayer?.Color ? "current-player" : string.Empty)}";
+        return player is null
+            ? string.Empty
+            : $"color-selected {(color == CurrentPlayer?.Color ? "current-player" : string.Empty)}";
     }
 
     private static string GetReadySignCss(Player? player)
@@ -35,6 +33,7 @@ public partial class ColorChoicePanel
         {
             return string.Empty;
         }
+
         return player.IsReady ? "ready" : string.Empty;
     }
 

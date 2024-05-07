@@ -1,6 +1,5 @@
 ﻿using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
-using SharedLibrary.ResponseArgs;
 using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace Client.Pages.Ready;

@@ -1,22 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using SharedLibrary;
 using SharedLibrary.ResponseArgs.ReadyRoom;
+using SignalR.Client.Generator;
 
 namespace Client.Pages;
 
-internal class TypedHubConnection
+[TypedHubClient(typeof(MonopolyHub))]
+public partial class TypedHubConnection;
+
+public abstract class Hub<T>;
+
+public abstract class MonopolyHub : Hub<IMonopolyResponses>
 {
-    private readonly HubConnection hubConnection;
-
-    public event GetReadyInfoEventDelegate? GetReadyInfoEventHandler;
-    public delegate void GetReadyInfoEventDelegate(GetReadyInfoEventArgs e);
-    public event WelcomeEventDelegate? WelcomeEventHandler;
-    public delegate void WelcomeEventDelegate(WelcomeEventArgs e);
-
-    public TypedHubConnection(HubConnection hubConnection)
-    {
-        hubConnection.On<GetReadyInfoEventArgs>("GetReadyInfoEvent", (e) => GetReadyInfoEventHandler?.Invoke(e));
-        hubConnection.On<WelcomeEventArgs>("WelcomeEvent", (e) => WelcomeEventHandler?.Invoke(e));
-        this.hubConnection = hubConnection;
-    }
-    public async Task GetReadyInfo() => await hubConnection.SendAsync("GetReadyInfo");
+    public abstract Task GetReadyInfo();
+    public abstract Task PlaySelectLocation(string gameId, string userId, int locationId);
 }

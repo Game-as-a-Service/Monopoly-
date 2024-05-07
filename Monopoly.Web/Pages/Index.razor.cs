@@ -26,20 +26,20 @@ public partial class Index
     {
         var baseUri = new Uri(BackendApiOptions.Value.BaseUrl);
         var url = new Uri(baseUri, $"/monopoly?gameid={GameId}");
-        var Client = new HubConnectionBuilder()
+        var client = new HubConnectionBuilder()
             .WithUrl(url, options =>
             {
                 options.AccessTokenProvider = async () => await Task.FromResult(AccessToken);
             })
             .Build();
-        Connection = new TypedHubConnection(Client);
+        Connection = new TypedHubConnection(client);
         Connection.WelcomeEventHandler += (e) =>
         {
             UserId = e.PlayerId;
             Messages.Add($"歡迎 {e.PlayerId} 加入遊戲!");
             StateHasChanged();
         };
-        Client.Closed += async (exception) =>
+        client.Closed += async (exception) =>
         {
             var errorMessage = exception?.Message;
             Messages.Add($"中斷連線: {errorMessage}");
@@ -48,7 +48,7 @@ public partial class Index
         };
         try
         {
-            await Client.StartAsync();
+            await client.StartAsync();
             Messages.Add("連線成功!");
         }
         catch (Exception ex)
