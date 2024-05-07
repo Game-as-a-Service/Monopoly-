@@ -10,7 +10,7 @@ namespace ServerTests.AcceptanceTests;
 public class GameStartTest
 {
     private MonopolyTestServer server = default!;
-    private const string gameId = "1";
+    private const string GameId = "1";
 
     [TestInitialize]
     public void Setup()
@@ -48,10 +48,10 @@ public class GameStartTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.GameStart));
 
         // Assert
         hub.Verify(
@@ -83,10 +83,10 @@ public class GameStartTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.GameStart));
 
         // Assert
         hub.Verify(
@@ -125,10 +125,10 @@ public class GameStartTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.GameStart));
 
         // Assert
         hub.Verify(

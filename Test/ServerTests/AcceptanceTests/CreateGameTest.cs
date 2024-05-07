@@ -61,13 +61,13 @@ public class CreateGameTest
                 new("idC", "C")
             });
 
-        var jwt = jwtTokenService.GenerateJwtToken(jwtBearerOptions.Audience, "idA");
-        string gameId = "1";
-        string expected = $"https://localhost:7047/games/{gameId}";
+        var jwtToken = jwtTokenService.GenerateJwtToken(jwtBearerOptions.Audience, "idA");
+        const string gameId = "1";
+        const string expected = $"https://localhost:7047/games/{gameId}";
 
         // Act
-        server.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-        HttpResponseMessage? response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
+        server.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+        var response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
 
         // Assert
         var data = await response.Content.ReadAsStringAsync();
@@ -82,14 +82,14 @@ public class CreateGameTest
     public async Task 因為沒有建立遊戲失敗()
     {
         // Arrange
-        CreateGameBodyPayload bodyPayload = new(new Player[] {
-                new("idA", "A"),
-                new("idB", "B"),
-                new("idC", "C")
-            });
+        CreateGameBodyPayload bodyPayload = new([
+            new Player("idA", "A"),
+                new Player("idB", "B"),
+                new Player("idC", "C")
+        ]);
 
         // Act
-        HttpResponseMessage? response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
+        var response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
 
         // Assert
         Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);

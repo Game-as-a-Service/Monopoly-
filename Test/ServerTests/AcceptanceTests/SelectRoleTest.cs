@@ -10,7 +10,7 @@ namespace ServerTests.AcceptanceTests;
 public class SelectRoleTest
 {
     private MonopolyTestServer server = default!;
-    private const string gameId = "1";
+    private const string GameId = "1";
 
     [TestInitialize]
     public void Setup()
@@ -36,10 +36,10 @@ public class SelectRoleTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectRole), gameId, "A", "1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectRole), "1");
 
         // Assert
         hub.Verify(
@@ -67,10 +67,10 @@ public class SelectRoleTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectRole), gameId, "A", "2");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectRole), "2");
 
         // Assert
         hub.Verify(

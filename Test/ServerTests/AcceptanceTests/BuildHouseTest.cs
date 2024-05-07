@@ -1,4 +1,3 @@
-using Domain.Events;
 using Server.Hubs;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
@@ -31,30 +30,30 @@ public class BuildHouseTest
     public async Task 玩家在自己的土地蓋房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 2000m };
-        var A1 = new { Id = "A1", House = 1, Price = 1000m };
+        var a = new { Id = "A", Money = 2000m };
+        var a1 = new { Id = "A1", House = 1, Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
         .WithMockDice(new[] { 1 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         )
-        .WithLandHouse(A1.Id, A1.House);
+        .WithLandHouse(a1.Id, a1.House);
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         // A 蓋房子
@@ -75,27 +74,27 @@ public class BuildHouseTest
     public async Task 土地最多蓋5間房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 2000m };
-        var A1 = new { Id = "A1", House = 5, Price = 1000m };
+        var a = new { Id = "A", Money = 2000m };
+        var a1 = new { Id = "A1", House = 5, Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build())
-        .WithLandHouse(A1.Id, A1.House);
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+        .WithLandHouse(a1.Id, a1.House);
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         // A 蓋房子
@@ -115,26 +114,26 @@ public class BuildHouseTest
     public async Task 車站不能蓋房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var Station1 = new { Id = "Station1", Price = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var station1 = new { Id = "Station1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(Station1.Id, Direction.Right)
-            .WithLandContract(Station1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(station1.Id, Direction.Right)
+            .WithLandContract(station1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         // A 蓋房子
@@ -155,20 +154,20 @@ public class BuildHouseTest
     public async Task 一回合內玩家不能重複蓋房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 10000m };
-        var A1 = new { Id = "A1", Price = 1000m };
+        var a = new { Id = "A", Money = 10000m };
+        var a1 = new { Id = "A1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
         .WithCurrentPlayer(
-            new CurrentPlayerStateBuilder(A.Id)
+            new CurrentPlayerStateBuilder(a.Id)
             .WithUpgradeLand()
             .Build()
         );
@@ -178,7 +177,7 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         // A 蓋房子
@@ -200,19 +199,19 @@ public class BuildHouseTest
     public async Task 一回合內玩家買土地後不能馬上蓋房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .WithBoughtLand()
             .Build()
         );
@@ -222,7 +221,7 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         hub.Verify(nameof(IMonopolyResponses.PlayerCannotBuildHouseEvent),
@@ -243,29 +242,29 @@ public class BuildHouseTest
     public async Task 已抵押的土地不能蓋房子()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var A2 = new { Id = "A2", Price = 1000m, House = 2, IsMortgage = true };
+        var a = new { Id = "A", Money = 1000m };
+        var a2 = new { Id = "A2", Price = 1000m, House = 2, IsMortgage = true };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A2.Id, Direction.Right)
-            .WithLandContract(A2.Id, InMortgage: A2.IsMortgage)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a2.Id, Direction.Right)
+            .WithLandContract(a2.Id, inMortgage: a2.IsMortgage)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         )
-        .WithLandHouse(A2.Id, A2.House);
+        .WithLandHouse(a2.Id, a2.House);
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
 
         // Assert
         // A 蓋房子失敗

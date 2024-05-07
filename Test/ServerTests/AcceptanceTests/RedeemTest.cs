@@ -31,26 +31,26 @@ public class RedeemTest
     public async Task 玩家贖回房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 5000m };
-        var A1 = new { Id = "A1", House = 2, Price = 1000m, IsMortgage = true };
+        var a = new { Id = "A", Money = 5000m };
+        var a1 = new { Id = "A1", House = 2, Price = 1000m, IsMortgage = true };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithLandContract(A1.Id, A1.IsMortgage)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithLandContract(a1.Id, a1.IsMortgage)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build())
-        .WithLandHouse(A1.Id, A1.House);
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+        .WithLandHouse(a1.Id, a1.House);
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), gameId, "A", "A1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), "A1");
 
         // Assert
         // A 贖回房地產
@@ -73,27 +73,27 @@ public class RedeemTest
     public async Task 玩家餘額不足以贖回房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 2000m };
-        var A1 = new { Id = "A1", House = 2, Price = 1000m, IsMortgage = true };
+        var a = new { Id = "A", Money = 2000m };
+        var a1 = new { Id = "A1", House = 2, Price = 1000m, IsMortgage = true };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithLandContract(A1.Id, A1.IsMortgage)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithLandContract(a1.Id, a1.IsMortgage)
 
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build())
-        .WithLandHouse(A1.Id, A1.House);
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+        .WithLandHouse(a1.Id, a1.House);
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), gameId, "A", "A1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), "A1");
 
         // Assert
         // A 贖回房地產

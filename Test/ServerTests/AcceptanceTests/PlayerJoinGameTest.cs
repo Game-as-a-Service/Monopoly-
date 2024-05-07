@@ -13,7 +13,6 @@ namespace ServerTests.AcceptanceTests;
 public class PlayerJoinGameTest
 {
     private MonopolyTestServer server = default!;
-    private IRepository repository = default!;
     private MockJwtTokenService jwtTokenService = default!;
     private JwtBearerOptions jwtBearerOptions = default!;
 
@@ -22,7 +21,7 @@ public class PlayerJoinGameTest
     {
         server = new MonopolyTestServer();
         jwtTokenService = server.GetRequiredService<MockJwtTokenService>();
-        repository = server.GetRequiredService<IQueryRepository>();
+        server.GetRequiredService<IQueryRepository>();
         jwtBearerOptions = server.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("Bearer");
     }
 
@@ -57,22 +56,23 @@ public class PlayerJoinGameTest
         await CreateGameAsync("A", "A", "B", "C");
 
         // Act
-        VerificationHub hub = await server.CreateHubConnectionAsync("2", "A");
+        var hub = await server.CreateHubConnectionAsync("2", "A");
 
         // Assert
         hub.VerifyDisconnection();
     }
+
     /// <summary>
     /// call API POST "/" Body: <paramref name="playerIds"/>.
-    /// Create game, which id = <paramref name="gameId"/>
     /// </summary>
-    /// <param name="gameId">Game Id</param>
+    /// <param name="host">Host Id</param>
     /// <param name="playerIds">Players' Id</param>
     private async Task CreateGameAsync(string host, params string[] playerIds)
     {
         CreateGameBodyPayload bodyPayload = new(playerIds.Select(id => new Player(id, "")).ToArray());
         var jwt = jwtTokenService.GenerateJwtToken(jwtBearerOptions.Audience, host);
         server.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-        HttpResponseMessage? response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
+        var response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
+        response.EnsureSuccessStatusCode();
     }
 }

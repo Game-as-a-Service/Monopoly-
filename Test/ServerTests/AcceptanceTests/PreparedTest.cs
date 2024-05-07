@@ -10,7 +10,7 @@ namespace ServerTests.AcceptanceTests;
 public class PreparedTest
 {
     private MonopolyTestServer server = default!;
-    private const string gameId = "1";
+    private const string GameId = "1";
 
     [TestInitialize]
     public void Setup()
@@ -48,10 +48,10 @@ public class PreparedTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "B");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady), gameId, "B");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
 
         // Assert
         hub.Verify(
@@ -82,10 +82,10 @@ public class PreparedTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
 
         // Assert
         hub.Verify(nameof(IMonopolyResponses.PlayerReadyEvent),
@@ -122,10 +122,10 @@ public class PreparedTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "B");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady), gameId, "B");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
 
         // Assert
         hub.Verify(
@@ -163,10 +163,10 @@ public class PreparedTest
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "B");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady), gameId, "B");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
 
         // Assert
         hub.Verify(

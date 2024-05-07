@@ -24,26 +24,28 @@ public class Utils
     //    return dice;
     //}
 
-    internal static void VerifyChessMovedEvent(VerificationHub hub, string playerId, string blockId, string direction, int remainingSteps)
+    internal static void VerifyChessMovedEvent(VerificationHub hub, string playerId, string blockId, string direction,
+        int remainingSteps)
     {
         hub.Verify(nameof(IMonopolyResponses.ChessMovedEvent), (ChessMovedEventArgs e) =>
-            e.PlayerId == playerId && e.BlockId == blockId && e.Direction == direction && e.RemainingSteps == remainingSteps);
+            e.PlayerId == playerId && e.BlockId == blockId && e.Direction == direction &&
+            e.RemainingSteps == remainingSteps);
     }
 
     public class MonopolyBuilder
     {
-        public string GameId { get; private set; }
+        private string GameId { get; set; }
 
-        public List<Application.DataModels.Player> Players { get; private set; } = new();
+        private List<Application.DataModels.Player> Players { get; set; } = new();
 
-        public string HostId { get; private set; }
+        private string HostId { get; set; }
 
-        public int[] Dices { get; private set; } = { 0 };
+        private int[] Dices { get; set; } = [0];
 
-        public Application.DataModels.CurrentPlayerState CurrentPlayerState { get; private set; }
-        public List<LandHouse> LandHouses { get; private set; } = new();
+        private Application.DataModels.CurrentPlayerState CurrentPlayerState { get; set; }
+        private List<LandHouse> LandHouses { get; set; } = [];
         public Application.DataModels.Map Map { get; private set; }
-        public Application.DataModels.GameStage GameStage { get; private set; }
+        private Application.DataModels.GameStage GameStage { get; set; }
 
         public MonopolyBuilder(string id)
         {
@@ -81,22 +83,23 @@ public class Utils
             return this;
         }
 
-        public Application.DataModels.Monopoly Build()
+        private Application.DataModels.Monopoly Build()
         {
             return new Application.DataModels.Monopoly(Id: GameId,
-                                Players: Players.ToArray(),
-                                Map: Map,
-                                HostId: HostId,
-                                GameStage: GameStage,
-                                CurrentPlayerState: CurrentPlayerState,
-                                LandHouses: LandHouses.ToArray());
+                Players: Players.ToArray(),
+                Map: Map,
+                HostId: HostId,
+                GameStage: GameStage,
+                CurrentPlayerState: CurrentPlayerState,
+                LandHouses: LandHouses.ToArray());
         }
 
         internal void Save(MonopolyTestServer server)
         {
             var monopoly = Build();
             server.GetRequiredService<ICommandRepository>().Save(monopoly);
-            server.GetRequiredService<MockDiceService>().Dices = Dices.Select(value => new MockDice(value)).ToArray<IDice>();
+            server.GetRequiredService<MockDiceService>().Dices =
+                Dices.Select(value => new MockDice(value)).ToArray<IDice>();
         }
 
         internal MonopolyBuilder WithGameStage(Application.DataModels.GameStage gameStage)
@@ -106,27 +109,17 @@ public class Utils
         }
     }
 
-    public class PlayerBuilder
+    public class PlayerBuilder(string id)
     {
-        public string Id { get; set; }
-        public decimal Money { get; set; }
-        public string BlockId { get; set; }
-        public Direction Direction { get; set; }
-        public List<Application.DataModels.LandContract> LandContracts { get; set; }
-        public PlayerState PlayerState { get; set; }
-        public int BankruptRounds { get; set; }
-        public string RoleId { get; set; }
-        public int LocationId { get; set; }
-
-        public PlayerBuilder(string id)
-        {
-            Id = id;
-            Money = 15000;
-            BlockId = "StartPoint";
-            Direction = Direction.Right;
-            LandContracts = new();
-            PlayerState = PlayerState.Normal;
-        }
+        private string Id { get; set; } = id;
+        private decimal Money { get; set; } = 15000;
+        private string BlockId { get; set; } = "StartPoint";
+        private Direction Direction { get; set; } = Direction.Right;
+        private List<Application.DataModels.LandContract> LandContracts { get; set; } = new();
+        private PlayerState PlayerState { get; set; } = PlayerState.Normal;
+        private int BankruptRounds { get; set; }
+        private string? RoleId { get; set; }
+        private int LocationId { get; set; }
 
         public PlayerBuilder WithMoney(decimal money)
         {
@@ -141,11 +134,12 @@ public class Utils
             return this;
         }
 
-        public PlayerBuilder WithLandContract(string LandId, bool InMortgage = false, int Deadline = 10)
+        public PlayerBuilder WithLandContract(string landId, bool inMortgage = false, int deadline = 10)
         {
-            LandContracts.Add(new Application.DataModels.LandContract(LandId: LandId,
-                                               InMortgage: InMortgage,
-                                               Deadline: Deadline));
+            LandContracts.Add(new Application.DataModels.LandContract(
+                LandId: landId,
+                InMortgage: inMortgage,
+                Deadline: deadline));
             return this;
         }
 
@@ -159,16 +153,16 @@ public class Utils
         public Application.DataModels.Player Build()
         {
             Application.DataModels.Chess chess = new(CurrentPosition: BlockId,
-                              Direction: Enum.Parse<Application.DataModels.Direction>(Direction.ToString()));
+                Direction: Enum.Parse<Application.DataModels.Direction>(Direction.ToString()));
             Application.DataModels.Player player = new(Id: Id,
-                                    Money: Money,
-                                    Chess: chess,
-                                    LandContracts: LandContracts.ToArray(),
-                                    PlayerState: PlayerState,
-                                    BankruptRounds,
-                                    LocationId: LocationId,
-                                    RoleId: RoleId
-                                    );
+                Money: Money,
+                Chess: chess,
+                LandContracts: LandContracts.ToArray(),
+                PlayerState: PlayerState,
+                BankruptRounds,
+                LocationId: LocationId,
+                RoleId: RoleId
+            );
             return player;
         }
 
@@ -199,25 +193,15 @@ public class Utils
         Right
     }
 
-    public class CurrentPlayerStateBuilder
+    public class CurrentPlayerStateBuilder(string id)
     {
-        public string Id { get; private set; }
-        public bool IsPayToll { get; private set; }
-        public bool IsBoughtLand { get; private set; }
-        public bool IsUpgradeLand { get; private set; }
-        public Application.DataModels.Auction? Auction { get; private set; }
-        public int RemainingSteps { get; private set; }
-        public bool HadSelectedDirection { get; private set; }
-
-        public CurrentPlayerStateBuilder(string id)
-        {
-            Id = id;
-            IsPayToll = false;
-            IsBoughtLand = false;
-            IsUpgradeLand = false;
-            RemainingSteps = 0;
-            HadSelectedDirection = false;
-        }
+        private string Id { get; set; } = id;
+        private bool IsPayToll { get; set; }
+        private bool IsBoughtLand { get; set; }
+        private bool IsUpgradeLand { get; set; }
+        private Application.DataModels.Auction? Auction { get; set; }
+        private int RemainingSteps { get; set; }
+        private bool HadSelectedDirection { get; set; }
 
         public CurrentPlayerStateBuilder WithPayToll()
         {
@@ -237,9 +221,9 @@ public class Utils
             return this;
         }
 
-        internal CurrentPlayerStateBuilder WithAuction(string LandId, string HighestBidderId, decimal HighestPrice)
+        internal CurrentPlayerStateBuilder WithAuction(string landId, string? highestBidderId, decimal highestPrice)
         {
-            Auction = new Application.DataModels.Auction(LandId, HighestBidderId, HighestPrice);
+            Auction = new Application.DataModels.Auction(landId, highestBidderId, highestPrice);
             return this;
         }
 
@@ -258,12 +242,12 @@ public class Utils
         public Application.DataModels.CurrentPlayerState Build()
         {
             return new Application.DataModels.CurrentPlayerState(PlayerId: Id,
-                                          IsPayToll: IsPayToll,
-                                          IsBoughtLand: IsBoughtLand,
-                                          IsUpgradeLand: IsUpgradeLand,
-                                          Auction: Auction,
-                                          RemainingSteps: RemainingSteps,
-                                          HadSelectedDirection: HadSelectedDirection);
+                IsPayToll: IsPayToll,
+                IsBoughtLand: IsBoughtLand,
+                IsUpgradeLand: IsUpgradeLand,
+                Auction: Auction,
+                RemainingSteps: RemainingSteps,
+                HadSelectedDirection: HadSelectedDirection);
         }
     }
 }

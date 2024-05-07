@@ -30,34 +30,34 @@ public class EndRoundTest
     public async Task 玩家沒有付過路費無法結束回合()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var A2 = new { Id = "A2", Price = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var a2 = new { Id = "A2", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A2.Id, Direction.Left)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a2.Id, Direction.Left)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(A2.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(a2.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         );
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.EndRound));
 
         // Assert
         // A 結束回合
@@ -80,35 +80,35 @@ public class EndRoundTest
     public async Task 玩家成功結束回合()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var A2 = new { Id = "A2", Price = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var a2 = new { Id = "A2", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A2.Id, Direction.Up)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a2.Id, Direction.Up)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(A2.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(a2.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .WithPayToll()
             .Build()
         );
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.EndRound));
 
         // Assert
         // A 結束回合                      
@@ -133,33 +133,33 @@ public class EndRoundTest
     public async Task 玩家10回合後沒贖回房地產失去房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("A1", Direction.Right)
             .WithLandContract("A1", true, 1)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
             .WithPosition("A1", Direction.Right)
             .WithLandContract("A2")
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).WithPayToll().Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.EndRound));
 
         // Assert
         // A 結束回合
@@ -187,40 +187,40 @@ public class EndRoundTest
     public async Task 結束回合輪到下一個未破產玩家()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 0m };
-        var C = new { Id = "C", Money = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 0m };
+        var c = new { Id = "C", Money = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("A1", Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
             .WithPosition("A1", Direction.Right)
             .WithBankrupt(5)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(C.Id)
-            .WithMoney(C.Money)
+            new PlayerBuilder(c.Id)
+            .WithMoney(c.Money)
             .WithPosition("A1", Direction.Right)
             .WithLandContract("A2")
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).WithPayToll().Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.EndRound));
 
         // Assert
         // A 結束回合，輪到下一個未破產玩家
@@ -245,38 +245,38 @@ public class EndRoundTest
     public async Task 上一回合玩家剛到監獄這回合不能做任何事()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var C = new { Id = "C", Money = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var c = new { Id = "C", Money = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("A1", Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
             .WithPosition("Jail", Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(C.Id)
-            .WithMoney(C.Money)
+            new PlayerBuilder(c.Id)
+            .WithMoney(c.Money)
             .WithPosition("A1", Direction.Right)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).WithPayToll().Build()); // TODO：是否可以結束回合應該不只有看玩家是否付完過路費，因為玩家有可能根本不需要付
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build()); // TODO：是否可以結束回合應該不只有看玩家是否付完過路費，因為玩家有可能根本不需要付
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.EndRound));
 
         // Assert
         // A 結束回合，輪到下一個玩家 B

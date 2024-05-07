@@ -14,127 +14,127 @@ namespace Server.Hubs;
 [Authorize]
 public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses>
 {
-    private const string Playerid = "PlayerId";
-    private const string Gameid = "GameId";
-    private string GameId => Context.Items[Gameid] as string ?? "";
-    private string PlayerId => Context.Items[Playerid] as string ?? "";
+    private const string KeyOfPlayerId = "PlayerId";
+    private const string KeyOfGameId = "GameId";
+    private string GameId => Context.Items[KeyOfGameId] as string ?? "";
+    private string PlayerId => Context.Items[KeyOfPlayerId] as string ?? "";
 
-    public async Task PlayerRollDice(string gameId, string userId, PlayerRollDiceUsecase usecase, SignalrDefaultPresenter<PlayerRollDiceResponse> presenter)
+    public async Task PlayerRollDice(PlayerRollDiceUsecase usecase, SignalrDefaultPresenter<PlayerRollDiceResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new PlayerRollDiceRequest(gameId, userId),
+            new PlayerRollDiceRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task PlayerChooseDirection(string gameId, string userId, string direction, ChooseDirectionUsecase usecase, SignalrDefaultPresenter<ChooseDirectionResponse> presenter)
+    public async Task PlayerChooseDirection(string direction, ChooseDirectionUsecase usecase, SignalrDefaultPresenter<ChooseDirectionResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new ChooseDirectionRequest(gameId, userId, direction),
+            new ChooseDirectionRequest(GameId, PlayerId, direction),
             presenter
             );
     }
 
-    public async Task PlayerBuyLand(string gameId, string userId, string blockId, PlayerBuyLandUsecase usecase, SignalrDefaultPresenter<PlayerBuyLandResponse> presenter)
+    public async Task PlayerBuyLand(string blockId, PlayerBuyLandUsecase usecase, SignalrDefaultPresenter<PlayerBuyLandResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new PlayerBuyLandRequest(gameId, userId, blockId),
+            new PlayerBuyLandRequest(GameId, PlayerId, blockId),
             presenter
             );
     }
 
-    public async Task PlayerPayToll(string gameId, string userId, PayTollUsecase usecase, SignalrDefaultPresenter<PayTollResponse> presenter)
+    public async Task PlayerPayToll(PayTollUsecase usecase, SignalrDefaultPresenter<PayTollResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new PayTollRequest(gameId, userId),
+            new PayTollRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task PlaySelectLocation(string gameId, string userId, int locationId, SelectLocationUsecase usecase, SignalrDefaultPresenter<SelectLocationResponse> presenter)
+    public async Task PlaySelectLocation(int locationId, SelectLocationUsecase usecase, SignalrDefaultPresenter<SelectLocationResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new SelectLocationRequest(gameId, userId, locationId),
+            new SelectLocationRequest(GameId, PlayerId, locationId),
             presenter
             );
     }
 
-    public async Task PlayerBuildHouse(string gameId, string userId, BuildHouseUsecase usecase, SignalrDefaultPresenter<BuildHouseResponse> presenter)
+    public async Task PlayerBuildHouse(BuildHouseUsecase usecase, SignalrDefaultPresenter<BuildHouseResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new BuildHouseRequest(gameId, userId),
+            new BuildHouseRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task PlayerMortgage(string gameId, string userId, string blockId, MortgageUsecase usecase, SignalrDefaultPresenter<MortgageResponse> presenter)
+    public async Task PlayerMortgage(string blockId, MortgageUsecase usecase, SignalrDefaultPresenter<MortgageResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new MortgageRequest(gameId, userId, blockId),
+            new MortgageRequest(GameId, PlayerId, blockId),
             presenter
             );
     }
 
-    public async Task PlayerRedeem(string gameId, string userId, string blockId, RedeemUsecase usecase, SignalrDefaultPresenter<RedeemResponse> presenter)
+    public async Task PlayerRedeem(string blockId, RedeemUsecase usecase, SignalrDefaultPresenter<RedeemResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new RedeemRequest(gameId, userId, blockId),
+            new RedeemRequest(GameId, PlayerId, blockId),
             presenter
             );
     }
 
-    public async Task PlayerBid(string gameId, string userId, decimal bidPrice, BidUsecase usecase, SignalrDefaultPresenter<BidResponse> presenter)
+    public async Task PlayerBid(decimal bidPrice, BidUsecase usecase, SignalrDefaultPresenter<BidResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new BidRequest(gameId, userId, bidPrice),
+            new BidRequest(GameId, PlayerId, bidPrice),
             presenter
             );
     }
 
-    public async Task EndAuction(string gameId, string userId, EndAuctionUsecase usecase, SignalrDefaultPresenter<EndAuctionResponse> presenter)
+    public async Task EndAuction(EndAuctionUsecase usecase, SignalrDefaultPresenter<EndAuctionResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new EndAuctionRequest(gameId, userId),
+            new EndAuctionRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task EndRound(string gameId, string userId, EndRoundUsecase usecase, SignalrDefaultPresenter<EndRoundResponse> presenter)
+    public async Task EndRound(EndRoundUsecase usecase, SignalrDefaultPresenter<EndRoundResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new EndRoundRequest(gameId, userId),
+            new EndRoundRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task Settlement(string gameId, string userId, SettlementUsecase usecase, SignalrDefaultPresenter<SettlementResponse> presenter)
+    public async Task Settlement(SettlementUsecase usecase, SignalrDefaultPresenter<SettlementResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new SettlementRequest(gameId, userId),
+            new SettlementRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task PlayerSelectRole(string gameId, string userId, string roleId, SelectRoleUsecase usecase, SignalrDefaultPresenter<SelectRoleResponse> presenter)
+    public async Task PlayerSelectRole(string roleId, SelectRoleUsecase usecase, SignalrDefaultPresenter<SelectRoleResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new SelectRoleRequest(gameId, userId, roleId),
+            new SelectRoleRequest(GameId, PlayerId, roleId),
             presenter
             );
     }
 
-    public async Task PlayerReady(string gameId, string userId, PlayerPreparedUsecase usecase, SignalrDefaultPresenter<PlayerPreparedResponse> presenter)
+    public async Task PlayerReady(PlayerPreparedUsecase usecase, SignalrDefaultPresenter<PlayerPreparedResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new PlayerPreparedRequest(gameId, userId),
+            new PlayerPreparedRequest(GameId, PlayerId),
             presenter
             );
     }
 
-    public async Task GameStart(string gameId, string userId, GameStartUsecase usecase, SignalrDefaultPresenter<GameStartResponse> presenter)
+    public async Task GameStart(GameStartUsecase usecase, SignalrDefaultPresenter<GameStartResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new GameStartRequest(gameId, userId),
+            new GameStartRequest(GameId, PlayerId),
             presenter
             );
     }
@@ -173,8 +173,8 @@ public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses
         {
             throw new GameNotFoundException($"Not pass game id");
         }
-        Context.Items[Gameid] = gameIdStringValues.ToString();
-        Context.Items[Playerid] = Context.User!.FindFirst(x => x.Type == ClaimTypes.Sid)!.Value;
+        Context.Items[KeyOfGameId] = gameIdStringValues.ToString();
+        Context.Items[KeyOfPlayerId] = Context.User!.FindFirst(x => x.Type == ClaimTypes.Sid)!.Value;
         if (repository.IsExist(GameId) is false)
         {
             throw new GameNotFoundException($"Can not find the game that id is {GameId}");

@@ -30,33 +30,33 @@ public class PayTollTest
     public async Task 玩家在別人的土地上付過路費()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(a1.Id)
             .Build()
         )
         .WithMockDice(new[] { 1 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
 
         // Assert
         // A 付過路費
@@ -79,35 +79,35 @@ public class PayTollTest
     public async Task 地主在監獄中玩家無須付過路費()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m };
-        var Jail = new { Id = "Jail" };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m };
+        var jail = new { Id = "Jail" };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithPosition(Jail.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithPosition(jail.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
         .WithMockDice(new[] { 1 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
 
         // Assert
         // A 付過路費
@@ -130,34 +130,34 @@ public class PayTollTest
     public async Task 地主在停車場玩家無須付過路費()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var B = new { Id = "B", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m };
-        var ParkingLot = new { Id = "ParkingLot" };
+        var a = new { Id = "A", Money = 1000m };
+        var b = new { Id = "B", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m };
+        var parkingLot = new { Id = "ParkingLot" };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithPosition(ParkingLot.Id, Direction.Right)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithPosition(parkingLot.Id, Direction.Right)
+            .WithLandContract(a1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
 
         // Assert
         // A 付過路費
@@ -179,34 +179,34 @@ public class PayTollTest
     public async Task 玩家在別人的土地上但餘額不足以付過路費()
     {
         // Arrange
-        var A = new { Id = "A", Money = 30m };
-        var B = new { Id = "B", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m };
-        var A3 = new { Id = "A3" };
+        var a = new { Id = "A", Money = 30m };
+        var b = new { Id = "B", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m };
+        var a3 = new { Id = "A3" };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A3.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a3.Id)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(a1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
 
         // Assert
         // A 付過路費
@@ -229,32 +229,32 @@ public class PayTollTest
     public async Task 玩家在別人的車站上付過路費()
     {
         // Arrange
-        var A = new { Id = "A", Money = 3000m };
-        var B = new { Id = "B", Money = 1000m };
-        var Station1 = new { Id = "Station1", Price = 1000m };
+        var a = new { Id = "A", Money = 3000m };
+        var b = new { Id = "B", Money = 1000m };
+        var station1 = new { Id = "Station1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(Station1.Id, Direction.Right)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(station1.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(Station1.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(station1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, A.Id);
+        var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
 
         // Assert
         // A 付過路費
@@ -278,26 +278,26 @@ public class PayTollTest
     public async Task 玩家的資產為0時破產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 200 };
-        var B = new { Id = "B", Money = 1000 };
-        var A2 = new { Id = "A2", HouseCount = 2 };
+        var a = new { Id = "A", Money = 200 };
+        var b = new { Id = "B", Money = 1000 };
+        var a2 = new { Id = "A2", HouseCount = 2 };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("A2", Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(A2.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(a2.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build())
-        .WithLandHouse(A2.Id, A2.HouseCount);
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+        .WithLandHouse(a2.Id, a2.HouseCount);
 
         monopolyBuilder.Save(server);
 

@@ -1,5 +1,4 @@
-﻿using Domain.Events;
-using Server.Hubs;
+﻿using Server.Hubs;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static ServerTests.Utils;
@@ -44,7 +43,7 @@ public class RollDiceTest
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
 
         // Assert
         // A 擲了 6 點
@@ -76,24 +75,24 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子到需要選擇方向的地方()
     {
         // Arrange
-        var A = new { Id = "A" };
+        var a = new { Id = "A" };
         string[] expectedDirections = [ "Right", "Down", "Left" ];
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
+            new PlayerBuilder(a.Id)
             .WithPosition("F4", Direction.Up)
             .Build()
         )
         .WithMockDice([2, 6])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), gameId, "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
 
         //Assert
         // A 擲了 8 點
@@ -143,25 +142,25 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子經過起點獲得獎勵金3000()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
+        var a = new { Id = "A", Money = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("F3", Direction.Up)
             .Build()
         )
-        .WithMockDice(new[] { 2, 2 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithMockDice([2, 2])
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
 
         // Assert
         // A 擲了 4 點
@@ -197,25 +196,25 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子到起點無法獲得獎勵金()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
+        var a = new { Id = "A", Money = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .WithPosition("F3", Direction.Up)
             .Build()
         )
-        .WithMockDice(new[] { 2, 1 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithMockDice([2, 1])
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
 
         // Assert
         // A 擲了 3 點
@@ -247,27 +246,27 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子到自己擁有地()
     {
         // Arrange
-        var A = new { Id = "A" };
-        var A1 = new { Id = "A1" };
-        var A2 = new { Id = "A2", House = 4 };
+        var a = new { Id = "A" };
+        var a1 = new { Id = "A1" };
+        var a2 = new { Id = "A2", House = 4 };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithPosition(A1.Id, Direction.Right)
-            .WithLandContract(A2.Id)
+            new PlayerBuilder(a.Id)
+            .WithPosition(a1.Id, Direction.Right)
+            .WithLandContract(a2.Id)
             .Build()
         )
         .WithMockDice([1, 1])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build())
-        .WithLandHouse(A2.Id, A2.House);
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+        .WithLandHouse(a2.Id, a2.House);
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步
@@ -296,30 +295,30 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子到他人擁有地()
     {
         // Arrange
-        var A = new { Id = "A" };
-        var B = new { Id = "B" };
-        var A2 = new { Id = "A2", House = 0 };
+        var a = new { Id = "A" };
+        var b = new { Id = "B" };
+        var a2 = new { Id = "A2", House = 0 };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
+            new PlayerBuilder(a.Id)
             .WithPosition("A1", Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithLandContract(A2.Id)
+            new PlayerBuilder(b.Id)
+            .WithLandContract(a2.Id)
             .Build()
         )
         .WithMockDice([2])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步
@@ -344,23 +343,23 @@ public class RollDiceTest
     public async Task 玩家擲骰後移動棋子到空地()
     {
         // Arrange
-        var A = new { Id = "A" };
+        var a = new { Id = "A" };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
+            new PlayerBuilder(a.Id)
             .WithPosition("A1", Direction.Right)
             .Build()
         )
-        .WithMockDice(new[] { 2 })
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithMockDice([2])
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice), "1", "A");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步

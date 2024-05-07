@@ -30,25 +30,25 @@ public class MortgageTest
     public async Task 玩家抵押房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 5000m };
-        var A1 = new { Id = "A1", Price = 1000m };
+        var a = new { Id = "A", Money = 5000m };
+        var a1 = new { Id = "A1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithLandContract(A1.Id)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithLandContract(a1.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), gameId, "A", "A1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
 
         // Assert
         // A 抵押房地產
@@ -69,25 +69,25 @@ public class MortgageTest
     public async Task 玩家不能抵押已抵押房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 1000m };
-        var A1 = new { Id = "A1", Price = 1000m, IsMortgage = true };
+        var a = new { Id = "A", Money = 1000m };
+        var a1 = new { Id = "A1", Price = 1000m, IsMortgage = true };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithLandContract(A1.Id, InMortgage: A1.IsMortgage)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithLandContract(a1.Id, inMortgage: a1.IsMortgage)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), gameId, "A", "A1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
 
         // Assert
         // A 抵押房地產
@@ -107,23 +107,23 @@ public class MortgageTest
     public async Task 玩家抵押非自有房地產()
     {
         // Arrange
-        var A = new { Id = "A", Money = 5000m };
+        var a = new { Id = "A", Money = 5000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id).Build());
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), gameId, "A", "A1");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
 
         // Assert
         // A 抵押房地產

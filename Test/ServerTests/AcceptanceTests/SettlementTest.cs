@@ -99,7 +99,7 @@ public class SettlementTest
         .WithPlayer(
             new PlayerBuilder(A.Id)
             .WithMoney(A.Money)
-            .WithLandContract(A2.Id, InMortgage: A2.IsMortgage)
+            .WithLandContract(A2.Id, inMortgage: A2.IsMortgage)
             .Build()
         )
         .WithPlayer(
@@ -161,7 +161,7 @@ public class SettlementTest
         .WithPlayer(
             new PlayerBuilder(A.Id)
             .WithMoney(A.Money)
-            .WithLandContract(A2.Id, InMortgage: A2.IsMortgage)
+            .WithLandContract(A2.Id, inMortgage: A2.IsMortgage)
             .Build()
         )
         .WithPlayer(

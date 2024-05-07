@@ -29,18 +29,18 @@ public class BuyBlockTest
     public async Task 玩家在空地上可以購買土地()
     {
         // Arrange
-        var A = new { Id = "A", Money = 5000m };
-        var F4 = new { Id = "F4", Price = 1000m };
+        var a = new { Id = "A", Money = 5000m };
+        var f4 = new { Id = "F4", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder(gameId)
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(F4.Id, Direction.Up)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(f4.Id, Direction.Up)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         );
 
@@ -50,7 +50,7 @@ public class BuyBlockTest
 
         // Act
 
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), gameId, "A", "F4");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
 
         // Assert
         // A 購買土地
@@ -74,18 +74,18 @@ public class BuyBlockTest
     public async Task 金錢不夠無法購買土地()
     {
         // Arrange
-        var A = new { Id = "A", Money = 500m };
-        var F4 = new { Id = "F4", Price = 1000m };
+        var a = new { Id = "A", Money = 500m };
+        var f4 = new { Id = "F4", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(F4.Id, Direction.Up)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(f4.Id, Direction.Up)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         );
 
@@ -95,7 +95,7 @@ public class BuyBlockTest
 
         // Act
 
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), gameId, "A", "F4");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
 
         // Assert
         // A 購買土地金額不足
@@ -121,25 +121,25 @@ public class BuyBlockTest
     public async Task 玩家在有地主的土地上不可以購買土地()
     {
         // Arrange
-        var A = new { Id = "A", Money = 5000m };
-        var B = new { Id = "B", Money = 5000m };
-        var F4 = new { Id = "F4", Price = 1000m };
+        var a = new { Id = "A", Money = 5000m };
+        var b = new { Id = "B", Money = 5000m };
+        var f4 = new { Id = "F4", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
-            new PlayerBuilder(A.Id)
-            .WithMoney(A.Money)
-            .WithPosition(F4.Id, Direction.Right)
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(f4.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
-            new PlayerBuilder(B.Id)
-            .WithMoney(B.Money)
-            .WithLandContract(F4.Id)
+            new PlayerBuilder(b.Id)
+            .WithMoney(b.Money)
+            .WithLandContract(f4.Id)
             .Build()
         )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(A.Id)
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
             .Build()
         );
 
@@ -149,7 +149,7 @@ public class BuyBlockTest
 
         // Act
 
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), gameId, "A", "F4");
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
 
         // Assert
         // A 購買土地非空地

@@ -10,7 +10,7 @@ namespace ServerTests.AcceptanceTests;
 public class SelectLocation
 {
     private MonopolyTestServer server = default!;
-    private const string gameId = "1";
+    private const string GameId = "1";
 
     [TestInitialize]
     public void Setup()
@@ -27,21 +27,21 @@ public class SelectLocation
     public async Task 玩家選擇沒人的位置()
     {
         //Arrange
-        var A = new { Id = "A", locationId = 0, selectLocationId = 1 };
+        var a = new { Id = "A", locationId = 0, selectLocationId = 1 };
 
         var monopolyBuilder = new MonopolyBuilder("1")
             .WithGameStage(GameStage.Preparing)
             .WithPlayer(
                 new PlayerBuilder("A")
-                .WithLocation(A.locationId)
+                .WithLocation(a.locationId)
                 .Build()
             );
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), gameId, A.Id, A.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
@@ -61,27 +61,27 @@ public class SelectLocation
     public async Task 玩家選擇有人的位置()
     {
         //Arrange
-        var A = new { Id = "A", locationId = 0, selectLocationId = 1 };
-        var B = new { Id = "B", locationId = 1 };
+        var a = new { Id = "A", locationId = 0, selectLocationId = 1 };
+        var b = new { Id = "B", locationId = 1 };
 
         var monopolyBuilder = new MonopolyBuilder("1")
             .WithGameStage(GameStage.Preparing)
             .WithPlayer(
-                new PlayerBuilder(A.Id)
-                .WithLocation(A.locationId)
+                new PlayerBuilder(a.Id)
+                .WithLocation(a.locationId)
                 .Build()
             )
             .WithPlayer(
-                new PlayerBuilder(B.Id)
-                .WithLocation(B.locationId)
+                new PlayerBuilder(b.Id)
+                .WithLocation(b.locationId)
                 .Build()
             );
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), gameId, A.Id, A.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
@@ -100,21 +100,21 @@ public class SelectLocation
     public async Task 有選位置的玩家更換到沒人的位置()
     {
         //Arrange
-        var A = new { Id = "A", locationId = 1, selectLocationId = 2 };
+        var a = new { Id = "A", locationId = 1, selectLocationId = 2 };
 
         var monopolyBuilder = new MonopolyBuilder("1")
             .WithGameStage(GameStage.Preparing)
             .WithPlayer(
                 new PlayerBuilder("A")
-                .WithLocation(A.locationId)
+                .WithLocation(a.locationId)
                 .Build()
             );
         monopolyBuilder.Save(server);
 
-        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), gameId, A.Id, A.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
