@@ -267,7 +267,7 @@ public class Player
         return d == chess.CurrentDirection.Opposite();
     }
 
-    internal DomainEvent Parpare()
+    internal DomainEvent Ready()
     {
         if (RoleId is null || LocationId == 0)
         {

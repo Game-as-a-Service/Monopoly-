@@ -123,10 +123,10 @@ public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses
             );
     }
 
-    public async Task PlayerReady(PlayerPreparedUsecase usecase, SignalrDefaultPresenter<PlayerPreparedResponse> presenter)
+    public async Task PlayerReady(PlayerReadyUsecase usecase, SignalrDefaultPresenter<PlayerReadyResponse> presenter)
     {
         await usecase.ExecuteAsync(
-            new PlayerPreparedRequest(GameId, PlayerId),
+            new PlayerReadyRequest(GameId, PlayerId),
             presenter
             );
     }

@@ -30,7 +30,7 @@ public class PreParedTest
             .Build();
 
         // Act 
-        monopoly.PlayerPrepare(B.Id);
+        monopoly.PlayerReady(B.Id);
 
         // Assert
         Assert.AreEqual(B.preparedState, monopoly.Players.First(p => p.Id == B.Id).State);
@@ -58,7 +58,7 @@ public class PreParedTest
             .Build();
 
         // Act 
-        monopoly.PlayerPrepare(A.Id);
+        monopoly.PlayerReady(A.Id);
 
         // Assert
         Assert.AreEqual(A.preparingState, monopoly.Players.First(p => p.Id == A.Id).State);
@@ -95,7 +95,7 @@ public class PreParedTest
             .Build();
 
         // Act 
-        monopoly.PlayerPrepare(B.Id);
+        monopoly.PlayerReady(B.Id);
 
         // Assert
         Assert.AreEqual(B.preparingState, monopoly.Players.First(p => p.Id == B.Id).State);
@@ -131,7 +131,7 @@ public class PreParedTest
             .Build();
 
         // Act 
-        monopoly.PlayerPrepare(B.Id);
+        monopoly.PlayerReady(B.Id);
 
         // Assert
         Assert.AreEqual(B.preparingState, monopoly.Players.First(p => p.Id == B.Id).State);

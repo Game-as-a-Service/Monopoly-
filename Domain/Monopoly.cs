@@ -282,13 +282,13 @@ public class Monopoly : AbstractAggregateRoot
     /// 
     /// </summary>
     /// <param name="playerId"></param>
-    public void PlayerPrepare(string playerId)
+    public void PlayerReady(string playerId)
     {
         if (GameStage == GameStage.Preparing)
         {
             Player player = GetPlayer(playerId);
         
-            AddDomainEvent(player.Parpare());
+            AddDomainEvent(player.Ready());
         }
         
     }
