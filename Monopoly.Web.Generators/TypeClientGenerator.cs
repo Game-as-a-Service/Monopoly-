@@ -58,7 +58,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GenerateRequests(IMethodSymbol[] nodeInfoHubRequestMethods)
+    private static string GenerateRequests(IEnumerable<IMethodSymbol> nodeInfoHubRequestMethods)
     {
         var methods = nodeInfoHubRequestMethods.Select(x =>
         {

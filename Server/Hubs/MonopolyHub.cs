@@ -51,7 +51,7 @@ public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses
             );
     }
 
-    public async Task PlaySelectLocation(int locationId, SelectLocationUsecase usecase, SignalrDefaultPresenter<SelectLocationResponse> presenter)
+    public async Task PlayerSelectLocation(int locationId, SelectLocationUsecase usecase, SignalrDefaultPresenter<SelectLocationResponse> presenter)
     {
         await usecase.ExecuteAsync(
             new SelectLocationRequest(GameId, PlayerId, locationId),

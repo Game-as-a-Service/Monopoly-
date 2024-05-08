@@ -41,12 +41,12 @@ public class SelectLocation
         var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
-            nameof(IMonopolyResponses.PlaySelectLocationEvent),
-            (PlaySelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 1 }
+            nameof(IMonopolyResponses.PlayerSelectLocationEvent),
+            (PlayerSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 1 }
             );
         hub.VerifyNoElseEvent();
     }
@@ -81,7 +81,7 @@ public class SelectLocation
         var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
@@ -114,12 +114,12 @@ public class SelectLocation
         var hub = await server.CreateHubConnectionAsync(GameId, "A");
 
         //Act
-        await hub.SendAsync(nameof(MonopolyHub.PlaySelectLocation), a.selectLocationId);
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectLocation), a.selectLocationId);
 
         //Assert
         hub.Verify(
-            nameof(IMonopolyResponses.PlaySelectLocationEvent),
-            (PlaySelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 2 } 
+            nameof(IMonopolyResponses.PlayerSelectLocationEvent),
+            (PlayerSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 2 } 
             );
         hub.VerifyNoElseEvent();
     }

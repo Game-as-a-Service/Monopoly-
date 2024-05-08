@@ -76,7 +76,7 @@ public interface IMonopolyResponses
 
     Task PlayerSelectRoleEvent(PlayerSelectRoleEventArgs e);
 
-    Task PlaySelectLocationEvent(PlaySelectLocationEventArgs e);
+    Task PlayerSelectLocationEvent(PlayerSelectLocationEventArgs e);
 
     Task PlayCannotSelectLocationEvent(PlayCannotSelectLocationEventArgs e);
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-using SharedLibrary;
-using SharedLibrary.ResponseArgs.ReadyRoom;
+﻿using SharedLibrary;
 using SignalR.Client.Generator;
 
 namespace Client.Pages;
@@ -13,5 +11,5 @@ public abstract class Hub<T>;
 public abstract class MonopolyHub : Hub<IMonopolyResponses>
 {
     public abstract Task GetReadyInfo();
-    public abstract Task PlaySelectLocation(string gameId, string userId, int locationId);
+    public abstract Task PlayerSelectLocation(int locationId);
 }

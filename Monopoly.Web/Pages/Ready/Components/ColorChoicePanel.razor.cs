@@ -9,12 +9,14 @@ public partial class ColorChoicePanel
     private IEnumerable<Player> Players => Parent.Players;
     private Player? CurrentPlayer => Parent.CurrentPlayer;
 
-    private void ChangeColor(ColorEnum color)
+    private async Task ChangeColor(ColorEnum color)
     {
         if (GetPlayerWithColor(color) is not null || CurrentPlayer is null)
         {
             return;
         }
+
+        await Parent.Connection.PlayerSelectLocation((int)color);
         CurrentPlayer.Color = color;
         Parent.Update();
     }

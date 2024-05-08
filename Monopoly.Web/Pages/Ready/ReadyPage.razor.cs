@@ -1,5 +1,6 @@
 ﻿using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
+using SharedLibrary.ResponseArgs.Monopoly;
 using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace Client.Pages.Ready;
@@ -13,6 +14,7 @@ public partial class ReadyPage
     protected override async Task OnInitializedAsync()
     {
         Connection.GetReadyInfoEventHandler += OnGetReadyInfoEvent;
+        Connection.PlayerSelectLocationEventHandler += OnPlayerSelectLocationEvent;
         await Connection.GetReadyInfo();
     }
     public void Update() => StateHasChanged();
@@ -27,6 +29,17 @@ public partial class ReadyPage
             Color = (ColorEnum)Enum.Parse(typeof(ColorEnum), x.Color.ToString()),
             Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), x.Color.ToString())
         }).ToList();
+        Update();
+    }
+    
+    private void OnPlayerSelectLocationEvent(PlayerSelectLocationEventArgs e)
+    {
+        var player = Players.FirstOrDefault(x => x.Id == e.PlayerId);
+        if (player is null)
+        {
+            return;
+        }
+        player.Color = (ColorEnum)e.LocationId;
         Update();
     }
 }
