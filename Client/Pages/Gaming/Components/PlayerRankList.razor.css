@@ -10,76 +10,80 @@
     .PlayerRankList .PlayerInfo {
         position: relative;
         width: calc(178 * var(--unit));
-        height: calc(90 * var(--unit));
+        height: fit-content;
         border-radius: calc(20 * var(--unit)); /* 方框圓角半徑 */
         border: calc(4 * var(--unit)) solid #008227; /* 方框邊框寬度和顏色 */
         background-color: #5B5B5B; /* 底色 */
+        padding: 1rem;
+        margin-bottom: 8px;
     }
+
         .PlayerRankList .PlayerInfo .Rank {
-            position: absolute;
-            top: 0;
-            left: 0;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin-bottom: .5rem;
         }
+
             .PlayerRankList .PlayerInfo .Rank .Round {
-                position: absolute;
-                width: calc(24 * var(--unit));
-                height: calc(24 * var(--unit));
-                top: 0;
-                left: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 24px;
+                height: 24px;
                 border-radius: 50%; /* 圓形 */
                 border: calc(1 * var(--unit)) solid white; /* 外框 */
                 background-color: #D8C292; /* 底色 */
             }
-            .PlayerRankList .PlayerInfo .Rank .Number {
-                position: absolute;
-                top: calc(5.5 * var(--unit));
-                left: calc(9 * var(--unit));
-                color: #5B5B5B;
-                font-size: calc(16 * var(--unit));
-                text-align: center;
+
+                .PlayerRankList .PlayerInfo .Rank .Round .Number {
+                    color: #5B5B5B;
+                }
+
+                .PlayerRankList .PlayerInfo .Name {
+                    width: calc(40 * var(--unit));
+                    color: white;
+                    font-size: calc(20 * var(--unit));
+                    margin: 0;
+                }
+
+                .PlayerRankList .PlayerInfo .PlayerMoney {
+                    display: flex;
+                    align-items: center;
+                    gap: .5rem;
+                }
+
+                    .PlayerRankList .PlayerInfo .Icon {
+                        width: calc(60 * var(--unit));
+                        height: calc(50 * var(--unit));
+                        /*background-image: url('./images/roles/avatars/小美頭.svg');*/
+                        background-size: cover;
+                        background-position: center;
+                    }
+
+                        .PlayerRankList .PlayerInfo .Icon.baby {
+                            background-image: url('images/roles/avatars/寶寶頭.svg');
+                        }
+
+                        .PlayerRankList .PlayerInfo .Icon.oldman {
+                            background-image: url('images/roles/avatars/老人頭.svg');
+                        }
+
+                        .PlayerRankList .PlayerInfo .Icon.dai {
+                            background-image: url('images/roles/avatars/阿呆頭.svg');
+                        }
+
+                        .PlayerRankList .PlayerInfo .Icon.mei {
+                            background-image: url('images/roles/avatars/小美頭.svg');
+                        }
+
+            .PlayerRankList .PlayerInfo .Money {
+                width: calc(94 * var(--unit));
+                color: white;
+                font-size: calc(20 * var(--unit));
+                margin: 0;
             }
 
-        .PlayerRankList .PlayerInfo .Name {
-            position: relative;
-            width: calc(40 * var(--unit));
-            height: calc(21 * var(--unit));
-            top: 0;
-            left: calc(31 * var(--unit));
-            color: white;
-            font-size: calc(20 * var(--unit));
-        }
-
-        .PlayerRankList .PlayerInfo .Icon {
-            position: absolute;
-            width: calc(60 * var(--unit));
-            height: calc(50 * var(--unit));
-            top: calc(25 * var(--unit));
-            left: calc(16 * var(--unit));
-            /*background-image: url('./images/roles/avatars/小美頭.svg');*/
-            background-size: cover;
-            background-position: center;
-        }
-            .PlayerRankList .PlayerInfo .Icon.baby {
-                background-image: url('images/roles/avatars/老人頭.svg');
-            }
-            .PlayerRankList .PlayerInfo .Icon.oldman {
-                background-image: url('images/roles/avatars/寶寶頭.svg');
-            }
-            .PlayerRankList .PlayerInfo .Icon.dai {
-                background-image: url('images/roles/avatars/阿呆頭.svg');
-            }
-            .PlayerRankList .PlayerInfo .Icon.mei {
-                background-image: url('images/roles/avatars/小美頭.svg');
-            }
-
-        .PlayerRankList .PlayerInfo .Money {
-            position: absolute;
-            width: calc(94 * var(--unit));
-            top: calc(30 * var(--unit));
-            left: calc(84 * var(--unit));
-            color: white;
-            font-size: calc(20 * var(--unit));
-        }
             .PlayerRankList .PlayerInfo .Money::before {
                 content: "";
                 display: inline-block;
@@ -92,14 +96,13 @@
                 background-position: center;
             }
 
-        .PlayerRankList .PlayerInfo .TotalMoney {
-            position: absolute;
-            width: calc(94 * var(--unit));
-            top: calc(54 * var(--unit));
-            left: calc(84 * var(--unit));
-            color: white;
-            font-size: calc(20 * var(--unit));
-        }
+            .PlayerRankList .PlayerInfo .TotalMoney {
+                width: calc(94 * var(--unit));
+                color: white;
+                font-size: calc(20 * var(--unit));
+                margin: 0;
+            }
+
             .PlayerRankList .PlayerInfo .TotalMoney::before {
                 content: "";
                 display: inline-block;

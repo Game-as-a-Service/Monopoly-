@@ -1,14 +1,18 @@
 ﻿<dlv class="PlayerInfo">
     <div class="money">
-        <div class="icon"></div>
         <span>9,000</span>
     </div>
-    <div class="TotalMoney">9,000</div>
-    <hr>
+    <div class="TotalMoney">
+        <span>9,000</span>
+    </div>
+    <div class="TotalMoney">
+        <span>9,000</span>
+    </div>
+    <hr class="withBalls">
+    <div class="collapseBtn">
+        抵押清單
+    </div>
     <div class="MortgageList">
-        <span>
-            抵押清單
-        </span>
         <ul>
             <li><span>A</span></li>
             <li><span>B</span></li>
@@ -22,3 +26,18 @@
         </ul>
     </div>
 </dlv>
+
+<script>
+    const collapseContainer = document.querySelector('.MortgageList')
+    const collapseBtn = document.querySelector('.collapseBtn')
+
+    if (collapseContainer && collapseBtn) {
+        // 預設關閉
+        collapseContainer.classList.add('collapseHide')
+
+        // 點擊切換
+        collapseBtn.addEventListener('click', () => {
+            collapseContainer.classList.toggle('collapseHide')
+        })
+    }
+</script>
