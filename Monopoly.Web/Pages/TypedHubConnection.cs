@@ -3,13 +3,13 @@ using SignalR.Client.Generator;
 
 namespace Client.Pages;
 
-[TypedHubClient(typeof(MonopolyHub))]
+[TypedHubClient(typeof(IMonopolyRequests), typeof(IMonopolyResponses))]
 public partial class TypedHubConnection;
 
 public abstract class Hub<T>;
 
-public abstract class MonopolyHub : Hub<IMonopolyResponses>
+public interface IMonopolyRequests
 {
-    public abstract Task GetReadyInfo();
-    public abstract Task PlayerSelectLocation(int locationId);
+    public Task GetReadyInfo();
+    public Task PlayerSelectLocation(int locationId);
 }
