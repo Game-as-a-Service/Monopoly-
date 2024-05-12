@@ -52,7 +52,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
 
                   namespace {{nodeInfo.Namespace}};
 
-                  public partial class {{nodeInfo.Name}}
+                  public partial class {{nodeInfo.Name}} : {{nodeInfo.RequestInterfaceName}}
                   {
                       private readonly HubConnection hubConnection;
                   {{GenerateDelegates(nodeInfo.ResponseMethods)}}
@@ -83,7 +83,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         });
         return string.Join("\n", methods);
     }
-    
+
     private static string GenerateEventRegistration(IEnumerable<IMethodSymbol> responseMethods)
     {
         var events = responseMethods.Select(x =>
@@ -92,8 +92,8 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
             var parametersInOn = string.Join(", ", x.Parameters.Select(p => p.Name));
             var action = $"({parametersInOn}) => {x.Name}Handler?.Invoke({parametersInOn})";
             return $"""
-                            hubConnection.On<{parameters}>("{x.Name}", {action});
-                     """;
+                           hubConnection.On<{parameters}>("{x.Name}", {action});
+                    """;
         });
         return string.Join("\n", events);
     }
@@ -104,14 +104,15 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         {
             var parameters = string.Join(", ", x.Parameters.Select(p => $"{p.Type} {p.Name}"));
             return $"""
-                         public event {x.Name}Delegate? {x.Name}Handler;
-                         public delegate void {x.Name}Delegate({parameters});
-                     """;
+                        public event {x.Name}Delegate? {x.Name}Handler;
+                        public delegate void {x.Name}Delegate({parameters});
+                    """;
         });
         return string.Join("\n", delegates);
     }
 
-    private static (string Name, string Namespace, ImmutableArray<IMethodSymbol> RequestMethods, ImmutableArray<IMethodSymbol> ResponseMethods)
+    private static (string Name, string Namespace, string RequestInterfaceName, ImmutableArray<IMethodSymbol> RequestMethods,
+        ImmutableArray<IMethodSymbol> ResponseMethods)
         TransformContext(GeneratorAttributeSyntaxContext ctx)
     {
         var attribute = ctx.Attributes
@@ -119,13 +120,16 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
 
         var hubRequestType = attribute.ConstructorArguments[0].Value as INamedTypeSymbol;
 
+        var hubRequestInterfaceName = hubRequestType!.ToString();
+
         var hubResponseType = attribute.ConstructorArguments[1].Value as INamedTypeSymbol;
 
         var requestMethods = hubRequestType!.GetMembers().OfType<IMethodSymbol>().ToImmutableArray();
 
         var responseMethods = hubResponseType!.GetMembers().OfType<IMethodSymbol>().ToImmutableArray();
 
-        return (ctx.TargetSymbol.Name, ctx.TargetSymbol.ContainingNamespace.ToString(), requestMethods,
+        return (ctx.TargetSymbol.Name, ctx.TargetSymbol.ContainingNamespace.ToString(), hubRequestInterfaceName,
+            requestMethods,
             responseMethods);
     }
 }
