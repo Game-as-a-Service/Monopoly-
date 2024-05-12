@@ -7,13 +7,13 @@ public partial class RoleChoicePanel
 {
     [CascadingParameter] public ReadyPage Parent { get; set; } = default!;
     private Player? CurrentPlayer => Parent.CurrentPlayer;
-    private void ChangeRole(RoleEnum role)
+    private async Task ChangeRole(RoleEnum role)
     {
         if (CurrentPlayer is null)
         {
             return;
         }
-        CurrentPlayer.Role = role;
+        await Parent.Connection.PlayerSelectRole(role.ToString());
         Parent.Update();
     }
 }

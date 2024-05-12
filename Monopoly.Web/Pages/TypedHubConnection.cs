@@ -10,4 +10,5 @@ public interface IMonopolyRequests
 {
     public Task GetReadyInfo();
     public Task PlayerSelectLocation(int locationId);
+    public Task PlayerSelectRole(string roleId);
 }

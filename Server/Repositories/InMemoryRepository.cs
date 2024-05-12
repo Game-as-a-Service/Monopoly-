@@ -5,32 +5,39 @@ namespace Server.Repositories;
 
 public class InMemoryRepository : ICommandRepository, IQueryRepository
 {
-    private readonly Dictionary<string, Monopoly> Games = new();
+    private readonly Dictionary<string, Monopoly> games = new();
 
     public Monopoly FindGameById(string id)
     {
-        Games.TryGetValue(id, out Monopoly? game);
+        games.TryGetValue(id, out var game);
         if (game == null)
         {
             throw new GameNotFoundException(id);
         }
+
         return game;
     }
 
     public string[] GetRooms()
     {
-        return Games.Keys.ToArray();
+        return games.Keys.ToArray();
     }
 
     public bool IsExist(string id)
     {
-        return Games.ContainsKey(id);
+        return games.ContainsKey(id);
     }
 
     public string Save(Monopoly monopoly)
     {
-        var game = monopoly with { Id = (Games.Count + 1).ToString() };
-        Games[game.Id] = game;
+        var id = GetGameId(monopoly.Id);
+        var game = monopoly with { Id = id };
+        games[game.Id] = game;
         return game.Id;
+    }
+
+    private string GetGameId(string gameId)
+    {
+        return string.IsNullOrWhiteSpace(gameId) ? (games.Count + 1).ToString() : gameId;
     }
 }

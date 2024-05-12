@@ -68,7 +68,7 @@ internal static class RepositoryExtensions
         };
         if (gamestage == GameStage.Preparing)
         {
-            return new Monopoly(domainMonopoly.Id, players, map, domainMonopoly.HostId, null!, null!, gamestage);
+            return new Monopoly(domainMonopoly.Id, [..players], map, domainMonopoly.HostId, null!, null!, gamestage);
         }
         var currentPlayer = domainMonopoly.Players.First(player => player.Id == domainMonopoly.CurrentPlayerState.PlayerId);
         var auction = domainMonopoly.CurrentPlayerState.Auction;

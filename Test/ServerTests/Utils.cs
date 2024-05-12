@@ -86,7 +86,7 @@ public class Utils
         private Application.DataModels.Monopoly Build()
         {
             return new Application.DataModels.Monopoly(Id: GameId,
-                Players: Players.ToArray(),
+                Players: [..Players],
                 Map: Map,
                 HostId: HostId,
                 GameStage: GameStage,

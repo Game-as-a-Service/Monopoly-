@@ -152,13 +152,15 @@ public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses
                 {
                     roleEnum = GetReadyInfoEventArgs.RoleEnum.None;
                 }
+
+                var colorEnum = (GetReadyInfoEventArgs.ColorEnum?)x.LocationId ?? GetReadyInfoEventArgs.ColorEnum.None;
                 return new GetReadyInfoEventArgs.Player
                 {
                     Id = x.PlayerId,
                     Name = x.PlayerId,
                     IsReady = x.IsReady,
                     Role = roleEnum,
-                    Color = (GetReadyInfoEventArgs.ColorEnum?)x.LocationId ?? GetReadyInfoEventArgs.ColorEnum.None
+                    Color = colorEnum
                 };
             }).ToList(),
             HostId = presenter.Value.Info.HostId,

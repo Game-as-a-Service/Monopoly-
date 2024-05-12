@@ -11,13 +11,17 @@ public partial class ReadyPage
     [Parameter] public string UserId { get; set; } = string.Empty;
     [CascadingParameter] internal TypedHubConnection Connection { get; set; } = default!;
     public Player? CurrentPlayer => Players.FirstOrDefault(x => x.Id == UserId);
+
     protected override async Task OnInitializedAsync()
     {
         Connection.GetReadyInfoEventHandler += OnGetReadyInfoEvent;
         Connection.PlayerSelectLocationEventHandler += OnPlayerSelectLocationEvent;
+        Connection.PlayerSelectRoleEventHandler += OnPlayerSelectRoleEvent;
         await Connection.GetReadyInfo();
     }
+
     public void Update() => StateHasChanged();
+
     private void OnGetReadyInfoEvent(GetReadyInfoEventArgs e)
     {
         Players = e.Players.Select(x => new Player
@@ -26,12 +30,12 @@ public partial class ReadyPage
             Name = x.Name,
             IsReady = x.IsReady,
             IsHost = e.HostId == x.Id,
-            Color = (ColorEnum)Enum.Parse(typeof(ColorEnum), x.Color.ToString()),
-            Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), x.Color.ToString())
+            Color = Enum.Parse<ColorEnum>(x.Color.ToString()),
+            Role = Enum.Parse<RoleEnum>(x.Role.ToString())
         }).ToList();
         Update();
     }
-    
+
     private void OnPlayerSelectLocationEvent(PlayerSelectLocationEventArgs e)
     {
         var player = Players.FirstOrDefault(x => x.Id == e.PlayerId);
@@ -39,7 +43,20 @@ public partial class ReadyPage
         {
             return;
         }
+
         player.Color = (ColorEnum)e.LocationId;
+        Update();
+    }
+
+    private void OnPlayerSelectRoleEvent(PlayerSelectRoleEventArgs e)
+    {
+        var player = Players.FirstOrDefault(x => x.Id == e.PlayerId);
+        if (player is null)
+        {
+            return;
+        }
+
+        player.Role = Enum.Parse<RoleEnum>(e.RoleId);
         Update();
     }
 }
