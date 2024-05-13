@@ -7,7 +7,7 @@ using static ServerTests.Utils;
 namespace ServerTests.AcceptanceTests;
 
 [TestClass]
-public class PreparedTest
+public class ReadyTest
 {
     private MonopolyTestServer server = default!;
     private const string GameId = "1";
