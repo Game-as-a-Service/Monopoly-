@@ -7,9 +7,9 @@ using SharedLibrary.ResponseArgs.Monopoly;
 namespace Server.Hubs.EventHandlers;
 
 public class PlayerSelectLocationEventHandler(IHubContext<MonopolyHub, IMonopolyResponses> hubContext)
-    : MonopolyEventHandlerBase<PlaySelectLocationEvent>
+    : MonopolyEventHandlerBase<PlayerSelectLocationEvent>
 {
-    protected override Task HandleSpecificEvent(PlaySelectLocationEvent e)
+    protected override Task HandleSpecificEvent(PlayerSelectLocationEvent e)
     {
         return hubContext.Clients.All.PlayerSelectLocationEvent(new PlayerSelectLocationEventArgs
         {

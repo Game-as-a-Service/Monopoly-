@@ -17,8 +17,6 @@ public partial class ColorChoicePanel
         }
 
         await Parent.Connection.PlayerSelectLocation((int)color);
-        CurrentPlayer.Color = color;
-        Parent.Update();
     }
 
     private string GetChoiceWrapperCss(ColorEnum color)

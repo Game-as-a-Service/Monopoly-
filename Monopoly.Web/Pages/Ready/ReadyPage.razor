@@ -1,8 +1,9 @@
 @using Client.Pages.Ready.Components
 <div class="background">
+    <Popup @ref="Popup" />
     <CascadingValue Value="this">
-        <ColorChoicePanel />
-        <RoleChoicePanel />
-        <ReadyButton />
+        <ColorChoicePanel/>
+        <RoleChoicePanel/>
+        <ReadyButton/>
     </CascadingValue>
 </div>

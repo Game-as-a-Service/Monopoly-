@@ -67,7 +67,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GenerateRequests(IEnumerable<IMethodSymbol> nodeInfoHubRequestMethods)
+    private static string GenerateRequests(IEnumerable<MethodSymbolWrapper> nodeInfoHubRequestMethods)
     {
         var methods = nodeInfoHubRequestMethods.Select(x =>
         {
@@ -84,13 +84,13 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         return string.Join("\n", methods);
     }
 
-    private static string GenerateEventRegistration(IEnumerable<IMethodSymbol> responseMethods)
+    private static string GenerateEventRegistration(IEnumerable<MethodSymbolWrapper> responseMethods)
     {
         var events = responseMethods.Select(x =>
         {
             var parameters = string.Join(", ", x.Parameters.Select(p => $"{p.Type}"));
             var parametersInOn = string.Join(", ", x.Parameters.Select(p => p.Name));
-            var action = $"({parametersInOn}) => {x.Name}Handler?.Invoke({parametersInOn})";
+            var action = $"({parametersInOn}) => {x.Name}Handler?.Invoke({parametersInOn}) ?? Task.CompletedTask";
             return $"""
                            hubConnection.On<{parameters}>("{x.Name}", {action});
                     """;
@@ -98,21 +98,22 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         return string.Join("\n", events);
     }
 
-    private static string GenerateDelegates(IEnumerable<IMethodSymbol> responseMethods)
+    private static string GenerateDelegates(IEnumerable<MethodSymbolWrapper> responseMethods)
     {
         var delegates = responseMethods.Select(x =>
         {
             var parameters = string.Join(", ", x.Parameters.Select(p => $"{p.Type} {p.Name}"));
             return $"""
                         public event {x.Name}Delegate? {x.Name}Handler;
-                        public delegate void {x.Name}Delegate({parameters});
+                        public delegate Task {x.Name}Delegate({parameters});
                     """;
         });
         return string.Join("\n", delegates);
     }
 
-    private static (string Name, string Namespace, string RequestInterfaceName, ImmutableArray<IMethodSymbol> RequestMethods,
-        ImmutableArray<IMethodSymbol> ResponseMethods)
+    private static (string Name, string Namespace, string RequestInterfaceName, ImmutableArray<MethodSymbolWrapper>
+        RequestMethods,
+        ImmutableArray<MethodSymbolWrapper> ResponseMethods)
         TransformContext(GeneratorAttributeSyntaxContext ctx)
     {
         var attribute = ctx.Attributes
@@ -124,12 +125,66 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
 
         var hubResponseType = attribute.ConstructorArguments[1].Value as INamedTypeSymbol;
 
-        var requestMethods = hubRequestType!.GetMembers().OfType<IMethodSymbol>().ToImmutableArray();
+        var requestMethods = hubRequestType
+            .GetMembers()
+            .OfType<IMethodSymbol>()
+            .Select(x => new MethodSymbolWrapper(x))
+            .ToImmutableArray();
 
-        var responseMethods = hubResponseType!.GetMembers().OfType<IMethodSymbol>().ToImmutableArray();
+        var responseMethods = hubResponseType!
+            .GetMembers()
+            .OfType<IMethodSymbol>()
+            .Select(x => new MethodSymbolWrapper(x))
+            .ToImmutableArray();
 
         return (ctx.TargetSymbol.Name, ctx.TargetSymbol.ContainingNamespace.ToString(), hubRequestInterfaceName,
             requestMethods,
             responseMethods);
+    }
+
+    private class MethodSymbolWrapper(IMethodSymbol methodSymbol)
+    {
+        public string Name => methodSymbol.Name;
+        public ImmutableArray<IParameterSymbol> Parameters => methodSymbol.Parameters;
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is MethodSymbolWrapper other)
+            {
+                return Name == other.Name
+                       && Parameters.SequenceEqual(other.Parameters, new ParameterSymbolComparer());
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = 17;
+            hash = hash * 23 + SymbolEqualityComparer.Default.GetHashCode(methodSymbol);
+
+            hash = hash * 23 + Name.GetHashCode();
+
+            return Enumerable.Aggregate(
+                Parameters, hash,
+                (current, parameter) =>
+                    current * 23 + SymbolEqualityComparer.Default.GetHashCode(parameter));
+        }
+
+        private class ParameterSymbolComparer : IEqualityComparer<IParameterSymbol>
+        {
+            public bool Equals(IParameterSymbol x, IParameterSymbol y)
+            {
+                return SymbolEqualityComparer.Default.Equals(x.Type, y.Type) && x.Name == y.Name;
+            }
+
+            public int GetHashCode(IParameterSymbol obj)
+            {
+                var hash = 17;
+                hash = hash * 23 + (obj.Name.GetHashCode());
+                hash = hash * 23 + SymbolEqualityComparer.Default.GetHashCode(obj.Type);
+                return hash;
+            }
+        }
     }
 }

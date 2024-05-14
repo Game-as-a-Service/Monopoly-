@@ -8,12 +8,11 @@ public partial class ReadyButton
     [CascadingParameter] public ReadyPage Parent { get; set; } = default!;
     Player? CurrentPlayer => Parent.CurrentPlayer;
     bool EnabledToReady => CurrentPlayer?.Color is not ColorEnum.None && CurrentPlayer?.Role is not RoleEnum.None;
-    private void Ready()
+    private async Task Ready()
     {
         if (!EnabledToReady || CurrentPlayer is null)
             return;
-        CurrentPlayer.IsReady = !CurrentPlayer.IsReady;
-        Parent.Update();
+        await Parent.Connection.PlayerReady();
     }
     private static void Start()
     {

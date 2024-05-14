@@ -38,6 +38,7 @@ public partial class Index
             UserId = e.PlayerId;
             Messages.Add($"歡迎 {e.PlayerId} 加入遊戲!");
             StateHasChanged();
+            return Task.CompletedTask;
         };
         client.Closed += async (exception) =>
         {

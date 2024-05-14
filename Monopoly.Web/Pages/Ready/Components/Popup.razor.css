@@ -1,0 +1,23 @@
+﻿.popup {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    min-height: 50px;
+    background-color: #ffc107;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px solid #f39100;
+    box-shadow: 0 4px 8px rgba(255, 109, 51, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.5;
+}
