@@ -62,7 +62,7 @@ internal static class RepositoryExtensions
         );
         var gamestage = domainMonopoly.GameStage switch
         {
-            Domain.GameStage.Preparing => GameStage.Preparing,
+            Domain.GameStage.Ready => GameStage.Preparing,
             Domain.GameStage.Gaming => GameStage.Gaming,
             _ => throw new NotImplementedException(),
         };
@@ -131,7 +131,7 @@ internal static class RepositoryExtensions
             ));
         builder.WithGameStage(monopoly.GameStage switch
         {
-            GameStage.Preparing => Domain.GameStage.Preparing,
+            GameStage.Preparing => Domain.GameStage.Ready,
             GameStage.Gaming => Domain.GameStage.Gaming,
             _ => throw new NotImplementedException(),
         });

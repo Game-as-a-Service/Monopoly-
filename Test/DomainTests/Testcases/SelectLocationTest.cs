@@ -17,7 +17,7 @@ public class SelectLocationTest
         var A = new { Id = "A", locationId = 0, selectLocationId = 1 };
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act
@@ -43,7 +43,7 @@ public class SelectLocationTest
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId))
             .WithPlayer(B.Id, pa => pa.WithLocation(B.locationId))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act
@@ -65,7 +65,7 @@ public class SelectLocationTest
         var A = new { Id = "A", locationId = 1, selectLocationId = 2 };
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act
@@ -73,5 +73,28 @@ public class SelectLocationTest
 
         // Assert
         Assert.AreEqual(A.selectLocationId, monopoly.Players.First(p => p.Id == A.Id).LocationId);
+    }
+
+    [TestMethod]
+    [Description("""
+                 Given:  玩家A:位置1，已準備
+                         位置2 沒有玩家
+                 When:   玩家A選擇位置2
+                 Then:   玩家不可以選擇位置2
+                 """)]
+    public void 玩家已準備不能選擇位置()
+    {
+        // Arrange
+        var A = new { Id = "A", locationId = 1, selectLocationId = 2 };
+        var monopoly = new MonopolyBuilder()
+            .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithState(PlayerState.Ready))
+            .WithGameStage(GameStage.Ready)
+            .Build();
+
+        // Act
+        monopoly.SelectLocation(A.Id, A.selectLocationId);
+
+        // Assert
+        Assert.AreEqual(A.locationId, monopoly.Players.First(p => p.Id == A.Id).LocationId);
     }
 }

@@ -26,7 +26,7 @@ public class PreParedTest
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithState(PlayerState.Ready))
             .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId).WithRole(B.roleId).WithState(PlayerState.Ready))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act 
@@ -54,7 +54,7 @@ public class PreParedTest
 
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithRole(A.roleId).WithState(PlayerState.Normal))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act 
@@ -91,7 +91,7 @@ public class PreParedTest
                                         .WithState(B.preparingState)
                                         .WithRole(B.roleId)
                                         )
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act 
@@ -127,7 +127,7 @@ public class PreParedTest
             .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId)
                                         .WithState(B.preparingState)
                                         )
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act 

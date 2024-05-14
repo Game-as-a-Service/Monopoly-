@@ -15,7 +15,7 @@ public class SelectRoleTest
         // Arrange
         var monopoly = new MonopolyBuilder()
             .WithPlayer("A")
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .Build();
 
         // Act

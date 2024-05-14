@@ -24,7 +24,7 @@ public class MonopolyBuilder
     public MonopolyBuilder()
     {
         PlayerBuilders = new();
-        GameStage = GameStage.Gaming;
+        GameStage = GameStage.Ready;
     }
 
     public MonopolyBuilder WithId(string id)

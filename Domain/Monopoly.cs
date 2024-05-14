@@ -284,7 +284,7 @@ public class Monopoly : AbstractAggregateRoot
     /// <param name="playerId"></param>
     public void PlayerReady(string playerId)
     {
-        if (GameStage == GameStage.Preparing)
+        if (GameStage == GameStage.Ready)
         {
             Player player = GetPlayer(playerId);
         
@@ -303,7 +303,7 @@ public class Monopoly : AbstractAggregateRoot
     public void GameStart(string playerId)
     {
         //playerId == HostId then start
-        if ( GameStage != GameStage.Preparing || playerId != HostId)
+        if ( GameStage != GameStage.Ready || playerId != HostId)
         {
         }
         else if (_players.Count == 1)

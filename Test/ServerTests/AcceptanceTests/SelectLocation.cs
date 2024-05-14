@@ -1,8 +1,9 @@
-﻿using Application.DataModels;
+﻿using Domain;
 using Server.Hubs;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static ServerTests.Utils;
+using GameStage = Application.DataModels.GameStage;
 
 namespace ServerTests.AcceptanceTests;
 
@@ -85,8 +86,8 @@ public class SelectLocation
 
         //Assert
         hub.Verify(
-            nameof(IMonopolyResponses.PlayCannotSelectLocationEvent),
-            (PlayCannotSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 0 }
+            nameof(IMonopolyResponses.PlayerCannotSelectLocationEvent),
+            (PlayerCannotSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 0 }
             );
         hub.VerifyNoElseEvent();
     }
@@ -120,6 +121,41 @@ public class SelectLocation
         hub.Verify(
             nameof(IMonopolyResponses.PlayerSelectLocationEvent),
             (PlayerSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 2 } 
+            );
+        hub.VerifyNoElseEvent();
+    }
+
+    [TestMethod]
+    [Description("""
+                 Given:  玩家A:位置1，已準備
+                         位置2 沒有玩家
+                 When:   玩家A選擇位置2
+                 Then:   玩家不可以選擇位置2
+                 """)]
+    public async Task 玩家已準備不能選擇位置()
+    {
+        //Arrange
+        var a = new { Id = "A", locationId = 1, selectLocationId = 2 };
+
+        var monopolyBuilder = new MonopolyBuilder("1")
+            .WithGameStage(GameStage.Preparing)
+            .WithPlayer(
+                new PlayerBuilder("A")
+                .WithLocation(a.locationId)
+                .WithState(PlayerState.Ready)
+                .Build()
+            );
+        monopolyBuilder.Save(server);
+
+        var hub = await server.CreateHubConnectionAsync(GameId, "A");
+
+        //Act
+        await hub.SendAsync(nameof(MonopolyHub.PlayerSelectLocation), a.selectLocationId);
+
+        //Assert
+        hub.Verify(
+            nameof(IMonopolyResponses.PlayerCannotSelectLocationEvent),
+            (PlayerCannotSelectLocationEventArgs e) => e is { PlayerId: "A", LocationId: 1 }
             );
         hub.VerifyNoElseEvent();
     }

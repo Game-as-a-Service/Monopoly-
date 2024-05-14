@@ -26,7 +26,7 @@ public class GameStartTest
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithRole(A.roleId).WithState(A.preparedState))
             .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId).WithRole(B.roleId).WithState(B.preparedState))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .WithHost(A.Id)
             .Build();
 
@@ -65,11 +65,11 @@ public class GameStartTest
     {
         // Arrange
         var A = new { Id = "A", locationId = 1, roleId = "1", preparedState = PlayerState.Normal };
-        var GameState = "Preparing";
+        var GameState = "Ready";
 
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithRole(A.roleId).WithState(A.preparedState))
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .WithHost(A.Id)
             .Build();
 
@@ -79,7 +79,7 @@ public class GameStartTest
         // Assert
         Assert.AreEqual(GameState, monopoly.GameStage.ToString());
 
-        monopoly.DomainEvents.NextShouldBe(new OnlyOnePersonEvent("Preparing"));
+        monopoly.DomainEvents.NextShouldBe(new OnlyOnePersonEvent("Ready"));
     }
 
     [TestMethod]
@@ -97,7 +97,7 @@ public class GameStartTest
         // Arrange
         var A = new { Id = "A", roleId = "A", locationId = 1, preparedState = PlayerState.Normal };
         var B = new { Id = "B", roleId = "B", locationId = 0, preparingState = PlayerState.Ready };
-        var GameState = "Preparing";
+        var GameState = "Ready";
 
         var monopoly = new MonopolyBuilder()
             .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId)
@@ -108,7 +108,7 @@ public class GameStartTest
                                         .WithState(B.preparingState)
                                         .WithRole(B.roleId)
                                         )
-            .WithGameStage(GameStage.Preparing)
+            .WithGameStage(GameStage.Ready)
             .WithHost(A.Id)
             .Build();
 

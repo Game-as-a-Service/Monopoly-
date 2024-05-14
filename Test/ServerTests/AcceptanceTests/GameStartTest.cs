@@ -91,7 +91,7 @@ public class GameStartTest
         // Assert
         hub.Verify(
             nameof(IMonopolyResponses.OnlyOnePersonEvent),
-                (OnlyOnePersonEventArgs e) => e.GameStage == "Preparing"
+                (OnlyOnePersonEventArgs e) => e.GameStage == "Ready"
             );
     }
 
@@ -133,7 +133,7 @@ public class GameStartTest
         // Assert
         hub.Verify(
             nameof(IMonopolyResponses.SomePlayersPreparingEvent),
-                (SomePlayersPreparingEventArgs e) => e.GameStage == "Preparing" && e.PlayerIds.OrderBy(x => x).SequenceEqual(new[] { "B" }.OrderBy(x => x))
+                (SomePlayersPreparingEventArgs e) => e.GameStage == "Ready" && e.PlayerIds.OrderBy(x => x).SequenceEqual(new[] { "B" }.OrderBy(x => x))
             );
     }
 }

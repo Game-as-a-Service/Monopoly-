@@ -30,6 +30,7 @@ public class SelectDirectionTest
 
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id, x => x.WithSelectedDirection(false))
@@ -74,6 +75,7 @@ public class SelectDirectionTest
 
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id, x => x.WithSelectedDirection(false))
@@ -122,6 +124,7 @@ public class SelectDirectionTest
         
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id, x => x.WithSelectedDirection(false))
@@ -167,6 +170,7 @@ public class SelectDirectionTest
 
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id, x => x.WithSelectedDirection(false))
@@ -205,6 +209,7 @@ public class SelectDirectionTest
 
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id)
@@ -242,6 +247,7 @@ public class SelectDirectionTest
 
         var monopoly = new MonopolyBuilder()
             .WithMap(Map)
+            .WithGameStage(GameStage.Gaming)
             .WithPlayer(A.Id, p => p.WithPosition(A.CurrentBlockId, A.CurrentDirection)
                                     .WithRemainingSteps(A.RemainingSteps))
             .WithCurrentPlayer(A.Id, x => x.WithSelectedDirection(false))
