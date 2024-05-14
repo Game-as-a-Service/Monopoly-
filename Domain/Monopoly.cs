@@ -111,6 +111,7 @@ public class Monopoly : AbstractAggregateRoot
 
     public void Initial()
     {
+        _players.ForEach(x => x.State = PlayerState.Normal);
         // 初始化目前玩家
         _currentPlayerState = new CurrentPlayerStateBuilder(_players[0].Id).Build(null);
         CurrentPlayer.StartRound();
@@ -280,58 +281,42 @@ public class Monopoly : AbstractAggregateRoot
     /// 玩家準備
     /// </summary>
     /// <param name="playerId"></param> <summary>
-    /// 
     /// </summary>
-    /// <param name="playerId"></param>
     public void PlayerReady(string playerId)
     {
-        if (GameStage == GameStage.Ready)
-        {
-            Player player = GetPlayer(playerId);
+        if (GameStage is not GameStage.Ready) return;
+        var player = GetPlayer(playerId);
         
-            AddDomainEvent(player.Ready());
-        }
-        
+        AddDomainEvent(player.Ready());
+
     }
 
     /// <summary>
     /// 開始遊戲
     /// </summary>
     /// <param name="playerId"></param> <summary>
-    /// 
     /// </summary>
-    /// <param name="playerId"></param>
     public void GameStart(string playerId)
     {
-        //playerId == HostId then start
-        if ( GameStage != GameStage.Ready || playerId != HostId)
+        if (GameStage is not GameStage.Ready || playerId != HostId) return;
+        
+        if (_players.Count == 1)
         {
-        }
-        else if (_players.Count == 1)
-        {
-            //玩家只有一人
             AddDomainEvent(new OnlyOnePersonEvent(GameStage.ToString()));
         }
         else
         {
-            //有人尚未準備
-            List<string> preparingPlayers = new List<string>();
-
-            _players.ForEach(p => 
+            var unReadyPlayers =
+                _players.Where(p => p.Id != HostId)
+                    .Where(p => p.State is not PlayerState.Ready)
+                    .ToList();
+            if (unReadyPlayers.Count != 0)
             {
-                if(p.State == PlayerState.Ready)
-                {
-                    preparingPlayers.Add(p.Id);
-                }
-            });
-
-            if (preparingPlayers.Count != 0)
-            {
-                AddDomainEvent(new SomePlayersPreparingEvent(GameStage.ToString(), preparingPlayers.ToArray()));
+                var playerIds = unReadyPlayers.Select(p => p.Id).ToArray();
+                AddDomainEvent(new SomePlayersPreparingEvent(GameStage.ToString(), playerIds));
             }
             else
             {
-                //成功
                 GameStage = GameStage.Gaming;
                 Initial();
                 AddDomainEvent(new GameStartEvent(GameStage.ToString(), _currentPlayerState.PlayerId));

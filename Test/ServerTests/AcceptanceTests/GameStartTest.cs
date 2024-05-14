@@ -41,7 +41,7 @@ public class GameStartTest
                 new PlayerBuilder("B")
                 .WithLocation(2)
                 .WithRole("2")
-                .WithState(Domain.PlayerState.Normal)
+                .WithState(Domain.PlayerState.Ready)
                 .Build()
             )
             .WithHost("A");
@@ -118,7 +118,7 @@ public class GameStartTest
             .WithPlayer(
                 new PlayerBuilder("B")
                 .WithRole("2")
-                .WithState(Domain.PlayerState.Ready)
+                .WithState(Domain.PlayerState.Normal)
                 .Build()
             )
             .WithHost("A");

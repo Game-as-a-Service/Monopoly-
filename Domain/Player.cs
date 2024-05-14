@@ -273,14 +273,13 @@ public class Player
         {
             return new PlayerCannotReadyEvent(Id, State.ToString(), RoleId, LocationId);
         }
-        else if (State == PlayerState.Ready)
+
+        State = State switch
         {
-            State = PlayerState.Normal;
-        }
-        else if (State == PlayerState.Normal)
-        {
-            State = PlayerState.Ready;
-        }
+            PlayerState.Ready => PlayerState.Normal,
+            PlayerState.Normal => PlayerState.Ready,
+            _ => State
+        };
         return new PlayerReadyEvent(Id, State.ToString());
     }
 }

@@ -19,8 +19,8 @@ public class GameStartTest
     public void 房主成功開始遊戲()
     {
         // Arrange
-        var A = new { Id = "A", locationId = 1, roleId = "1", preparedState = PlayerState.Normal };
-        var B = new { Id = "B", locationId = 2, roleId = "2", preparedState = PlayerState.Normal };
+        var A = new { Id = "A", locationId = 1, roleId = "1", preparedState = PlayerState.Ready };
+        var B = new { Id = "B", locationId = 2, roleId = "2", preparedState = PlayerState.Ready };
         var GameStart = new { gameState = "Gaming", currentPlayer = "A" };
 
         var monopoly = new MonopolyBuilder()
@@ -96,7 +96,7 @@ public class GameStartTest
     {
         // Arrange
         var A = new { Id = "A", roleId = "A", locationId = 1, preparedState = PlayerState.Normal };
-        var B = new { Id = "B", roleId = "B", locationId = 0, preparingState = PlayerState.Ready };
+        var B = new { Id = "B", roleId = "B", locationId = 0, preparingState = PlayerState.Normal };
         var GameState = "Ready";
 
         var monopoly = new MonopolyBuilder()

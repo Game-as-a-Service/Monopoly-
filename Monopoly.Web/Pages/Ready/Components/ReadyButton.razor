@@ -1,6 +1,5 @@
 @if (CurrentPlayer is null)
 {
-    
 }
 else if (CurrentPlayer.IsHost)
 {
@@ -13,4 +12,26 @@ else
     <div class="button @(GetReadyButtonCss())" @onclick="@Ready">
         <div class="ready-button-text"></div>
     </div>
+}
+
+@functions
+{
+    private string GetReadyButtonCss()
+    {
+        if (CurrentPlayer is null)
+            return string.Empty;
+        
+        if (CurrentPlayer.IsReady)
+            return "selected";
+        
+        return EnabledToReady ? "enabled-to-ready" : string.Empty;
+    }
+
+    private string GetStartButtonCss()
+    {
+        var allPlayersReady = Parent.Players
+            .Where(p => p != CurrentPlayer)
+            .All(p => p.IsReady);
+        return EnabledToReady && allPlayersReady ? "enabled-to-start" : string.Empty;
+    }
 }

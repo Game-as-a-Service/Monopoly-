@@ -21,15 +21,13 @@ public partial class ReadyPage
         Connection.PlayerSelectRoleEventHandler += OnPlayerSelectRoleEvent;
         Connection.PlayerReadyEventHandler += OnPlayerReadyEvent;
         Connection.PlayerCannotSelectLocationEventHandler += OnPlayerCannotSelectLocationEvent;
+        Connection.GameStartEventHandler += OnGameStartEvent;
         await Connection.GetReadyInfo();
     }
-    public event StateHasChangedHandler? StateHasChangeda;
-public delegate void StateHasChangedHandler();
     public void Update() => StateHasChanged();
 
     private Task OnGetReadyInfoEvent(GetReadyInfoEventArgs e)
     {
-        StateHasChangeda?.Invoke();
         Players = e.Players.Select(x => new Player
         {
             Id = x.Id,
@@ -76,6 +74,20 @@ public delegate void StateHasChangedHandler();
         var popupParameter = new Popup.PopupParameter
         {
             Message = "Cannot select location.",
+            Delay = 500
+        };
+        await Popup.Show(popupParameter);
+    }
+    
+    private async Task OnGameStartEvent(GameStartEventArgs e)
+    {
+        if (Popup is null)
+        {
+            return;
+        }
+        var popupParameter = new Popup.PopupParameter
+        {
+            Message = "Game start!",
             Delay = 500
         };
         await Popup.Show(popupParameter);
