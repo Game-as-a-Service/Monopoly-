@@ -8,7 +8,7 @@ namespace Client.Pages.Ready;
 
 public partial class ReadyPage
 {
-    public IList<Player> Players { get; set; } = []; // 不要用 IEnumerable，因為會有問題(IEnumerable 會是延遲查詢)
+    public List<Player> Players { get; set; } = []; // 不要用 IEnumerable，因為會有問題(IEnumerable 會是延遲查詢)
     [Parameter] public string UserId { get; set; } = string.Empty;
     [CascadingParameter] internal TypedHubConnection Connection { get; set; } = default!;
     public Player? CurrentPlayer => Players.FirstOrDefault(x => x.Id == UserId);
@@ -24,6 +24,7 @@ public partial class ReadyPage
         Connection.GameStartEventHandler += OnGameStartEvent;
         await Connection.GetReadyInfo();
     }
+
     public void Update() => StateHasChanged();
 
     private Task OnGetReadyInfoEvent(GetReadyInfoEventArgs e)
@@ -56,7 +57,7 @@ public partial class ReadyPage
         Update();
         return Task.CompletedTask;
     }
-    
+
     private Task OnPlayerReadyEvent(PlayerReadyEventArgs e)
     {
         var player = Players.First(x => x.Id == e.PlayerId);
@@ -64,32 +65,32 @@ public partial class ReadyPage
         Update();
         return Task.CompletedTask;
     }
-    
+
     private async Task OnPlayerCannotSelectLocationEvent(PlayerCannotSelectLocationEventArgs e)
     {
         if (Popup is null)
         {
             return;
         }
-        var popupParameter = new Popup.PopupParameter
+
+        await Popup.Show(new Popup.PopupParameter
         {
             Message = "Cannot select location.",
             Delay = 500
-        };
-        await Popup.Show(popupParameter);
+        });
     }
-    
+
     private async Task OnGameStartEvent(GameStartEventArgs e)
     {
         if (Popup is null)
         {
             return;
         }
-        var popupParameter = new Popup.PopupParameter
+
+        await Popup.Show(new Popup.PopupParameter
         {
             Message = "Game start!",
             Delay = 500
-        };
-        await Popup.Show(popupParameter);
+        });
     }
 }
