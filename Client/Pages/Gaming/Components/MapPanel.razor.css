@@ -1,4 +1,4 @@
-﻿.container[b-9s5izdb9cc] {
+﻿.container {
     width: calc(1277 * var(--unit));
     top: calc(1080 * var(--unit) * 0.2);
     margin: auto;
@@ -8,7 +8,7 @@
     user-select: none; 
 }
 
-div[b-9s5izdb9cc] {
+div {
     margin: calc(4 * var(--unit));
 }
 
@@ -20,7 +20,9 @@ div[b-9s5izdb9cc] {
 
 /* #region special block */
 
-.empty, .start, .parking, .prison {
+.empty, .start, .parking, .prison
+    , .pathBtmL, .pathBtmR, .pathH
+    , .pathTopL, .pathTopR, .pathV {
     display: inline-block;
     position: relative;
     width: calc(133 * var(--unit));
@@ -39,6 +41,30 @@ div.start {
     content: url('images/gamepage/startpoint.svg');
 }
 
+div.pathBtmL {
+    content: url('images/gamepage/road_bottom_left.svg');
+}
+
+div.pathBtmR {
+    content: url('images/gamepage/road_bottom_right.svg');
+}
+
+div.pathH {
+    content: url('images/gamepage/road_horizontal.svg');
+}
+
+div.pathTopL {
+    content: url('images/gamepage/road_top_left.svg');
+}
+
+div.pathTopR {
+    content: url('images/gamepage/road_top_right.svg');
+}
+
+div.pathV {
+    content: url('images/gamepage/road_vertical.svg');
+}
+
 /* #endregion */
 
 /* #region roadTop */
@@ -51,7 +77,7 @@ div.start {
     border: 0;
 }
 
-    .roadTop img[b-9s5izdb9cc] {
+    .roadTop img {
         width: 100%;
         display: flex;
         position: relative;
@@ -73,7 +99,7 @@ div.start {
     position: relative;
 }
 
-    .roadLeft img[b-9s5izdb9cc] {
+    .roadLeft img {
         width: 100%;
         display: flex;
         position: relative;
@@ -95,7 +121,7 @@ div.start {
     position: relative;
 }
 
-    .roadRight img[b-9s5izdb9cc] {
+    .roadRight img {
         width: 100%;
         display: flex;
         position: relative;
