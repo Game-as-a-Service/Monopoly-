@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -67,7 +66,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         });
     }
 
-    private static string GenerateRequests(IEnumerable<MethodSymbolWrapper> nodeInfoHubRequestMethods)
+    private static string GenerateRequests(IEnumerable<IMethodSymbol> nodeInfoHubRequestMethods)
     {
         var methods = nodeInfoHubRequestMethods.Select(x =>
         {
@@ -84,7 +83,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         return string.Join("\n", methods);
     }
 
-    private static string GenerateEventRegistration(IEnumerable<MethodSymbolWrapper> responseMethods)
+    private static string GenerateEventRegistration(IEnumerable<IMethodSymbol> responseMethods)
     {
         var events = responseMethods.Select(x =>
         {
@@ -98,7 +97,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         return string.Join("\n", events);
     }
 
-    private static string GenerateDelegates(IEnumerable<MethodSymbolWrapper> responseMethods)
+    private static string GenerateDelegates(IEnumerable<IMethodSymbol> responseMethods)
     {
         var delegates = responseMethods.Select(x =>
         {
@@ -111,10 +110,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         return string.Join("\n", delegates);
     }
 
-    private static (string Name, string Namespace, string RequestInterfaceName, ImmutableArray<MethodSymbolWrapper>
-        RequestMethods,
-        ImmutableArray<MethodSymbolWrapper> ResponseMethods)
-        TransformContext(GeneratorAttributeSyntaxContext ctx)
+    private static TransformationResult TransformContext(GeneratorAttributeSyntaxContext ctx)
     {
         var attribute = ctx.Attributes
             .First(x => x.AttributeClass?.Name == "TypedHubClientAttribute");
@@ -128,63 +124,16 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
         var requestMethods = hubRequestType
             .GetMembers()
             .OfType<IMethodSymbol>()
-            .Select(x => new MethodSymbolWrapper(x))
-            .ToImmutableArray();
+            .ToArray();
 
         var responseMethods = hubResponseType!
             .GetMembers()
             .OfType<IMethodSymbol>()
-            .Select(x => new MethodSymbolWrapper(x))
-            .ToImmutableArray();
+            .ToArray();
 
-        return (ctx.TargetSymbol.Name, ctx.TargetSymbol.ContainingNamespace.ToString(), hubRequestInterfaceName,
+        return new TransformationResult(ctx.TargetSymbol.Name, ctx.TargetSymbol.ContainingNamespace.ToString(),
+            hubRequestInterfaceName,
             requestMethods,
             responseMethods);
-    }
-
-    private class MethodSymbolWrapper(IMethodSymbol methodSymbol)
-    {
-        public string Name => methodSymbol.Name;
-        public ImmutableArray<IParameterSymbol> Parameters => methodSymbol.Parameters;
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is MethodSymbolWrapper other)
-            {
-                return Name == other.Name
-                       && Parameters.SequenceEqual(other.Parameters, new ParameterSymbolComparer());
-            }
-
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            var hash = 17;
-            hash = hash * 23 + SymbolEqualityComparer.Default.GetHashCode(methodSymbol);
-
-            hash = hash * 23 + Name.GetHashCode();
-
-            return Enumerable.Aggregate(
-                Parameters, hash,
-                (current, parameter) =>
-                    current * 23 + SymbolEqualityComparer.Default.GetHashCode(parameter));
-        }
-
-        private class ParameterSymbolComparer : IEqualityComparer<IParameterSymbol>
-        {
-            public bool Equals(IParameterSymbol x, IParameterSymbol y)
-            {
-                return SymbolEqualityComparer.Default.Equals(x.Type, y.Type) && x.Name == y.Name;
-            }
-
-            public int GetHashCode(IParameterSymbol obj)
-            {
-                var hash = 17;
-                hash = hash * 23 + (obj.Name.GetHashCode());
-                hash = hash * 23 + SymbolEqualityComparer.Default.GetHashCode(obj.Type);
-                return hash;
-            }
-        }
     }
 }
