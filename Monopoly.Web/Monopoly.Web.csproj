@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Monopoly.Web.Generators\Monopoly.Web.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Pages/Gaming/Components/MapPanel.razor.css" CssScope="b-9s5izdb9cc" />
+  </ItemGroup>
+
 </Project>

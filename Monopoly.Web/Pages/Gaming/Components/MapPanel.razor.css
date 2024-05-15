@@ -1,10 +1,11 @@
 ﻿.container {
     width: calc(1277 * var(--unit));
-    top: 20vh;
+    top: calc(1080 * var(--unit) * 0.2);
     margin: auto;
     /* background-color: antiquewhite; */
     position: relative;
     font-size: 0;
+    user-select: none; 
 }
 
 div {
@@ -14,11 +15,14 @@ div {
     div.row {
         margin: 0;
         height: calc(156 * var(--unit));
+        display: flex;
     }
 
 /* #region special block */
 
-.empty, .start, .parking, .prison {
+.empty, .start, .parking, .prison
+    , .pathBtmL, .pathBtmR, .pathH
+    , .pathTopL, .pathTopR, .pathV {
     display: inline-block;
     position: relative;
     width: calc(133 * var(--unit));
@@ -35,6 +39,30 @@ div.prison {
 
 div.start {
     content: url('images/gamepage/startpoint.svg');
+}
+
+div.pathBtmL {
+    content: url('images/gamepage/road_bottom_left.svg');
+}
+
+div.pathBtmR {
+    content: url('images/gamepage/road_bottom_right.svg');
+}
+
+div.pathH {
+    content: url('images/gamepage/road_horizontal.svg');
+}
+
+div.pathTopL {
+    content: url('images/gamepage/road_top_left.svg');
+}
+
+div.pathTopR {
+    content: url('images/gamepage/road_top_right.svg');
+}
+
+div.pathV {
+    content: url('images/gamepage/road_vertical.svg');
 }
 
 /* #endregion */
@@ -67,7 +95,6 @@ div.start {
 .roadLeft {
     display: inline-block;
     width: calc(133 * var(--unit));
-    height: calc(133 * var(--unit));
     text-align: right;
     position: relative;
 }
