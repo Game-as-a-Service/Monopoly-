@@ -1,5 +1,6 @@
 ﻿using Monopoly.DomainLayer.ReadyRoom.Builders;
 using Monopoly.DomainLayer.ReadyRoom.Common;
+using Monopoly.DomainLayer.ReadyRoom.Enums;
 using Monopoly.DomainLayer.ReadyRoom.Events;
 
 namespace Monopoly.DomainLayer.ReadyRoom;
@@ -32,5 +33,14 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
         player.SelectRole(roleId);
 
         AddDomainEvent(new PlayerRoleSelectedEvent(playerId, roleId));
+    }
+
+    public void SelectLocation(string playerId, LocationEnum location)
+    {
+        var player = GetPlayer(playerId);
+
+        player.SelectLocation(players, location);
+
+        AddDomainEvent(new PlayerLocationSelectedEvent(playerId, location));
     }
 }

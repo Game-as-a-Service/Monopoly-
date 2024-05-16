@@ -10,6 +10,7 @@ public sealed class Player(string id, LocationEnum location, string roleId, Read
     public PlayerBuilder Builder => new();
     public ReadyStateEnum ReadyState => readyState;
     public string RoleId => roleId;
+    public LocationEnum Location => location;
 
     public void Ready()
     {
@@ -27,5 +28,12 @@ public sealed class Player(string id, LocationEnum location, string roleId, Read
     {
         if (readyState == ReadyStateEnum.Ready) throw new PlayerCannotSelectRoleDueToAlreadyReadyException();
         roleId = id;
+    }
+
+    public void SelectLocation(IReadOnlyCollection<Player> players, LocationEnum locationEnum)
+    {
+        if (readyState == ReadyStateEnum.Ready) throw new PlayerCannotSelectLocationDueToAlreadyReadyException();
+        if (players.Any(p => p.Location == locationEnum)) throw new PlayerCannotSelectLocationDueToOccupiedException();
+        location = locationEnum;
     }
 }
