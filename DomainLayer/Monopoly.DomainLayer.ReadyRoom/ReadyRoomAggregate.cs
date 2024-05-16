@@ -13,17 +13,14 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
         var player = GetPlayer(playerId);
 
         player.Ready();
-        
+
         AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
     }
 
     private Player GetPlayer(string playerId)
     {
         var player = players.FirstOrDefault(p => p.Id == playerId);
-        if (player == null)
-        {
-            throw new ArgumentException("Player not found");
-        }
+        if (player == null) throw new ArgumentException("Player not found");
 
         return player;
     }
@@ -33,7 +30,7 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
         var player = GetPlayer(playerId);
 
         player.SelectRole(roleId);
-        
+
         AddDomainEvent(new PlayerRoleSelectedEvent(playerId, roleId));
     }
 }

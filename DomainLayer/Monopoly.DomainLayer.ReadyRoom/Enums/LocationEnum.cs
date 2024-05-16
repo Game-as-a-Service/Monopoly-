@@ -6,5 +6,5 @@ public enum LocationEnum
     First,
     Second,
     Third,
-    Fourth,
+    Fourth
 }
