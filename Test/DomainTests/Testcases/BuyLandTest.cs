@@ -180,4 +180,44 @@ public class BuyLandTest
             .NextShouldBe(new PlayerBuyBlockMissedLandEvent(A.Id, F4.Id))
             .NoMore();
     }
+
+    [TestMethod]
+    [Description(
+        """
+        Given:  玩家A資產5000元，沒有房地產
+                目前輪到A，A在R2上
+        When:   玩家A購買土地R2
+        Then:   顯示錯誤訊息"無法購買道路"
+                玩家A持有金額為5000,持有房地產數量為0
+        """)]
+    public void 無法購買道路()
+    {
+        // Arrange
+        // 玩家A持有的金額 5000
+        // 玩家A目前踩在道路R2上
+        var A = new { Id = "A", Money = 5000m, CurrentBlockId = "R2", CurrentDirection = "Left" };
+        var R2 = new { Id = "R2" };
+
+        var monopoly = new MonopolyBuilder()
+            .WithMap(map)
+            .WithPlayer(A.Id, pa => pa.WithMoney(A.Money)
+                                      .WithPosition(A.CurrentBlockId, A.CurrentDirection))
+            .WithCurrentPlayer(A.Id)
+            .Build();
+
+        // Act
+        // 玩家B進行購買R2
+        monopoly.BuyLand(A.Id, R2.Id);
+
+        // Assert
+        // 玩家A持有金額為5000
+        // 玩家A無持有的房地產
+        var player_a = monopoly.Players.First(p => p.Id == A.Id);
+        Assert.AreEqual(5000, player_a.Money);
+        Assert.AreEqual(0, player_a.LandContractList.Count);
+
+        monopoly.DomainEvents
+            .NextShouldBe(new PlayerBuyBlockOccupiedByOtherPlayerEvent(A.Id, R2.Id))
+            .NoMore();
+    }
 }

@@ -303,3 +303,19 @@ public class Station : Land
         }
     }
 }
+
+public class Road : Block
+{
+    public Road(string id) : base(id)
+    {
+    }
+
+    internal override void DoBlockAction(Player player)
+    {
+    }
+
+    internal override DomainEvent OnBlockEvent(Player player)
+    {
+        return DomainEvent.EmptyEvent;
+    }
+}

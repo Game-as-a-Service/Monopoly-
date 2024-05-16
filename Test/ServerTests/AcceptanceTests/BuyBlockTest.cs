@@ -202,4 +202,48 @@ public class BuyBlockTest
 
         //hub.VerifyNoElseEvent();
     }
+
+    [TestMethod]
+    [Description(
+        """
+        Given:  玩家A資產5000元，沒有房地產
+                目前輪到A，A在R2上
+        When:   玩家A購買土地R4
+        Then:   顯示錯誤訊息"無法購買道路"
+                玩家A持有金額為5000
+                玩家A持有房地產數量為0
+        """)]
+    public async Task 玩家無法購買道路()
+    {
+        // Arrange
+        var a = new { Id = "A", Money = 5000m };
+        var r2 = new { Id = "R2" };
+
+        const string gameId = "1";
+        var monopolyBuilder = new MonopolyBuilder("1")
+        .WithPlayer(
+            new PlayerBuilder(a.Id)
+            .WithMoney(a.Money)
+            .WithPosition(r2.Id, Direction.Left)
+            .Build()
+        )
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
+            .Build()
+        );
+
+        monopolyBuilder.Save(server);
+
+        var hub = await server.CreateHubConnectionAsync(gameId, "A");
+
+        // Act
+
+        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "R2");
+
+        // Assert
+        // A 無法購買道路
+        hub.Verify(nameof(IMonopolyResponses.PlayerBuyBlockOccupiedByOtherPlayerEvent),
+                   (PlayerBuyBlockOccupiedByOtherPlayerEventArgs e) => e is { PlayerId: "A", LandId: "R2" });
+
+        hub.VerifyNoElseEvent();
+    }
 }

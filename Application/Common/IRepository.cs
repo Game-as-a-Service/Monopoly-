@@ -97,6 +97,7 @@ internal static class RepositoryExtensions
             Domain.Land landBlock => new Land(landBlock.Id),
             Domain.ParkingLot parkingLotBlock => new ParkingLot(parkingLotBlock.Id),
             Domain.Jail prisonBlock => new Jail(prisonBlock.Id),
+            Domain.Road roadBlock => new Road(roadBlock.Id),
             null => new EmptyBlock(),
             _ => throw new NotImplementedException(),
         };
@@ -173,6 +174,7 @@ internal static class RepositoryExtensions
             Land landBlock => new Domain.Land(landBlock.Id),
             ParkingLot parkingLotBlock => new Domain.ParkingLot(parkingLotBlock.Id),
             Jail prisonBlock => new Domain.Jail(prisonBlock.Id),
+            Road roadBlock => new Domain.Road(roadBlock.Id),
             EmptyBlock => null,
             _ => throw new NotImplementedException(),
         };

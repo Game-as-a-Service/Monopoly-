@@ -372,4 +372,42 @@ public class RollDiceTest
                                   (PlayerCanBuyLandEventArgs e) => e is { PlayerId:"A", LandId: "A2", Price: 1000 });
         hub.VerifyNoElseEvent();
     }
+
+    [TestMethod]
+    [Description("""
+                Given:  目前玩家在Station2
+                When:   玩家擲骰得到2點
+                Then:   玩家移動到 R2
+                        玩家剩餘步數為 0
+                """)]
+    public async Task 玩家擲骰後移動棋子到道路()
+    {
+        // Arrange
+        var a = new { Id = "A" };
+
+        const string gameId = "1";
+        var monopolyBuilder = new MonopolyBuilder("1")
+        .WithPlayer(
+            new PlayerBuilder(a.Id)
+            .WithPosition("Station2", Direction.Down)
+            .Build()
+        )
+        .WithMockDice([2])
+        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+
+        monopolyBuilder.Save(_server);
+
+        var hub = await _server.CreateHubConnectionAsync(gameId, "A");
+        // Act
+        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        // Assert
+        // A 擲了 2 點
+        // A 移動到 R2，方向為 Left，剩下 0 步
+        // A 可以購買空地
+        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
+                                  (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 2 });
+        VerifyChessMovedEvent(hub, "A", "D1", "Down", 1);
+        VerifyChessMovedEvent(hub, "A", "R2", "Left", 0);
+        hub.VerifyNoElseEvent();
+    }
 }

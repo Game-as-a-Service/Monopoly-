@@ -32,6 +32,8 @@ public record StartPoint(string Id) : Block(Id);
 
 public record Station(string Id) : Land(Id);
 
+public record Road(string Id) : Block(Id);
+
 public enum GameStage
 {
     Preparing,
