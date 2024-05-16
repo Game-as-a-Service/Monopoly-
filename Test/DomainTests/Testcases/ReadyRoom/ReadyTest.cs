@@ -1,11 +1,14 @@
 using Domain.Builders;
 using Domain.Events;
+using Monopoly.DomainLayer.ReadyRoom.Builders;
+using Monopoly.DomainLayer.ReadyRoom.Enums;
+using PlayerBuilder = Monopoly.DomainLayer.ReadyRoom.Builders.PlayerBuilder;
 
-namespace DomainTests.Testcases;
+namespace DomainTests.Testcases.ReadyRoom;
 
 [TestClass]
 
-public class PreParedTest
+public class ReadyTest
 {
     [TestMethod]
     [Description(
@@ -20,22 +23,27 @@ public class PreParedTest
     public void 玩家成功準備()
     {
         // Arrange
-        var A = new { Id = "A", locationId = 1 };
-        var B = new { Id = "B", locationId = 2, roleId = "1", preparedState = PlayerState.Normal };
-
-        var monopoly = new MonopolyBuilder()
-            .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithState(PlayerState.Ready))
-            .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId).WithRole(B.roleId).WithState(PlayerState.Ready))
-            .WithGameStage(GameStage.Ready)
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithLocation(LocationEnum.First)
             .Build();
+        var playerB = new PlayerBuilder()
+            .WithId("B")
+            .WithLocation(LocationEnum.Second)
+            .WithRole("1")
+            .Build();
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .WithPlayer(playerB)
+            .Build();
+        
+        var expectedDomainEvent = new Monopoly.DomainLayer.ReadyRoom.Events.PlayerReadyEvent(playerB.Id, ReadyStateEnum.Ready, readyRoom);
 
         // Act 
-        monopoly.PlayerReady(B.Id);
+        readyRoom.PlayerReady(playerB.Id);
 
         // Assert
-        Assert.AreEqual(B.preparedState, monopoly.Players.First(p => p.Id == B.Id).State);
-
-        monopoly.DomainEvents.NextShouldBe(new PlayerReadyEvent(B.Id, B.preparedState.ToString()));
+        readyRoom.DomainEvents.NextShouldBe(expectedDomainEvent).WithNoEvents();
     }
 
     [TestMethod]

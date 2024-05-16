@@ -1,0 +1,35 @@
+﻿using Monopoly.DomainLayer.ReadyRoom.Enums;
+
+namespace Monopoly.DomainLayer.ReadyRoom.Builders;
+
+public class PlayerBuilder
+{
+    private string Id { get; set; } = string.Empty;
+
+    private LocationEnum Location { get; set; } = LocationEnum.None;
+
+    private string RoleId { get; set; } = string.Empty;
+
+    public PlayerBuilder WithId(string id)
+    {
+        Id = id;
+        return this;
+    }
+
+    public PlayerBuilder WithLocation(LocationEnum location)
+    {
+        Location = location;
+        return this;
+    }
+
+    public PlayerBuilder WithRole(string id)
+    {
+        RoleId = id;
+        return this;
+    }
+
+    public Player Build()
+    {
+        return new Player(Id, Location, RoleId);
+    }
+}

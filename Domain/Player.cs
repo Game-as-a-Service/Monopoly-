@@ -21,7 +21,7 @@ public class Player
     }
 
     public PlayerState State { get; internal set; }
-    public Monopoly Monopoly { get; internal set; }
+    public MonopolyAggregate MonopolyAggregate { get; internal set; }
     public string Id { get; }
     public decimal Money
     {
@@ -119,16 +119,16 @@ public class Player
         {
             dice.Roll();
         }
-        Monopoly.AddDomainEvent(new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value)));
+        MonopolyAggregate.AddDomainEvent(new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value)));
         var events = chess.Move(map, dices.Sum(dice => dice.Value));
 
-        Monopoly.AddDomainEvent(events);
+        MonopolyAggregate.AddDomainEvent(events);
     }
 
     internal void SelectDirection(Map map, Map.Direction direction)
     {
         var events = chess.ChangeDirection(map, direction);
-        Monopoly.AddDomainEvent(events);
+        MonopolyAggregate.AddDomainEvent(events);
     }
 
     internal DomainEvent MortgageLandContract(string landId)
@@ -207,12 +207,12 @@ public class Player
             return new PlayerTooPoorToBuildHouseEvent(Id, land.Id, Money, land.UpgradePrice);
         }
         // 玩家這回合沒有買地
-        else if (Monopoly.CurrentPlayerState.IsBoughtLand)
+        else if (MonopolyAggregate.CurrentPlayerState.IsBoughtLand)
         {
             return new PlayerCannotBuildHouseEvent(Id, land.Id);
         }
         // 玩家這回合沒有蓋房子
-        else if (Monopoly.CurrentPlayerState.IsUpgradeLand)
+        else if (MonopolyAggregate.CurrentPlayerState.IsUpgradeLand)
         {
             return new PlayerCannotBuildHouseEvent(Id, land.Id);
         }

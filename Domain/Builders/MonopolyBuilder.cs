@@ -75,7 +75,7 @@ public class MonopolyBuilder
         return this;
     }
 
-    public Monopoly Build()
+    public MonopolyAggregate Build()
     {
         var players = new List<Player>();
         PlayerBuilders.ForEach(builder =>
@@ -99,7 +99,7 @@ public class MonopolyBuilder
                 var land = Map.FindBlockById<Land>(landHouse.LandId);
                 for (int i = 0; i < landHouse.House; i++) land.Upgrade();
             }
-            return new Monopoly(GameId,
+            return new MonopolyAggregate(GameId,
                             players.ToArray(),
                             GameStage,
                             Map,
@@ -109,7 +109,7 @@ public class MonopolyBuilder
                             Rounds
                             );
         }
-        return new Monopoly(GameId,
+        return new MonopolyAggregate(GameId,
                             players.ToArray(),
                             GameStage,
                             Map,

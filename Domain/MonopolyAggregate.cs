@@ -6,7 +6,7 @@ using static Domain.Map;
 
 namespace Domain;
 
-public class Monopoly : AbstractAggregateRoot
+public class MonopolyAggregate : AbstractAggregateRoot
 {
     public string Id { get; set; }
     public GameStage GameStage { get; private set; }
@@ -28,7 +28,7 @@ public class Monopoly : AbstractAggregateRoot
     public int Rounds { get; private set; }
 
 
-    internal Monopoly(string gameId, Player[] players, GameStage gameStage, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0)
+    internal MonopolyAggregate(string gameId, Player[] players, GameStage gameStage, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0)
     {
         Id = gameId;
         GameStage = gameStage;
@@ -40,7 +40,7 @@ public class Monopoly : AbstractAggregateRoot
 
         foreach (var player in _players)
         {
-            player.Monopoly = this;
+            player.MonopolyAggregate = this;
         }
 
         Rounds = rounds;
@@ -50,7 +50,7 @@ public class Monopoly : AbstractAggregateRoot
     {
         Chess chess = new(player, blockId, direction, 0);
         player.Chess = chess;
-        player.Monopoly = this;
+        player.MonopolyAggregate = this;
         _players.Add(player);
     }
 

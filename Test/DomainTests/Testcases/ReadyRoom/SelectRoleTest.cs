@@ -1,6 +1,6 @@
 ﻿using Domain.Builders;
 
-namespace DomainTests.Testcases;
+namespace DomainTests.Testcases.ReadyRoom;
 [TestClass]
 public class SelectRoleTest
 {

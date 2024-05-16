@@ -294,17 +294,17 @@ public class RollDiceTest
     }
 
 
-    private static void 確認玩家目前位置(Monopoly monopoly, string playerId, string blockId, string direction)
+    private static void 確認玩家目前位置(MonopolyAggregate monopoly, string playerId, string blockId, string direction)
     {
         Assert.AreEqual(blockId, monopoly.Players.First(p => p.Id == playerId).Chess.CurrentBlockId);
         Assert.AreEqual(direction, monopoly.Players.First(p => p.Id == playerId).Chess.CurrentDirection.ToString());
     }
 
-    private static void 確認玩家剩餘步數(Monopoly monopoly, string playerId, int expectedRemainingSteps)
+    private static void 確認玩家剩餘步數(MonopolyAggregate monopoly, string playerId, int expectedRemainingSteps)
     {
         Assert.AreEqual(expectedRemainingSteps, monopoly.Players.First(p => p.Id == playerId).Chess.RemainingSteps);
     }
-    private static void 確認玩家持有金額(Monopoly monopoly, string id, decimal expectedMoney)
+    private static void 確認玩家持有金額(MonopolyAggregate monopoly, string id, decimal expectedMoney)
     {
         Assert.AreEqual(expectedMoney, monopoly.Players.First(p => p.Id == id).Money);
     }

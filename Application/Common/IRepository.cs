@@ -21,19 +21,19 @@ public interface IQueryRepository : IRepository
 
 internal static class RepositoryExtensions
 {
-    internal static string Save(this IRepository repository, Domain.Monopoly domainMonopoly)
+    internal static string Save(this IRepository repository, Domain.MonopolyAggregate domainMonopolyAggregate)
     {
-        var monopoly = domainMonopoly.ToApplication();
+        var monopoly = domainMonopolyAggregate.ToApplication();
         return repository.Save(monopoly);
     }
     /// <summary>
     /// (Monopoly) Domain to Application
     /// </summary>
-    /// <param name="domainMonopoly"></param>
+    /// <param name="domainMonopolyAggregate"></param>
     /// <returns></returns>
-    private static Monopoly ToApplication(this Domain.Monopoly domainMonopoly)
+    private static Monopoly ToApplication(this Domain.MonopolyAggregate domainMonopolyAggregate)
     {
-        var players = domainMonopoly.Players.Select(player =>
+        var players = domainMonopolyAggregate.Players.Select(player =>
         {
             var playerChess = player.Chess;
 
@@ -54,13 +54,13 @@ internal static class RepositoryExtensions
                         );
         }).ToArray();
 
-        Map map = new(domainMonopoly.Map.Id, domainMonopoly.Map.Blocks
+        Map map = new(domainMonopolyAggregate.Map.Id, domainMonopolyAggregate.Map.Blocks
             .Select(row =>
             {
                 return row.Select(block => block?.ToApplicationBlock()).ToArray();
             }).ToArray()
         );
-        var gamestage = domainMonopoly.GameStage switch
+        var gamestage = domainMonopolyAggregate.GameStage switch
         {
             Domain.GameStage.Ready => GameStage.Preparing,
             Domain.GameStage.Gaming => GameStage.Gaming,
@@ -68,25 +68,25 @@ internal static class RepositoryExtensions
         };
         if (gamestage == GameStage.Preparing)
         {
-            return new Monopoly(domainMonopoly.Id, [..players], map, domainMonopoly.HostId, null!, null!, gamestage);
+            return new Monopoly(domainMonopolyAggregate.Id, [..players], map, domainMonopolyAggregate.HostId, null!, null!, gamestage);
         }
-        var currentPlayer = domainMonopoly.Players.First(player => player.Id == domainMonopoly.CurrentPlayerState.PlayerId);
-        var auction = domainMonopoly.CurrentPlayerState.Auction;
+        var currentPlayer = domainMonopolyAggregate.Players.First(player => player.Id == domainMonopolyAggregate.CurrentPlayerState.PlayerId);
+        var auction = domainMonopolyAggregate.CurrentPlayerState.Auction;
         var currentPlayerState = new CurrentPlayerState(
-            domainMonopoly.CurrentPlayerState.PlayerId,
-            domainMonopoly.CurrentPlayerState.IsPayToll,
-            domainMonopoly.CurrentPlayerState.IsBoughtLand,
-            domainMonopoly.CurrentPlayerState.IsUpgradeLand,
-            domainMonopoly.CurrentPlayerState.Auction is null ? null : new Auction(auction!.LandContract.Land.Id, auction.HighestBidder?.Id, auction.HighestPrice),
-            domainMonopoly.CurrentPlayerState.RemainingSteps,
-            domainMonopoly.CurrentPlayerState.HadSelectedDirection
+            domainMonopolyAggregate.CurrentPlayerState.PlayerId,
+            domainMonopolyAggregate.CurrentPlayerState.IsPayToll,
+            domainMonopolyAggregate.CurrentPlayerState.IsBoughtLand,
+            domainMonopolyAggregate.CurrentPlayerState.IsUpgradeLand,
+            domainMonopolyAggregate.CurrentPlayerState.Auction is null ? null : new Auction(auction!.LandContract.Land.Id, auction.HighestBidder?.Id, auction.HighestPrice),
+            domainMonopolyAggregate.CurrentPlayerState.RemainingSteps,
+            domainMonopolyAggregate.CurrentPlayerState.HadSelectedDirection
             );
-        var LandHouses = domainMonopoly.Map.Blocks.SelectMany(block => block).OfType<Domain.Land>()
+        var LandHouses = domainMonopolyAggregate.Map.Blocks.SelectMany(block => block).OfType<Domain.Land>()
                                                   .Where(land => land.House > 0)
                                                   .Select(land => new LandHouse(land.Id, land.House)).ToArray();
 
 
-        return new Monopoly(domainMonopoly.Id, players, map, domainMonopoly.HostId, currentPlayerState, LandHouses, gamestage);
+        return new Monopoly(domainMonopolyAggregate.Id, players, map, domainMonopolyAggregate.HostId, currentPlayerState, LandHouses, gamestage);
     }
     private static Block ToApplicationBlock(this Domain.Block domainBlock)
     {
@@ -106,7 +106,7 @@ internal static class RepositoryExtensions
     /// </summary>
     /// <param name="monopoly"></param>
     /// <returns></returns>
-    internal static Domain.Monopoly ToDomain(this Monopoly monopoly)
+    internal static Domain.MonopolyAggregate ToDomain(this Monopoly monopoly)
     {
         //Domain.Map map = new(monopoly.Map.Id, monopoly.Map.Blocks
         //               .Select(row =>

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DomainLayer\Monopoly.DomainLayer.ReadyRoom\Monopoly.DomainLayer.ReadyRoom.csproj" />
     <ProjectReference Include="..\..\Domain\Domain.csproj" />
   </ItemGroup>
 
