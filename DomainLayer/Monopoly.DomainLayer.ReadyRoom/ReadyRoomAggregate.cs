@@ -10,14 +10,30 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
 
     public void PlayerReady(string playerId)
     {
+        var player = GetPlayer(playerId);
+
+        player.Ready();
+        
+        AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
+    }
+
+    private Player GetPlayer(string playerId)
+    {
         var player = players.FirstOrDefault(p => p.Id == playerId);
         if (player == null)
         {
             throw new ArgumentException("Player not found");
         }
 
-        player.Ready();
+        return player;
+    }
+
+    public void SelectRole(string playerId, string roleId)
+    {
+        var player = GetPlayer(playerId);
+
+        player.SelectRole(roleId);
         
-        AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
+        AddDomainEvent(new PlayerRoleSelectedEvent(playerId, roleId));
     }
 }

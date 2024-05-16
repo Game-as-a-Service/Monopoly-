@@ -9,6 +9,7 @@ public sealed class Player(string id, LocationEnum location, string roleId, Read
 {
     public PlayerBuilder Builder => new();
     public ReadyStateEnum ReadyState => readyState;
+    public string RoleId => roleId;
 
     public void Ready()
     {
@@ -20,5 +21,10 @@ public sealed class Player(string id, LocationEnum location, string roleId, Read
             ReadyStateEnum.Ready => ReadyStateEnum.NotReady,
             _ => throw new ArgumentOutOfRangeException(nameof(readyState), readyState, null)
         };
+    }
+
+    public void SelectRole(string id)
+    {
+        roleId = id;
     }
 }
