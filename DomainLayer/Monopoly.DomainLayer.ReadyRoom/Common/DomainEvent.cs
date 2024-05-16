@@ -1,3 +1,3 @@
 ﻿namespace Monopoly.DomainLayer.ReadyRoom.Common;
 
-public abstract record DomainEvent(AggregateRoot Aggregate);
+public abstract record DomainEvent;

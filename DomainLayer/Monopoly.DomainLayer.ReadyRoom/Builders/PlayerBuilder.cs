@@ -2,13 +2,15 @@
 
 namespace Monopoly.DomainLayer.ReadyRoom.Builders;
 
-public class PlayerBuilder
+public sealed class PlayerBuilder
 {
     private string Id { get; set; } = string.Empty;
 
     private LocationEnum Location { get; set; } = LocationEnum.None;
 
     private string RoleId { get; set; } = string.Empty;
+
+    private ReadyStateEnum ReadyState { get; set; } = ReadyStateEnum.NotReady;
 
     public PlayerBuilder WithId(string id)
     {
@@ -22,14 +24,20 @@ public class PlayerBuilder
         return this;
     }
 
-    public PlayerBuilder WithRole(string id)
+    public PlayerBuilder WithReady()
     {
-        RoleId = id;
+        ReadyState = ReadyStateEnum.Ready;
+        return this;
+    }
+
+    public PlayerBuilder WithRole(string roleId)
+    {
+        RoleId = roleId;
         return this;
     }
 
     public Player Build()
     {
-        return new Player(Id, Location, RoleId);
+        return new Player(Id, Location, RoleId, ReadyState);
     }
 }

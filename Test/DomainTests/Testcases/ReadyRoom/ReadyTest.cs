@@ -1,8 +1,7 @@
-using Domain.Builders;
-using Domain.Events;
 using Monopoly.DomainLayer.ReadyRoom.Builders;
 using Monopoly.DomainLayer.ReadyRoom.Enums;
-using PlayerBuilder = Monopoly.DomainLayer.ReadyRoom.Builders.PlayerBuilder;
+using Monopoly.DomainLayer.ReadyRoom.Events;
+using Monopoly.DomainLayer.ReadyRoom.Exceptions;
 
 namespace DomainTests.Testcases.ReadyRoom;
 
@@ -13,12 +12,9 @@ public class ReadyTest
     [TestMethod]
     [Description(
         """
-        Given:  房主為 A
-                A: 位置1, 角色A
-                B: 位置2, 角色B
-        When:   B 按下準備
-        Then:   B 的準備狀態:已準備
-        DomainEvent: B 的準備狀態:已準備
+        Given:  A: 位置1，角色1，未準備
+        When:   A 按下準備
+        Then:   A 的準備狀態:已準備
         """)]
     public void 玩家成功準備()
     {
@@ -26,21 +22,16 @@ public class ReadyTest
         var playerA = new PlayerBuilder()
             .WithId("A")
             .WithLocation(LocationEnum.First)
-            .Build();
-        var playerB = new PlayerBuilder()
-            .WithId("B")
-            .WithLocation(LocationEnum.Second)
             .WithRole("1")
             .Build();
         var readyRoom = new ReadyRoomBuilder()
             .WithPlayer(playerA)
-            .WithPlayer(playerB)
             .Build();
         
-        var expectedDomainEvent = new Monopoly.DomainLayer.ReadyRoom.Events.PlayerReadyEvent(playerB.Id, ReadyStateEnum.Ready, readyRoom);
+        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.Ready);
 
         // Act 
-        readyRoom.PlayerReady(playerB.Id);
+        readyRoom.PlayerReady(playerA.Id);
 
         // Assert
         readyRoom.DomainEvents.NextShouldBe(expectedDomainEvent).WithNoEvents();
@@ -49,101 +40,73 @@ public class ReadyTest
     [TestMethod]
     [Description(
         """
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
+        Given:  A: 已準備
         When:   A 取消準備
-        Then:   A 的準備狀態:準備中
-        DomainEvent: A 的準備狀態:準備中
+        Then:   A 的準備狀態:未準備
         """)]
     public void 玩家取消準備()
     {
         // Arrange
-        var A = new { Id = "A", locationId = 1, roleId = "1", preparingState = PlayerState.Ready };
-
-        var monopoly = new MonopolyBuilder()
-            .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId).WithRole(A.roleId).WithState(PlayerState.Normal))
-            .WithGameStage(GameStage.Ready)
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithReady()
             .Build();
-
-        // Act 
-        monopoly.PlayerReady(A.Id);
-
+        
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
+        
+        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.NotReady);
+        
+        // Act
+        readyRoom.PlayerReady(playerA.Id);
+        
         // Assert
-        Assert.AreEqual(A.preparingState, monopoly.Players.First(p => p.Id == A.Id).State);
-
-        monopoly.DomainEvents.NextShouldBe(new PlayerReadyEvent(A.Id, A.preparingState.ToString()));
+        readyRoom.DomainEvents.NextShouldBe(expectedDomainEvent).WithNoEvents();
     }
 
     [TestMethod]
     [Description(
         """
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
-                B: 位置未選擇
-        When:   B 按下準備
-        Then:   提醒無法準備, B 的準備狀態:準備中
-        DomainEvent: B 的準備狀態:準備中
+        Given:  A: 未選擇位置, 未準備
+        When:   A 按下準備
+        Then:   擲出例外 PlayerLocationNotSetException
         """)]
     public void 玩家未選擇位置按下準備()
     {
         // Arrange
-        var A = new { Id = "A", roleId = "A", locationId = 1, preparedState = PlayerState.Normal };
-        var B = new { Id = "B", roleId = "B", locationId = 0, preparingState = PlayerState.Ready };
-
-        var monopoly = new MonopolyBuilder()
-            .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId)
-                                        .WithState(A.preparedState)
-                                        .WithRole(A.roleId)
-                                        )
-            .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId)
-                                        .WithState(B.preparingState)
-                                        .WithRole(B.roleId)
-                                        )
-            .WithGameStage(GameStage.Ready)
+        var playerA = new PlayerBuilder()
+            .WithId("A")
             .Build();
-
-        // Act 
-        monopoly.PlayerReady(B.Id);
-
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
+        
+        // Act
         // Assert
-        Assert.AreEqual(B.preparingState, monopoly.Players.First(p => p.Id == B.Id).State);
-
-        monopoly.DomainEvents.NextShouldBe(new PlayerCannotReadyEvent(B.Id, B.preparingState.ToString(), B.roleId, B.locationId));
+        Assert.ThrowsException<PlayerLocationNotSetException>(() => readyRoom.PlayerReady(playerA.Id));
     }
 
     [TestMethod]
     [Description(
         """
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
-                B: 位置2, 角色未選擇
-        When:   B 按下準備
-        Then:   提醒無法準備, B 的準備狀態:準備中
-        DomainEvent: B 的準備狀態:準備中
+        Given:  A: 位置1, 未準備
+        When:   A 按下準備
+        Then:   擲出例外 PlayerRoleNotSelectedException
         """)]
     public void 玩家未選擇角色按下準備()
     {
         // Arrange
-        var A = new { Id = "A", roleId = "A", locationId = 1, preparedState = PlayerState.Normal };
-        var B = new { Id = "B", locationId = 0, preparingState = PlayerState.Ready };
-
-        var monopoly = new MonopolyBuilder()
-            .WithPlayer(A.Id, pa => pa.WithLocation(A.locationId)
-                                        .WithState(A.preparedState)
-                                        .WithRole(A.roleId)
-                                        )
-            .WithPlayer(B.Id, pb => pb.WithLocation(B.locationId)
-                                        .WithState(B.preparingState)
-                                        )
-            .WithGameStage(GameStage.Ready)
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithLocation(LocationEnum.First)
             .Build();
-
-        // Act 
-        monopoly.PlayerReady(B.Id);
-
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
+        
+        // Act
         // Assert
-        Assert.AreEqual(B.preparingState, monopoly.Players.First(p => p.Id == B.Id).State);
-
-        monopoly.DomainEvents.NextShouldBe(new PlayerCannotReadyEvent(B.Id, B.preparingState.ToString(), null, B.locationId));
+        Assert.ThrowsException<PlayerRoleNotSelectedException>(() => readyRoom.PlayerReady(playerA.Id));
     }
 }

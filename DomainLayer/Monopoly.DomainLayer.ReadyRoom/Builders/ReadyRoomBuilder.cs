@@ -1,6 +1,6 @@
 ﻿namespace Monopoly.DomainLayer.ReadyRoom.Builders;
 
-public class ReadyRoomBuilder
+public sealed class ReadyRoomBuilder
 {
     private string Id { get; set; } = Guid.NewGuid().ToString();
     private List<Player> Players { get; set; } = [];

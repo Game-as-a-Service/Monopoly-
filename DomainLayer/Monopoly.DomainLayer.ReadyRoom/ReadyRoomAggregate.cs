@@ -1,6 +1,5 @@
 ﻿using Monopoly.DomainLayer.ReadyRoom.Builders;
 using Monopoly.DomainLayer.ReadyRoom.Common;
-using Monopoly.DomainLayer.ReadyRoom.Enums;
 using Monopoly.DomainLayer.ReadyRoom.Events;
 
 namespace Monopoly.DomainLayer.ReadyRoom;
@@ -19,6 +18,6 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
 
         player.Ready();
         
-        AddDomainEvent(new PlayerReadyEvent(playerId, ReadyStateEnum.Ready, this));
+        AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
     }
 }
