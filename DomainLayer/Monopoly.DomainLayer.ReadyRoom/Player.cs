@@ -25,6 +25,10 @@ public sealed class Player(string id, LocationEnum location, string roleId, Read
 
     public void SelectRole(string id)
     {
+        if (readyState == ReadyStateEnum.Ready)
+        {
+            throw new PlayerCannotSelectRoleDueToAlreadyReadyException();
+        }
         roleId = id;
     }
 }

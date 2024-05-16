@@ -82,8 +82,7 @@ public class ReadyTest
             .WithPlayer(playerA)
             .Build();
         
-        // Act
-        // Assert
+        // Act & Assert
         Assert.ThrowsException<PlayerLocationNotSetException>(() => readyRoom.PlayerReady(playerA.Id));
     }
 
@@ -105,8 +104,7 @@ public class ReadyTest
             .WithPlayer(playerA)
             .Build();
         
-        // Act
-        // Assert
+        // Act & Assert
         Assert.ThrowsException<PlayerRoleNotSelectedException>(() => readyRoom.PlayerReady(playerA.Id));
     }
 }
