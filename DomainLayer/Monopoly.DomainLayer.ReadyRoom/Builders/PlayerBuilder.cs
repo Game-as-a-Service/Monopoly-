@@ -4,7 +4,7 @@ namespace Monopoly.DomainLayer.ReadyRoom.Builders;
 
 public sealed class PlayerBuilder
 {
-    private string Id { get; set; } = string.Empty;
+    private string Id { get; set; } = Guid.NewGuid().ToString();
 
     private LocationEnum Location { get; set; } = LocationEnum.None;
 

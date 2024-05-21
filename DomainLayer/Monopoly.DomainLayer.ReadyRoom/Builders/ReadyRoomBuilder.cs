@@ -1,10 +1,13 @@
-﻿namespace Monopoly.DomainLayer.ReadyRoom.Builders;
+﻿using Monopoly.DomainLayer.ReadyRoom.Common;
+
+namespace Monopoly.DomainLayer.ReadyRoom.Builders;
 
 public sealed class ReadyRoomBuilder
 {
     private string Id { get; set; } = Guid.NewGuid().ToString();
     private List<Player> Players { get; set; } = [];
     private string HostId { get; set; } = string.Empty;
+    private IGameIdProvider GameIdProvider { get; set; } = new GameIdProvider();
 
     public ReadyRoomBuilder WithPlayer(Player player)
     {
@@ -20,12 +23,15 @@ public sealed class ReadyRoomBuilder
     
     public ReadyRoomBuilder WithGameIdProvider(IGameIdProvider gameIdProvider)
     {
-        Id = gameIdProvider.GetGameId();
+        GameIdProvider = gameIdProvider;
         return this;
     }
 
     public ReadyRoomAggregate Build()
     {
-        return new ReadyRoomAggregate(Id, Players, HostId);
+        return new ReadyRoomAggregate(Id, Players, HostId)
+        {
+            GameIdProvider = GameIdProvider
+        };
     }
 }

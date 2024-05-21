@@ -9,6 +9,15 @@ namespace Monopoly.DomainLayer.ReadyRoom;
 public sealed class ReadyRoomAggregate(string id, List<Player> players, string hostId) : AggregateRoot(id)
 {
     public static ReadyRoomBuilder Builder => new();
+    public IGameIdProvider GameIdProvider { get; set; } = new GameIdProvider();
+
+    private Player GetPlayer(string playerId)
+    {
+        var player = players.FirstOrDefault(p => p.Id == playerId);
+        if (player == null) throw new ArgumentException("Player not found");
+
+        return player;
+    }
 
     public void PlayerReady(string playerId)
     {
@@ -17,14 +26,6 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
         player.Ready();
 
         AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
-    }
-
-    private Player GetPlayer(string playerId)
-    {
-        var player = players.FirstOrDefault(p => p.Id == playerId);
-        if (player == null) throw new ArgumentException("Player not found");
-
-        return player;
     }
 
     public void SelectRole(string playerId, string roleId)
@@ -48,8 +49,10 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
     public void StartGame(string playerId)
     {
         if (hostId != playerId) throw new PlayerNotHostException();
+        var unreadyPlayers = players.Where(p => p.ReadyState is ReadyStateEnum.NotReady && p.Id != hostId);
+        if (unreadyPlayers.Any()) throw new HostCannotStartGameException();
 
-        var gameId = Guid.NewGuid().ToString();
+        var gameId = GameIdProvider.GetGameId();
         AddDomainEvent(new GameStartedEvent(gameId));
     }
 }
