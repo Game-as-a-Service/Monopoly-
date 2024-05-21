@@ -1,6 +1,6 @@
 ﻿using Monopoly.DomainLayer.ReadyRoom.Common;
 
-namespace DomainTests.Testcases.ReadyRoom;
+namespace Monopoly.DomainLayer.ReadyRoom.Tests;
 
 public static class ReadyRoomTestExtensions
 {

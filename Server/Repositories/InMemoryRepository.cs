@@ -5,9 +5,9 @@ namespace Server.Repositories;
 
 public class InMemoryRepository : ICommandRepository, IQueryRepository
 {
-    private readonly Dictionary<string, Monopoly> games = new();
+    private readonly Dictionary<string, Application.DataModels.MonopolyDataModel> games = new();
 
-    public Monopoly FindGameById(string id)
+    public Application.DataModels.MonopolyDataModel FindGameById(string id)
     {
         games.TryGetValue(id, out var game);
         if (game == null)
@@ -28,10 +28,10 @@ public class InMemoryRepository : ICommandRepository, IQueryRepository
         return games.ContainsKey(id);
     }
 
-    public string Save(Monopoly monopoly)
+    public string Save(Application.DataModels.MonopolyDataModel monopolyDataModel)
     {
-        var id = GetGameId(monopoly.Id);
-        var game = monopoly with { Id = id };
+        var id = GetGameId(monopolyDataModel.Id);
+        var game = monopolyDataModel with { Id = id };
         games[game.Id] = game;
         return game.Id;
     }

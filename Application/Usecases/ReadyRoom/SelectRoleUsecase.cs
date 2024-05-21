@@ -1,7 +1,7 @@
 ﻿using Application.Common;
 using Domain.Common;
 
-namespace Application.Usecases;
+namespace Application.Usecases.ReadyRoom;
 
 public record SelectRoleRequest(string GameId, string PlayerId, string roleId)
     : Request(GameId, PlayerId);

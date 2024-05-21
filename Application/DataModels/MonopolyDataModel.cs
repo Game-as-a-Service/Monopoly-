@@ -1,6 +1,6 @@
 ﻿namespace Application.DataModels;
 
-public record Monopoly(string Id, Player[] Players, Map Map, string HostId, CurrentPlayerState CurrentPlayerState, LandHouse[] LandHouses, GameStage GameStage);
+public record MonopolyDataModel(string Id, Player[] Players, Map Map, string HostId, CurrentPlayerState CurrentPlayerState, LandHouse[] LandHouses, GameStage GameStage);
 
 public record Player(string Id, decimal Money, Chess Chess, LandContract[] LandContracts, Domain.PlayerState PlayerState, int BankruptRounds, int LocationId, string? RoleId);
 public record CurrentPlayerState(string PlayerId, bool IsPayToll, bool IsBoughtLand, bool IsUpgradeLand, Auction? Auction, int RemainingSteps, bool HadSelectedDirection);

@@ -1,7 +1,7 @@
 using Application.Common;
 using Domain.Common;
 
-namespace Application.Usecases;
+namespace Application.Usecases.ReadyRoom;
 
 public record SelectLocationRequest(string GameId, string PlayerId, int LocationID)
     : Request(GameId, PlayerId);

@@ -3,10 +3,9 @@ using Monopoly.DomainLayer.ReadyRoom.Enums;
 using Monopoly.DomainLayer.ReadyRoom.Events;
 using Monopoly.DomainLayer.ReadyRoom.Exceptions;
 
-namespace DomainTests.Testcases.ReadyRoom;
+namespace Monopoly.DomainLayer.ReadyRoom.Tests.Testcases;
 
 [TestClass]
-
 public class ReadyTest
 {
     [TestMethod]
@@ -27,7 +26,7 @@ public class ReadyTest
         var readyRoom = new ReadyRoomBuilder()
             .WithPlayer(playerA)
             .Build();
-        
+
         var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.Ready);
 
         // Act 
@@ -51,16 +50,16 @@ public class ReadyTest
             .WithId("A")
             .WithReady()
             .Build();
-        
+
         var readyRoom = new ReadyRoomBuilder()
             .WithPlayer(playerA)
             .Build();
-        
+
         var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.NotReady);
-        
+
         // Act
         readyRoom.PlayerReady(playerA.Id);
-        
+
         // Assert
         readyRoom.DomainEvents.NextShouldBe(expectedDomainEvent).WithNoEvents();
     }
@@ -81,7 +80,7 @@ public class ReadyTest
         var readyRoom = new ReadyRoomBuilder()
             .WithPlayer(playerA)
             .Build();
-        
+
         // Act & Assert
         Assert.ThrowsException<PlayerLocationNotSetException>(() => readyRoom.PlayerReady(playerA.Id));
     }
@@ -103,7 +102,7 @@ public class ReadyTest
         var readyRoom = new ReadyRoomBuilder()
             .WithPlayer(playerA)
             .Build();
-        
+
         // Act & Assert
         Assert.ThrowsException<PlayerRoleNotSelectedException>(() => readyRoom.PlayerReady(playerA.Id));
     }

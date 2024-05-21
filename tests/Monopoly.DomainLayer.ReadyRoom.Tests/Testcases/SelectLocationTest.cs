@@ -3,7 +3,7 @@ using Monopoly.DomainLayer.ReadyRoom.Enums;
 using Monopoly.DomainLayer.ReadyRoom.Events;
 using Monopoly.DomainLayer.ReadyRoom.Exceptions;
 
-namespace DomainTests.Testcases.ReadyRoom;
+namespace Monopoly.DomainLayer.ReadyRoom.Tests.Testcases;
 
 [TestClass]
 public class SelectLocationTest

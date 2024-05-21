@@ -2,10 +2,11 @@
 using Monopoly.DomainLayer.ReadyRoom.Common;
 using Monopoly.DomainLayer.ReadyRoom.Enums;
 using Monopoly.DomainLayer.ReadyRoom.Events;
+using Monopoly.DomainLayer.ReadyRoom.Exceptions;
 
 namespace Monopoly.DomainLayer.ReadyRoom;
 
-public sealed class ReadyRoomAggregate(string id, List<Player> players) : AggregateRoot(id)
+public sealed class ReadyRoomAggregate(string id, List<Player> players, string hostId) : AggregateRoot(id)
 {
     public static ReadyRoomBuilder Builder => new();
 
@@ -42,5 +43,13 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players) : Aggreg
         player.SelectLocation(players, location);
 
         AddDomainEvent(new PlayerLocationSelectedEvent(playerId, location));
+    }
+
+    public void StartGame(string playerId)
+    {
+        if (hostId != playerId) throw new PlayerNotHostException();
+
+        var gameId = Guid.NewGuid().ToString();
+        AddDomainEvent(new GameStartedEvent(gameId));
     }
 }

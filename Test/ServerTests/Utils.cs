@@ -83,9 +83,9 @@ public class Utils
             return this;
         }
 
-        private Application.DataModels.Monopoly Build()
+        private Application.DataModels.MonopolyDataModel Build()
         {
-            return new Application.DataModels.Monopoly(Id: GameId,
+            return new Application.DataModels.MonopolyDataModel(Id: GameId,
                 Players: [..Players],
                 Map: Map,
                 HostId: HostId,

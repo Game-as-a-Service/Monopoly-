@@ -1,7 +1,7 @@
 using Application.Common;
 using Domain.Common;
 
-namespace Application.Usecases;
+namespace Application.Usecases.ReadyRoom;
 
 public record PlayerReadyRequest(string GameId, string PlayerId)
     : Request(GameId, PlayerId);

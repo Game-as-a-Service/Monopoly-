@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DomainLayer", "DomainLayer"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monopoly.DomainLayer.ReadyRoom", "DomainLayer\Monopoly.DomainLayer.ReadyRoom\Monopoly.DomainLayer.ReadyRoom.csproj", "{0E053218-D0CE-4A4B-8944-9BFF9AC686A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monopoly.DomainLayer.ReadyRoom.Tests", "tests\Monopoly.DomainLayer.ReadyRoom.Tests\Monopoly.DomainLayer.ReadyRoom.Tests.csproj", "{23BDDFD4-4D5C-4027-9F82-34AA64307451}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{0E053218-D0CE-4A4B-8944-9BFF9AC686A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E053218-D0CE-4A4B-8944-9BFF9AC686A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E053218-D0CE-4A4B-8944-9BFF9AC686A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23BDDFD4-4D5C-4027-9F82-34AA64307451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23BDDFD4-4D5C-4027-9F82-34AA64307451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23BDDFD4-4D5C-4027-9F82-34AA64307451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23BDDFD4-4D5C-4027-9F82-34AA64307451}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{71F9F361-833F-4483-B179-E10851D12069} = {95BDEC7B-E156-4D7B-914E-D4E1E7B3A35B}
 		{9C16112D-07EB-4E4D-A926-0E737899E6A6} = {7DC91B93-4273-41C6-B504-B72DA0617ACC}
 		{0E053218-D0CE-4A4B-8944-9BFF9AC686A4} = {00742C60-221D-43D5-AF9F-AE7F74B5C051}
+		{23BDDFD4-4D5C-4027-9F82-34AA64307451} = {7DC91B93-4273-41C6-B504-B72DA0617ACC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6585E240-3235-4BD7-BDF5-456A83B85D9F}

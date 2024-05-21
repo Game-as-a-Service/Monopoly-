@@ -2,7 +2,7 @@
 
 public abstract class AbstractReadyRoomException : Exception
 {
-    protected AbstractReadyRoomException(string playerLocationNotSet) : base(playerLocationNotSet)
+    protected AbstractReadyRoomException(string message) : base(message)
     {
     }
 }

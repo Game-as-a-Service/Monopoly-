@@ -8,6 +8,7 @@ using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using SharedLibrary.ResponseArgs.ReadyRoom;
 using System.Security.Claims;
+using Application.Usecases.ReadyRoom;
 
 namespace Server.Hubs;
 
