@@ -4,7 +4,7 @@ using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static ServerTests.Utils;
 
-namespace ServerTests.AcceptanceTests;
+namespace ServerTests.AcceptanceTests.ReadyRoom;
 
 [TestClass]
 public class ReadyTest

@@ -11,7 +11,8 @@ public record PlayerRollDiceResponse(IReadOnlyList<DomainEvent> Events) : Comman
 public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<PlayerRollDiceRequest, PlayerRollDiceResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerRollDiceRequest request, IPresenter<PlayerRollDiceResponse> presenter)
+    public override async Task ExecuteAsync(PlayerRollDiceRequest request,
+        IPresenter<PlayerRollDiceResponse> presenter)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();

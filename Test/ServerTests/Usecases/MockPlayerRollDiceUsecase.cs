@@ -10,7 +10,8 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
                                        MockDiceService mockDiceService)
     : PlayerRollDiceUsecase(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerRollDiceRequest request, IPresenter<PlayerRollDiceResponse> presenter)
+    public override async Task ExecuteAsync(PlayerRollDiceRequest request,
+        IPresenter<PlayerRollDiceResponse> presenter)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();

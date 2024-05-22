@@ -11,7 +11,8 @@ public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : Comma
 public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<ChooseDirectionRequest, ChooseDirectionResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(ChooseDirectionRequest request, IPresenter<ChooseDirectionResponse> presenter)
+    public override async Task ExecuteAsync(ChooseDirectionRequest request,
+        IPresenter<ChooseDirectionResponse> presenter)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();

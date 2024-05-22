@@ -5,7 +5,7 @@ using SharedLibrary.ResponseArgs.Monopoly;
 using static ServerTests.Utils;
 using GameStage = Application.DataModels.GameStage;
 
-namespace ServerTests.AcceptanceTests;
+namespace ServerTests.AcceptanceTests.ReadyRoom;
 
 [TestClass]
 public class SelectLocation
