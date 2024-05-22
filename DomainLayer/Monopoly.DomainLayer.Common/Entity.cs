@@ -1,4 +1,4 @@
-﻿namespace Monopoly.DomainLayer.ReadyRoom.Common;
+﻿namespace Monopoly.DomainLayer.Common;
 
 public abstract class Entity(string id)
 {

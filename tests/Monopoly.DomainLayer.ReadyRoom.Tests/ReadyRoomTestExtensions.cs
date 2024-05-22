@@ -1,4 +1,5 @@
-﻿using Monopoly.DomainLayer.ReadyRoom.Common;
+﻿using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom.Common;
 
 namespace Monopoly.DomainLayer.ReadyRoom.Tests;
 
