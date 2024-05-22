@@ -9,6 +9,7 @@ using Server.Presenters;
 using Server.Services;
 using SharedLibrary.MonopolyMap;
 using System.Security.Claims;
+using Server.Hubs.Monopoly;
 
 var builder = WebApplication.CreateBuilder(args);
 

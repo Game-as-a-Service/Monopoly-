@@ -1,4 +1,4 @@
-﻿using Server.Hubs;
+﻿using Server.Hubs.Monopoly;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static ServerTests.Utils;
