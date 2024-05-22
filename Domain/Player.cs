@@ -10,7 +10,7 @@ public class Player
     private Chess chess;
     private readonly List<LandContract> _landContractList = new();
 
-    public Player(string id, decimal money = 15000, PlayerState playerState = PlayerState.Ready, int bankruptRounds = 0, int locationId = 0, string? roleId = null)
+    public Player(string id, decimal money = 15000, PlayerState playerState = PlayerState.Normal, int bankruptRounds = 0, int locationId = 0, string? roleId = null)
     {
         Id = id;
         Money = money;
@@ -265,21 +265,5 @@ public class Player
     internal bool CanNotSelectDirection(Map.Direction d)
     {
         return d == chess.CurrentDirection.Opposite();
-    }
-
-    internal DomainEvent Ready()
-    {
-        if (RoleId is null || LocationId == 0)
-        {
-            return new PlayerCannotReadyEvent(Id, State.ToString(), RoleId, LocationId);
-        }
-
-        State = State switch
-        {
-            PlayerState.Ready => PlayerState.Normal,
-            PlayerState.Normal => PlayerState.Ready,
-            _ => State
-        };
-        return new PlayerReadyEvent(Id, State.ToString());
     }
 }

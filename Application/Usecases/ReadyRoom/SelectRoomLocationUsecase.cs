@@ -1,5 +1,6 @@
 using Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom.Enums;
 
 namespace Application.Usecases.ReadyRoom;
 
@@ -8,22 +9,22 @@ public record SelectLocationRequest(string GameId, string PlayerId, int Location
 
 public record SelectLocationResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class SelectLocationUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<SelectLocationRequest, SelectLocationResponse>(repository, eventBus)
+public class SelectLocationUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+    : Usecase<SelectLocationRequest, SelectLocationResponse>
 {
     public override async Task ExecuteAsync(SelectLocationRequest request,
         IPresenter<SelectLocationResponse> presenter)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
 
         //改
-        game.SelectLocation(request.PlayerId, request.LocationId);
+        readyRoom.SelectLocation(request.PlayerId, (LocationEnum)request.LocationId);
 
         //存
-        Repository.Save(game);
+        await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await presenter.PresentAsync(new SelectLocationResponse(game.DomainEvents));
+        await eventBus.PublishAsync(readyRoom.DomainEvents);
     }
 }

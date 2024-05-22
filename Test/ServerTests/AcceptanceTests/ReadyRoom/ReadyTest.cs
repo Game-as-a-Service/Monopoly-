@@ -1,177 +1,117 @@
-using Application.DataModels;
-using Server.Hubs.Monopoly;
+using Microsoft.AspNetCore.SignalR;
+using Monopoly.DomainLayer.ReadyRoom.Builders;
+using Monopoly.DomainLayer.ReadyRoom.Enums;
 using SharedLibrary;
-using SharedLibrary.ResponseArgs.Monopoly;
-using static ServerTests.Utils;
 
 namespace ServerTests.AcceptanceTests.ReadyRoom;
 
 [TestClass]
-public class ReadyTest
+public class ReadyTest : AbstractReadyRoomTestBase
 {
-    private MonopolyTestServer server = default!;
-    private const string GameId = "1";
-
-    [TestInitialize]
-    public void Setup()
-    {
-        server = new MonopolyTestServer();
-    }
-
     [TestMethod]
-    [Description("""
-        Given:  房主為 A
-                A: 位置1, 角色A
-                B: 位置2, 角色B
-        When:   B 按下準備
-        Then:   B 的準備狀態:已準備
+    [Description(
+        """
+        Given:  A: 位置1，角色1，未準備
+        When:   A 按下準備
+        Then:   A 的準備狀態:已準備
         """)]
     public async Task 玩家成功準備()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            )
-            .WithPlayer(
-                new PlayerBuilder("B")
-                .WithLocation(2)
-                .WithRole("2")
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            );
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithLocation(LocationEnum.First)
+            .WithRole("1")
+            .Build();
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
 
-        monopolyBuilder.Save(server);
-
-        var hub = await server.CreateHubConnectionAsync(GameId, "B");
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
+        await hub.Requests.PlayerReady();
 
         // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.PlayerReadyEvent),
-                (PlayerReadyEventArgs e) => e is { PlayerId: "B", PlayerState: "Normal" }
-            );
+        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, (int)ReadyStateEnum.Ready));
     }
 
     [TestMethod]
-    [Description("""
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
+    [Description(
+        """
+        Given:  A: 已準備
         When:   A 取消準備
-        Then:   A 的準備狀態:準備中
+        Then:   A 的準備狀態:未準備
         """)]
     public async Task 玩家取消準備()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            );
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithReady()
+            .Build();
 
-        monopolyBuilder.Save(server);
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "A");
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
+        await hub.Requests.PlayerReady();
 
         // Assert
-        hub.Verify(nameof(IMonopolyResponses.PlayerReadyEvent),
-                (PlayerReadyEventArgs e) => e is {PlayerId: "A", PlayerState: "Ready" }
-            );
+        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, (int)ReadyStateEnum.NotReady));
     }
 
     [TestMethod]
-    [Description("""
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
-                B: 位置未選擇
-        When:   B 按下準備
-        Then:   提醒無法準備, B 的準備狀態:準備中
+    [Description(
+        """
+        Given:  A: 未選擇位置, 未準備
+        When:   A 按下準備
+        Then:   擲出例外 PlayerLocationNotSetException
         """)]
     public async Task 玩家未選擇位置按下準備()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            )
-            .WithPlayer(
-                new PlayerBuilder("B")
-                .WithRole("2")
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            );
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .Build();
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
 
-        monopolyBuilder.Save(server);
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "B");
-
-        // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
-
-        // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.PlayerCannotReadyEvent),
-                (PlayerCannotReadyEventArgs e) => e is { PlayerId: "B", PlayerState: "Ready", RoleId: "2", LocationId: 0 }
-            );
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HubException>(() => hub.Requests.PlayerReady());
     }
 
     [TestMethod]
-    [Description("""
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
-                B: 位置2, 角色未選擇
-        When:   B 按下準備
-        Then:   提醒無法準備, B 的準備狀態:準備中
+    [Description(
+        """
+        Given:  A: 位置1, 未準備
+        When:   A 按下準備
+        Then:   擲出例外 PlayerRoleNotSelectedException
         """)]
     public async Task 玩家未選擇角色按下準備()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            )
-            .WithPlayer(
-                new PlayerBuilder("B")
-                .WithLocation(2)
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            );
+        var playerA = new PlayerBuilder()
+            .WithId("A")
+            .WithLocation(LocationEnum.First)
+            .Build();
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .Build();
 
-        monopolyBuilder.Save(server);
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "B");
-
-        // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerReady));
-
-        // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.PlayerCannotReadyEvent),
-                (PlayerCannotReadyEventArgs e) => e is { PlayerId: "B", PlayerState: "Ready", RoleId: null, LocationId: 2 }
-            );
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HubException>(() => hub.Requests.PlayerReady());
     }
 }

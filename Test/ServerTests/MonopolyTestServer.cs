@@ -8,16 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using Server.DataModels;
 using Server.Services;
 using ServerTests.Usecases;
 using SharedLibrary;
 using System.Collections.Concurrent;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text.Json;
+using Monopoly.InterfaceAdapters.Server.Tests.Generators;
+using ServerTests.Common;
 
 namespace ServerTests;
 
@@ -92,6 +89,44 @@ internal class MonopolyTestServer : WebApplicationFactory<Program>
             services.AddSingleton<MockDiceService>();
         });
     }
+
+    public async Task<ReadyRoomAssertionHub> CreateReadyRoomHubConnectionAsync(string gameId, string playerId)
+    {
+        var uri = new UriBuilder(Client.BaseAddress!)
+        {
+            Path = $"/ready-room",
+            Query = $"gameid={gameId}"
+        }.Uri;
+        var builder = new HubConnectionBuilder()
+            .WithUrl(uri, opt =>
+            {
+                opt.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                opt.AccessTokenProvider = async () =>
+                {
+                    var options = GetRequiredService<IOptionsMonitor<JwtBearerOptions>>();
+
+                    var jwtToken = GetRequiredService<MockJwtTokenService>()
+                        .GenerateJwtToken(options.Get("Bearer").Audience, playerId);
+                    return await Task.FromResult(jwtToken);
+                };
+                opt.HttpMessageHandlerFactory = _ => Server.CreateHandler();
+            });
+        ReadyRoomAssertionHub readyRoomAssertionHub = new(builder);
+        await readyRoomAssertionHub.StartAsync();
+
+        return readyRoomAssertionHub;
+    }
+}
+
+[AssertionHub(typeof(IReadyRoomRequests), typeof(IReadyRoomResponses))]
+public partial class ReadyRoomAssertionHub;
+
+public interface IReadyRoomRequests
+{
+    Task StartGame();
+    Task PlayerReady();
+    Task SelectLocation(int location);
+    Task SelectRole(string role);
 }
 
 internal class VerificationHub
@@ -264,53 +299,5 @@ internal static class TestHubExtension
             currentHandler(parameters);
             return Task.CompletedTask;
         }, handler);
-    }
-}
-
-internal class MockJwtTokenService
-{
-    public string Issuer { get; }
-    public SecurityKey SecurityKey { get; }
-
-    private readonly SigningCredentials _signingCredentials;
-    private readonly JwtSecurityTokenHandler _tokenHandler = new();
-    private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
-    private static readonly byte[] _key = new byte[64];
-
-    public MockJwtTokenService()
-    {
-        Issuer = Guid.NewGuid().ToString();
-
-        _rng.GetBytes(_key);
-        SecurityKey = new SymmetricSecurityKey(_key) { KeyId = Guid.NewGuid().ToString() };
-        _signingCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
-    }
-
-    public string GenerateJwtToken(string? audience, string playerId)
-    {
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Issuer = Issuer,
-            Audience = audience,
-            Expires = DateTime.UtcNow.AddMinutes(20),
-            SigningCredentials = _signingCredentials,
-            Subject = new ClaimsIdentity(new Claim[] { new("Id", playerId) }),
-        };
-        var token = _tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-        return _tokenHandler.WriteToken(token);
-    }
-}
-
-public class MockPlatformService : IPlatformService
-{
-    public Task<UserInfo> GetUserInfo(string tokenString)
-    {
-        var jwt = new JwtSecurityToken(tokenString);
-
-        var id = jwt.Claims.First(x => x.Type == "Id").Value;
-
-        var userinfo = new UserInfo(id, "", "");
-
-        return Task.FromResult(userinfo);
     }
 }

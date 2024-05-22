@@ -1,4 +1,5 @@
-﻿using Application.Usecases.ReadyRoom;
+﻿using System.Security.Claims;
+using Application.Usecases.ReadyRoom;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Server.Presenters;
@@ -7,7 +8,7 @@ using SharedLibrary;
 namespace Server.Hubs.ReadyRoom;
 
 [Authorize]
-public sealed class ReadyRoomHub : Hub<IReadyRoomResponse>
+public sealed class ReadyRoomHub : Hub<IReadyRoomResponses>
 {
     private const string KeyOfPlayerId = "PlayerId";
     private const string KeyOfGameId = "GameId";
@@ -30,10 +31,10 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponse>
         );
     }
     
-    public async Task SelectLocation(int locationId, SelectLocationUsecase usecase)
+    public async Task SelectLocation(int location, SelectLocationUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new SelectLocationRequest(GameId, PlayerId, locationId),
+            new SelectLocationRequest(GameId, PlayerId, location),
             NullPresenter<SelectLocationResponse>.Instance
         );
     }
@@ -48,8 +49,8 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponse>
     
     public override async Task OnConnectedAsync()
     {
-        var playerId = Context.UserIdentifier;
-        var gameId = Context.GetHttpContext().Request.Query["gameId"];
+        var playerId = Context.User!.FindFirst(x => x.Type == ClaimTypes.Sid)!.Value;
+        var gameId = Context.GetHttpContext()!.Request.Query["gameId"][0];
         Context.Items[KeyOfPlayerId] = playerId;
         Context.Items[KeyOfGameId] = gameId;
         await base.OnConnectedAsync();

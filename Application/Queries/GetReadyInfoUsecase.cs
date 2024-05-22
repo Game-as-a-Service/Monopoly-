@@ -1,6 +1,6 @@
 ﻿using Application.Common;
 
-namespace Application.Query;
+namespace Application.Queries;
 
 public record GetReadyInfoRequest(string GameId, string PlayerId)
     : Request(GameId, PlayerId);
@@ -19,7 +19,7 @@ public class GetReadyInfoUsecase(ICommandRepository repository)
 
         var players = game.Players.Select(player =>
         {
-            var isReady = player.PlayerState == Domain.PlayerState.Ready;
+            var isReady = player.PlayerState == Domain.PlayerState.Normal;
             var roleId = player.RoleId;
             var locationId = player.LocationId;
             return new GetReadyInfoResponse.Player(player.Id, isReady, roleId, locationId);

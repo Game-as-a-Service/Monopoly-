@@ -6,6 +6,7 @@ using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using ServerTests.Common;
 
 namespace ServerTests.AcceptanceTests;
 

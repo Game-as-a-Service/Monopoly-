@@ -46,14 +46,6 @@ public class MonopolyAggregate : AbstractAggregateRoot
         Rounds = rounds;
     }
 
-    public void AddPlayer(Player player, string blockId = "Start", Direction direction = Direction.Right)
-    {
-        Chess chess = new(player, blockId, direction, 0);
-        player.Chess = chess;
-        player.MonopolyAggregate = this;
-        _players.Add(player);
-    }
-
     public void Settlement()
     {
         // 玩家資產計算方式: 土地價格+升級價格+剩餘金額 
@@ -242,80 +234,5 @@ public class MonopolyAggregate : AbstractAggregateRoot
     {
         Player player = GetPlayer(playerId);
         AddDomainEvent(player.BuyLand(_map, BlockId));
-    }
-
-    public void SelectRole(string playerId, string roleId)
-    {
-        Player player = GetPlayer(playerId);
-        player.RoleId = roleId;
-        AddDomainEvent(new PlayerSelectRoleEvent(playerId, roleId));
-    }
-
-    /// <summary>
-    /// 選擇房間位置
-    /// </summary>
-    /// <param name="playerId">玩家ID</param>
-    /// <param name="locationId">位置ID</param>
-    public void SelectLocation(string playerId, int locationId)
-    {
-        var player = GetPlayer(playerId);
-        var isLocationEmpty = _players.TrueForAll(p => p.LocationId != locationId);
-        var isPlayerReady = player.State is PlayerState.Ready;
-        if (isLocationEmpty && isPlayerReady is false)
-        {
-            player.LocationId = locationId;
-            AddDomainEvent(new PlayerSelectLocationEvent(playerId, player.LocationId));
-        }
-        else
-        {
-            AddDomainEvent(new PlayerCannotSelectLocationEvent(playerId, player.LocationId));
-        }
-    }
-
-    /// <summary>
-    /// 玩家準備
-    /// </summary>
-    /// <param name="playerId"></param> <summary>
-    /// </summary>
-    public void PlayerReady(string playerId)
-    {
-        if (GameStage is not GameStage.Ready) return;
-        var player = GetPlayer(playerId);
-        
-        AddDomainEvent(player.Ready());
-
-    }
-
-    /// <summary>
-    /// 開始遊戲
-    /// </summary>
-    /// <param name="playerId"></param> <summary>
-    /// </summary>
-    public void GameStart(string playerId)
-    {
-        if (GameStage is not GameStage.Ready || playerId != HostId) return;
-        
-        if (_players.Count == 1)
-        {
-            AddDomainEvent(new OnlyOnePersonEvent(GameStage.ToString()));
-        }
-        else
-        {
-            var unReadyPlayers =
-                _players.Where(p => p.Id != HostId)
-                    .Where(p => p.State is not PlayerState.Ready)
-                    .ToList();
-            if (unReadyPlayers.Count != 0)
-            {
-                var playerIds = unReadyPlayers.Select(p => p.Id).ToArray();
-                AddDomainEvent(new SomePlayersPreparingEvent(GameStage.ToString(), playerIds));
-            }
-            else
-            {
-                GameStage = GameStage.Gaming;
-                Initial();
-                AddDomainEvent(new GameStartEvent(GameStage.ToString(), _currentPlayerState.PlayerId));
-            }
-        }
     }
 }

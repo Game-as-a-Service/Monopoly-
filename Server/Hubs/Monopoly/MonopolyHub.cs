@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Application.Common;
-using Application.Query;
+using Application.Queries;
 using Application.Usecases;
 using Application.Usecases.ReadyRoom;
 using Microsoft.AspNetCore.Authorization;

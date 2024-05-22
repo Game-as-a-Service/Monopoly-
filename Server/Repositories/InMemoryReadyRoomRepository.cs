@@ -1,0 +1,19 @@
+﻿using Application.Usecases.ReadyRoom;
+using Monopoly.DomainLayer.ReadyRoom;
+
+namespace Server.Repositories;
+
+public class InMemoryReadyRoomRepository : IReadyRoomRepository
+{
+    private readonly Dictionary<string, ReadyRoomAggregate> _readyRooms = new();
+    public Task SaveReadyRoomAsync(ReadyRoomAggregate aggregate)
+    {
+        _readyRooms[aggregate.Id] = aggregate;
+        return Task.CompletedTask;
+    }
+
+    public Task<ReadyRoomAggregate> GetReadyRoomAsync(string id)
+    {
+        return Task.FromResult(_readyRooms[id]);
+    }
+}

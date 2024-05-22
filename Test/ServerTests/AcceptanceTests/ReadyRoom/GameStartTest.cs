@@ -1,139 +1,139 @@
-using Application.DataModels;
-using Server.Hubs.Monopoly;
-using SharedLibrary;
-using SharedLibrary.ResponseArgs.Monopoly;
-using static ServerTests.Utils;
+using Microsoft.AspNetCore.SignalR;
+using Monopoly.DomainLayer.ReadyRoom.Builders;
+using Monopoly.DomainLayer.ReadyRoom.Common;
+using Moq;
+using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace ServerTests.AcceptanceTests.ReadyRoom;
 
 [TestClass]
-public class GameStartTest
+public class GameStartTest : AbstractReadyRoomTestBase
 {
-    private MonopolyTestServer server = default!;
-    private const string GameId = "1";
-
-    [TestInitialize]
-    public void Setup()
-    {
-        server = new MonopolyTestServer();
-    }
-
     [TestMethod]
-    [Description("""
-        Given:  房主為 A, 已準備
-                玩家 B, 已準備
-        When:   A 開始遊戲
+    [Description(
+        """
+        Given:  房內有4名玩家，除了玩家A以外的所有玩家都已經準備
+        When:   房主按下開始遊戲
         Then:   遊戲開始
         """)]
     public async Task 房主成功開始遊戲()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            )
-            .WithPlayer(
-                new PlayerBuilder("B")
-                .WithLocation(2)
-                .WithRole("2")
-                .WithState(Domain.PlayerState.Ready)
-                .Build()
-            )
-            .WithHost("A");
+        const string gameId = "gameId";
+        var gameIdProvider = new Mock<IGameIdProvider>();
+        gameIdProvider.Setup(x => x.GetGameId()).Returns(gameId);
 
-        monopolyBuilder.Save(server);
+        var playerA = new PlayerBuilder()
+            .Build();
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "A");
+        var playerB = new PlayerBuilder()
+            .WithReady()
+            .Build();
+
+        var playerC = new PlayerBuilder()
+            .WithReady()
+            .Build();
+
+        var playerD = new PlayerBuilder()
+            .WithReady()
+            .Build();
+
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .WithPlayer(playerB)
+            .WithPlayer(playerC)
+            .WithPlayer(playerD)
+            .WithHost(playerA.Id)
+            .WithGameIdProvider(gameIdProvider.Object)
+            .Build();
+
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart));
+        await hub.Requests.StartGame();
 
         // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.GameStartEvent),
-                (GameStartEventArgs e) => e is { GameStage: "Gaming", CurrentPlayerId: "A" }
-            );
+        hub.FluentAssert.GameStartedEvent(new GameStartedEventArgs(gameId));
     }
 
     [TestMethod]
-    [Description("""
-        Given:  房主為 A, 已準備
-                沒有其他玩家
-        When:   A 開始遊戲
-        Then:   開始遊戲失敗
+    [Description(
+        """
+        Given:  房內有4名玩家，但有玩家未準備
+        When:   房主按下開始遊戲
+        Then:   房主無法成功開始遊戲
         """)]
-    public async Task 人數只有1人_房主開始遊戲失敗()
+    public async Task 房主無法成功開始遊戲()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            )
-            .WithHost("A");
+        var playerA = new PlayerBuilder()
+            .WithReady()
+            .Build();
 
-        monopolyBuilder.Save(server);
+        var playerB = new PlayerBuilder()
+            .WithReady()
+            .Build();
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "A");
+        var playerC = new PlayerBuilder()
+            .WithReady()
+            .Build();
 
-        // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart));
+        var playerD = new PlayerBuilder()
+            .Build();
 
-        // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.OnlyOnePersonEvent),
-                (OnlyOnePersonEventArgs e) => e.GameStage == "Ready"
-            );
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .WithPlayer(playerB)
+            .WithPlayer(playerC)
+            .WithPlayer(playerD)
+            .WithHost(playerA.Id)
+            .Build();
+
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HubException>(() => hub.Requests.StartGame());
     }
 
+
     [TestMethod]
-    [Description("""
-        Given:  房主為 A
-                A: 位置1, 角色A, 已準備
-                B: 未準備
-        When:   A 開始遊戲
-        Then:   開始遊戲失敗
+    [Description(
+        """
+        Given:  房內有4名玩家，每個玩家都已經準備
+        When:   非房主按下開始遊戲
+        Then:   非房主無法成功開始遊戲
         """)]
-    public async Task 有人沒有準備_房主開始遊戲失敗()
+    public async Task 非房主無法成功開始遊戲()
     {
         // Arrange
-        var monopolyBuilder = new MonopolyBuilder("1")
-            .WithGameStage(GameStage.Preparing)
-            .WithPlayer(
-                new PlayerBuilder("A")
-                .WithLocation(1)
-                .WithRole("1")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            )
-            .WithPlayer(
-                new PlayerBuilder("B")
-                .WithRole("2")
-                .WithState(Domain.PlayerState.Normal)
-                .Build()
-            )
-            .WithHost("A");
+        var playerA = new PlayerBuilder()
+            .WithReady()
+            .Build();
+        var playerB = new PlayerBuilder()
+            .WithReady()
+            .Build();
+        var playerC = new PlayerBuilder()
+            .WithReady()
+            .Build();
+        var playerD = new PlayerBuilder()
+            .WithReady()
+            .Build();
 
-        monopolyBuilder.Save(server);
+        var readyRoom = new ReadyRoomBuilder()
+            .WithPlayer(playerA)
+            .WithPlayer(playerB)
+            .WithPlayer(playerC)
+            .WithPlayer(playerD)
+            .WithHost(playerA.Id)
+            .Build();
 
-        var hub = await server.CreateHubConnectionAsync(GameId, "A");
+        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerB.Id);
 
-        // Act
-        await hub.SendAsync(nameof(MonopolyHub.GameStart));
-
-        // Assert
-        hub.Verify(
-            nameof(IMonopolyResponses.SomePlayersPreparingEvent),
-                (SomePlayersPreparingEventArgs e) => e.GameStage == "Ready" && e.PlayerIds.OrderBy(x => x).SequenceEqual(new[] { "B" }.OrderBy(x => x))
-            );
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HubException>(() => hub.Requests.StartGame());
     }
 }

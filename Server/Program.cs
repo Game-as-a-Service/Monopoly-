@@ -10,6 +10,7 @@ using Server.Services;
 using SharedLibrary.MonopolyMap;
 using System.Security.Claims;
 using Server.Hubs.Monopoly;
+using Server.Hubs.ReadyRoom;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<MonopolyHub>("/monopoly");
+app.MapHub<ReadyRoomHub>("/ready-room");
 
 app.MapGet("/health", () => Results.Ok());
 

@@ -8,21 +8,21 @@ public record PlayerReadyRequest(string GameId, string PlayerId)
 
 public record PlayerReadyResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class PlayerReadyUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<PlayerReadyRequest, PlayerReadyResponse>(repository, eventBus)
+public class PlayerReadyUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+    : Usecase<PlayerReadyRequest, PlayerReadyResponse>
 {
     public override async Task ExecuteAsync(PlayerReadyRequest request, IPresenter<PlayerReadyResponse> presenter)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
 
         //改
-        game.PlayerReady(request.PlayerId);
+        readyRoom.PlayerReady(request.PlayerId);
 
         //存
-        Repository.Save(game);
+        await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await presenter.PresentAsync(new PlayerReadyResponse(game.DomainEvents));
+        await eventBus.PublishAsync(readyRoom.DomainEvents);
     }
 }
