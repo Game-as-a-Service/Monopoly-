@@ -1,7 +1,7 @@
 ﻿using Application.Common;
 using Domain.Builders;
-using Domain.Common;
 using Domain.Maps;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 

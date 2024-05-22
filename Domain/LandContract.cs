@@ -1,5 +1,5 @@
-using Domain.Common;
 using Domain.Events;
+using Monopoly.DomainLayer.Common;
 
 namespace Domain;
 
@@ -21,7 +21,7 @@ public class LandContract
         this.Land = Land;
     }
 
-    internal DomainEvent EndRound()
+    internal DomainEvent? EndRound()
     {
         if (InMortgage)
         {
@@ -36,7 +36,7 @@ public class LandContract
                 return new MortgageCountdownEvent(Owner.Id, Land.Id, Deadline);
             }
         }
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 
     internal void GetMortgage()

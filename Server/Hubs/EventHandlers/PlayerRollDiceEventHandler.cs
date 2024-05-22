@@ -1,5 +1,4 @@
-﻿using Domain.Common;
-using Domain.Events;
+﻿using Domain.Events;
 using Microsoft.AspNetCore.SignalR;
 using Server.Common;
 using SharedLibrary;

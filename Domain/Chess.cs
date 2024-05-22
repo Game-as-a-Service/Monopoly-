@@ -1,5 +1,5 @@
-using Domain.Common;
 using Domain.Events;
+using Monopoly.DomainLayer.Common;
 using static Domain.Map;
 
 namespace Domain;
@@ -61,7 +61,11 @@ public class Chess
             yield return new ChessMovedEvent(player.Id, currentBlockId, currentDirection.ToString(), remainingSteps);
         }
         map.FindBlockById(currentBlockId).DoBlockAction(player);
-        yield return map.FindBlockById(currentBlockId).OnBlockEvent(player);
+        var onBlockEvent = map.FindBlockById(currentBlockId).OnBlockEvent(player);
+        if (onBlockEvent is not null)
+        {
+            yield return onBlockEvent;
+        }
     }
 
     public IEnumerable<DomainEvent> Move(Map map, int steps)

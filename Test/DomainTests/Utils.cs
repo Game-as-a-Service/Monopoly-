@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Events;
+using Monopoly.DomainLayer.Common;
 using Moq;
 
 namespace DomainTests;

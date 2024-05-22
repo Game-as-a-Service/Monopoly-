@@ -1,5 +1,5 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases.ReadyRoom;
 

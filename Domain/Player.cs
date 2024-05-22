@@ -1,6 +1,6 @@
-using Domain.Common;
 using Domain.Events;
 using Domain.Interfaces;
+using Monopoly.DomainLayer.Common;
 
 namespace Domain;
 
@@ -44,7 +44,7 @@ public class Player
     public int SuspendRounds { get; private set; } = 0;
     public int BankruptRounds { get; set; }
 
-    internal DomainEvent UpdateState()
+    internal DomainEvent? UpdateState()
     {
         if (Money <= 0 && !LandContractList.Any(l => !l.InMortgage))
         {
@@ -56,7 +56,7 @@ public class Player
             EndRoundFlag = true;
             return new PlayerBankruptEvent(Id);
         }
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 
     public string? RoleId { get; set; }
@@ -92,12 +92,12 @@ public class Player
 
     public List<DomainEvent> EndRound()
     {
-        List<DomainEvent> events = new();
+        var events = _landContractList
+            .Select(l => l.EndRound())
+            .Where(x => x is not null)
+            .OfType<DomainEvent>()
+            .ToList();
 
-        _landContractList.ForEach(l =>
-        {
-            events.Add(l.EndRound());
-        });
         _landContractList.RemoveAll(l => l.Deadline == 0);
 
         return events;

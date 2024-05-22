@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DomainLayer\Monopoly.DomainLayer.Common\Monopoly.DomainLayer.Common.csproj" />
+  </ItemGroup>
+
 </Project>

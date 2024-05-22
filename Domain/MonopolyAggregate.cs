@@ -54,11 +54,6 @@ public class MonopolyAggregate : AbstractAggregateRoot
         _players.Add(player);
     }
 
-    public void UpdatePlayerState(Player player)
-    {
-        AddDomainEvent(player.UpdateState());
-    }
-
     public void Settlement()
     {
         // 玩家資產計算方式: 土地價格+升級價格+剩餘金額 

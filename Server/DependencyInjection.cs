@@ -1,9 +1,9 @@
 ﻿using Application.Common;
-using Domain.Common;
 using Server.Common;
 using Server.Presenters;
 using Server.Repositories;
 using System.Reflection;
+using Monopoly.DomainLayer.Common;
 
 namespace Server;
 
