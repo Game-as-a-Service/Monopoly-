@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace Client.HttpClients;
 
-public class MonopolyApiClient(HttpClient httpClient)
+public class MonopolyDevelopmentApiClient(HttpClient httpClient)
 {
     public async Task<IEnumerable<PlayerModel>> GetPlayers()
     {

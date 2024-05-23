@@ -4,4 +4,4 @@ using Monopoly.DomainLayer.ReadyRoom.Enums;
 
 namespace Monopoly.DomainLayer.ReadyRoom.Events;
 
-public sealed record PlayerReadyEvent(string PlayerId, ReadyStateEnum ReadyState) : DomainEvent;
+public sealed record PlayerReadyEvent(string PlayerId, bool ReadyState) : DomainEvent;

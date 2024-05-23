@@ -14,7 +14,7 @@ builder.Services.AddOptions<MonopolyApiOptions>()
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 // Register the MonopolyApiClient
-builder.Services.AddHttpClient<MonopolyApiClient>(client =>
+builder.Services.AddHttpClient<MonopolyDevelopmentApiClient>(client =>
 {
     var backendApiOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<MonopolyApiOptions>>().Value;
     client.BaseAddress = new Uri(backendApiOptions.BaseUrl);

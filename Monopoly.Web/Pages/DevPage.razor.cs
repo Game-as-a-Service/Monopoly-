@@ -8,11 +8,11 @@ public partial class DevPage
     private IEnumerable<Player> _players = [];
     private IEnumerable<Room>? _rooms = [];
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
-    [Inject] private MonopolyApiClient MonopolyApiClient { get; set; } = default!;
+    [Inject] private MonopolyDevelopmentApiClient MonopolyDevelopmentApiClient { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        var users = await MonopolyApiClient.GetPlayers();
+        var users = await MonopolyDevelopmentApiClient.GetPlayers();
         _players = users.Select(p => new Player(p.Id, p.Token));
     }
 
@@ -24,13 +24,13 @@ public partial class DevPage
             return;
         }
 
-        await MonopolyApiClient.CreateGame(host.Token, _players.Select(x => new PlayerModel { Id = x.Id, Token = x.Token }));
+        await MonopolyDevelopmentApiClient.CreateGame(host.Token, _players.Select(x => new PlayerModel { Id = x.Id, Token = x.Token }));
         await RefleshRoomListAsync();
     }
 
     private async Task RefleshRoomListAsync()
     {
-        var roomIds = await MonopolyApiClient.GetRooms();
+        var roomIds = await MonopolyDevelopmentApiClient.GetRooms();
         _rooms = roomIds.Select(id => new Room(id, [.. _players]));
         StateHasChanged();
     }

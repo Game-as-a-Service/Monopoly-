@@ -28,6 +28,6 @@ public partial class ReadyButton
     {
         if (!EnabledToStart)
             return;
-        await Parent.Connection.GameStart();
+        await Parent.Connection.StartGame();
     }
 }

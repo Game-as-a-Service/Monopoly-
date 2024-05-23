@@ -2,6 +2,7 @@
 using Monopoly.DomainLayer.ReadyRoom.Events;
 using Server.Common;
 using SharedLibrary;
+using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace Server.Hubs.ReadyRoom.EventHandlers;
 
@@ -10,6 +11,6 @@ public sealed class PlayerReadyEventHandler(IHubContext<ReadyRoomHub, IReadyRoom
 {
     protected override Task HandleSpecificEvent(PlayerReadyEvent e)
     {
-        return hubContext.Clients.All.PlayerReadyEvent(new PlayerReadyEventArgs(e.PlayerId, (int)e.ReadyState));
+        return hubContext.Clients.All.PlayerReadyEvent(new PlayerReadyEventArgs(e.PlayerId, e.ReadyState));
     }
 }

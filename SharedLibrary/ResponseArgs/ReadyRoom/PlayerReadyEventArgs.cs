@@ -1,3 +1,3 @@
 ﻿namespace SharedLibrary.ResponseArgs.ReadyRoom;
 
-public class PlayerReadyEventArgs(string PlayerId);
+public record PlayerReadyEventArgs(string PlayerId, bool IsReady);

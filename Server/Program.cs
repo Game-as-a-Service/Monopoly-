@@ -75,6 +75,12 @@ app.MapPost("/games", async (HttpContext context, CancellationToken cancellation
 
     await context.Response.WriteAsync(url);
 }).RequireAuthorization();
+
+app.MapPost("/dev/create-room", async () =>
+{
+    
+});
+
 app.MapGet("/map", (string mapId) =>
 {
     var projectDirectory = AppDomain.CurrentDomain.BaseDirectory;

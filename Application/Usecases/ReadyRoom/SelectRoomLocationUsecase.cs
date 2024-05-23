@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.ReadyRoom.Enums;
 
 namespace Application.Usecases.ReadyRoom;
 
-public record SelectLocationRequest(string GameId, string PlayerId, int LocationId)
+public record SelectLocationRequest(string GameId, string PlayerId, LocationEnum Location)
     : Request(GameId, PlayerId);
 
 public record SelectLocationResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
@@ -19,7 +19,7 @@ public class SelectLocationUsecase(IReadyRoomRepository repository, IEventBus<Do
         var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
 
         //改
-        readyRoom.SelectLocation(request.PlayerId, (LocationEnum)request.LocationId);
+        readyRoom.SelectLocation(request.PlayerId, request.Location);
 
         //存
         await repository.SaveReadyRoomAsync(readyRoom);

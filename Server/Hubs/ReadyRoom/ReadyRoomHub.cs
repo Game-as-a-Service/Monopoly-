@@ -31,10 +31,10 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponses>
             NullPresenter<PlayerReadyResponse>.Instance);
     }
 
-    public async Task SelectLocation(int location, SelectLocationUsecase usecase)
+    public async Task SelectLocation(LocationEnum location, SelectLocationUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new SelectLocationRequest(GameId, PlayerId, location),
+            new SelectLocationRequest(GameId, PlayerId, location.AsDomainLocationEnum()),
             NullPresenter<SelectLocationResponse>.Instance);
     }
 

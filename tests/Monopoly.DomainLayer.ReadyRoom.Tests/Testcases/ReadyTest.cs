@@ -27,7 +27,7 @@ public class ReadyTest
             .WithPlayer(playerA)
             .Build();
 
-        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.Ready);
+        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, true);
 
         // Act 
         readyRoom.PlayerReady(playerA.Id);
@@ -55,7 +55,7 @@ public class ReadyTest
             .WithPlayer(playerA)
             .Build();
 
-        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, ReadyStateEnum.NotReady);
+        var expectedDomainEvent = new PlayerReadyEvent(playerA.Id, false);
 
         // Act
         readyRoom.PlayerReady(playerA.Id);

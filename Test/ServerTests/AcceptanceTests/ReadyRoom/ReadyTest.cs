@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Monopoly.DomainLayer.ReadyRoom.Builders;
 using Monopoly.DomainLayer.ReadyRoom.Enums;
-using SharedLibrary;
+using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace ServerTests.AcceptanceTests.ReadyRoom;
 
@@ -34,7 +34,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
         await hub.Requests.PlayerReady();
 
         // Assert
-        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, (int)ReadyStateEnum.Ready));
+        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, true));
     }
 
     [TestMethod]
@@ -63,7 +63,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
         await hub.Requests.PlayerReady();
 
         // Assert
-        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, (int)ReadyStateEnum.NotReady));
+        hub.FluentAssert.PlayerReadyEvent(new PlayerReadyEventArgs(playerA.Id, false));
     }
 
     [TestMethod]

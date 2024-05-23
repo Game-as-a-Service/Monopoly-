@@ -13,7 +13,7 @@ public partial class RoleChoicePanel
         {
             return;
         }
-        await Parent.Connection.PlayerSelectRole(role.ToString());
+        await Parent.Connection.SelectRole(role.ToString());
         Parent.Update();
     }
 }

@@ -12,7 +12,7 @@ public sealed class PlayerBuilder
 
     private string RoleId { get; set; } = string.Empty;
 
-    private ReadyStateEnum ReadyState { get; set; } = ReadyStateEnum.NotReady;
+    private bool IsReady { get; set; }
 
     public PlayerBuilder WithId(string id)
     {
@@ -28,7 +28,7 @@ public sealed class PlayerBuilder
 
     public PlayerBuilder WithReady()
     {
-        ReadyState = ReadyStateEnum.Ready;
+        IsReady = true;
         return this;
     }
 
@@ -40,6 +40,6 @@ public sealed class PlayerBuilder
 
     public Player Build()
     {
-        return new Player(Id, Name, Location, RoleId, ReadyState);
+        return new Player(Id, Name, Location, RoleId, IsReady);
     }
 }

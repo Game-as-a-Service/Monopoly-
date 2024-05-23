@@ -28,7 +28,7 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
 
         player.Ready();
 
-        AddDomainEvent(new PlayerReadyEvent(playerId, player.ReadyState));
+        AddDomainEvent(new PlayerReadyEvent(playerId, player.IsReady));
     }
 
     public void SelectRole(string playerId, string roleId)
@@ -52,7 +52,7 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
     public void StartGame(string playerId)
     {
         if (hostId != playerId) throw new PlayerNotHostException();
-        var unreadyPlayers = players.Where(p => p.ReadyState is ReadyStateEnum.NotReady && p.Id != hostId);
+        var unreadyPlayers = players.Where(p => p.IsReady is not true && p.Id != hostId);
         if (unreadyPlayers.Any()) throw new HostCannotStartGameException();
 
         var gameId = GameIdProvider.GetGameId();
