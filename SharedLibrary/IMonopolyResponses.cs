@@ -1,5 +1,6 @@
 ﻿using SharedLibrary.ResponseArgs.Monopoly;
 using SharedLibrary.ResponseArgs.ReadyRoom;
+using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 
 namespace SharedLibrary;
 
@@ -74,21 +75,10 @@ public interface IMonopolyResponses
 
     Task SettlementEvent(SettlementEventArgs e);
 
-    Task PlayerSelectRoleEvent(PlayerSelectRoleEventArgs e);
-
-    Task PlayerSelectLocationEvent(PlayerSelectLocationEventArgs e);
-
-    Task PlayerCannotSelectLocationEvent(PlayerCannotSelectLocationEventArgs e);
-
-    Task PlayerReadyEvent(PlayerReadyEventArgs e);
-
-    Task PlayerCannotReadyEvent(PlayerCannotReadyEventArgs e);
-
     Task GameStartEvent(GameStartEventArgs e);
 
     Task OnlyOnePersonEvent(OnlyOnePersonEventArgs e);
 
     Task SomePlayersPreparingEvent(SomePlayersPreparingEventArgs e);
-    Task GetReadyInfoEvent(GetReadyInfoEventArgs e);
     Task WelcomeEvent(WelcomeEventArgs e);
 }

@@ -11,7 +11,8 @@ public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(E
 public class BidUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<BidRequest, BidResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter)
+    public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class BidUsecase(ICommandRepository repository, IEventBus<DomainEvent> ev
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new BidResponse(game.DomainEvents));
+        await presenter.PresentAsync(new BidResponse(game.DomainEvents), cancellationToken);
     }
 }

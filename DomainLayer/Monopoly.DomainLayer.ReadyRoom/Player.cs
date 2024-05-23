@@ -6,12 +6,15 @@ using Monopoly.DomainLayer.ReadyRoom.Exceptions;
 
 namespace Monopoly.DomainLayer.ReadyRoom;
 
-public sealed class Player(string id, LocationEnum location, string roleId, ReadyStateEnum readyState) : Entity(id)
+public sealed class Player(string id, string name, LocationEnum location, string roleId, ReadyStateEnum readyState) : Entity(id)
 {
     public PlayerBuilder Builder => new();
     public ReadyStateEnum ReadyState => readyState;
+    public string Name => name;
+    public bool IsReady => readyState == ReadyStateEnum.Ready;
     public string RoleId => roleId;
     public LocationEnum Location => location;
+    
 
     public void Ready()
     {

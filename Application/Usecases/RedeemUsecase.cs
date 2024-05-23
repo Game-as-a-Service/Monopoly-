@@ -11,7 +11,8 @@ public record RedeemResponse(IReadOnlyList<DomainEvent> Events) : CommandRespons
 public class RedeemUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<RedeemRequest, RedeemResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter)
+    public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class RedeemUsecase(ICommandRepository repository, IEventBus<DomainEvent>
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new RedeemResponse(game.DomainEvents));
+        await presenter.PresentAsync(new RedeemResponse(game.DomainEvents), cancellationToken);
     }
 }

@@ -11,7 +11,8 @@ public record SelectRoleResponse(IReadOnlyList<DomainEvent> Events) : CommandRes
 public class SelectRoleUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<SelectRoleRequest, SelectRoleResponse>
 {
-    public override async Task ExecuteAsync(SelectRoleRequest request, IPresenter<SelectRoleResponse> presenter)
+    public override async Task ExecuteAsync(SelectRoleRequest request, IPresenter<SelectRoleResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
@@ -23,6 +24,6 @@ public class SelectRoleUsecase(IReadyRoomRepository repository, IEventBus<Domain
         await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await eventBus.PublishAsync(readyRoom.DomainEvents);
+        await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);
     }
 }

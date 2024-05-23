@@ -12,7 +12,8 @@ public record CreateGameResponse(string GameId) : Response;
 public class CreateGameUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<CreateGameRequest, CreateGameResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(CreateGameRequest request, IPresenter<CreateGameResponse> presenter)
+    public override async Task ExecuteAsync(CreateGameRequest request, IPresenter<CreateGameResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         // 查
         // 改
@@ -30,6 +31,6 @@ public class CreateGameUsecase(ICommandRepository repository, IEventBus<DomainEv
         var id = Repository.Save(builder.Build());
 
         // 推
-        await presenter.PresentAsync(new CreateGameResponse(id));
+        await presenter.PresentAsync(new CreateGameResponse(id), cancellationToken);
     }
 }

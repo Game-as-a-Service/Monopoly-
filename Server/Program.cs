@@ -4,7 +4,6 @@ using Application.Usecases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Server;
 using Server.DataModels;
-using Server.Hubs;
 using Server.Presenters;
 using Server.Services;
 using SharedLibrary.MonopolyMap;
@@ -60,7 +59,7 @@ app.MapHub<ReadyRoomHub>("/ready-room");
 app.MapGet("/health", () => Results.Ok());
 
 // 開始遊戲
-app.MapPost("/games", async (context) =>
+app.MapPost("/games", async (HttpContext context, CancellationToken cancellationToken) =>
 {
     var hostId = context.User.FindFirst(ClaimTypes.Sid)!.Value;
     var payload = (await context.Request.ReadFromJsonAsync<CreateGameBodyPayload>())!;
@@ -68,7 +67,7 @@ app.MapPost("/games", async (context) =>
     var presenter = new DefaultPresenter<CreateGameResponse>();
     await createGameUsecase.ExecuteAsync(
         new CreateGameRequest(hostId, payload.Players.Select(x => x.Id).ToArray()),
-        presenter);
+        presenter, cancellationToken);
 
     var frontendBaseUrl = app.Configuration["FrontendBaseUrl"]!;
 

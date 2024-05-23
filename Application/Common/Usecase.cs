@@ -5,7 +5,8 @@ namespace Application.Common;
 public abstract class Usecase<TRequest, TResponse>()
     where TRequest : Request where TResponse : Response
 {
-    public abstract Task ExecuteAsync(TRequest request, IPresenter<TResponse> presenter);
+    public abstract Task ExecuteAsync(TRequest request, IPresenter<TResponse> presenter,
+        CancellationToken cancellationToken = default);
 }
 
 public abstract class CommandUsecase<TRequest, TResponse>(ICommandRepository repository, IEventBus<DomainEvent> eventBus)

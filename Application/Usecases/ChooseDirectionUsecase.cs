@@ -12,7 +12,7 @@ public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<Dom
     : CommandUsecase<ChooseDirectionRequest, ChooseDirectionResponse>(repository, eventBus)
 {
     public override async Task ExecuteAsync(ChooseDirectionRequest request,
-        IPresenter<ChooseDirectionResponse> presenter)
+        IPresenter<ChooseDirectionResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -21,6 +21,6 @@ public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<Dom
         //存
         Repository.Save(game);
         //推
-        await presenter.PresentAsync(new ChooseDirectionResponse(game.DomainEvents));
+        await presenter.PresentAsync(new ChooseDirectionResponse(game.DomainEvents), cancellationToken);
     }
 }

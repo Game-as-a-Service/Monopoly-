@@ -15,6 +15,8 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 using Monopoly.InterfaceAdapters.Server.Tests.Generators;
 using ServerTests.Common;
+using SharedLibrary.ResponseArgs.ReadyRoom;
+using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 
 namespace ServerTests;
 
@@ -127,6 +129,7 @@ public interface IReadyRoomRequests
     Task PlayerReady();
     Task SelectLocation(int location);
     Task SelectRole(string role);
+    Task<ReadyRoomInfos> GetReadyRoomInfos();
 }
 
 internal class VerificationHub

@@ -11,7 +11,8 @@ public record PayTollResponse(IReadOnlyList<DomainEvent> Events) : CommandRespon
 public class PayTollUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<PayTollRequest, PayTollResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PayTollRequest request, IPresenter<PayTollResponse> presenter)
+    public override async Task ExecuteAsync(PayTollRequest request, IPresenter<PayTollResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class PayTollUsecase(ICommandRepository repository, IEventBus<DomainEvent
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PayTollResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PayTollResponse(game.DomainEvents), cancellationToken);
     }
 }

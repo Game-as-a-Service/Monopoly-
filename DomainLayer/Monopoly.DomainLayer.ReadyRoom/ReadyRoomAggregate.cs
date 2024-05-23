@@ -11,6 +11,8 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
 {
     public static ReadyRoomBuilder Builder => new();
     public IGameIdProvider GameIdProvider { get; set; } = new GameIdProvider();
+    public IReadOnlyList<Player> Players => players;
+    public string HostId => hostId;
 
     private Player GetPlayer(string playerId)
     {

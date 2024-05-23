@@ -13,7 +13,7 @@ public class SelectLocationUsecase(IReadyRoomRepository repository, IEventBus<Do
     : Usecase<SelectLocationRequest, SelectLocationResponse>
 {
     public override async Task ExecuteAsync(SelectLocationRequest request,
-        IPresenter<SelectLocationResponse> presenter)
+        IPresenter<SelectLocationResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
@@ -25,6 +25,6 @@ public class SelectLocationUsecase(IReadyRoomRepository repository, IEventBus<Do
         await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await eventBus.PublishAsync(readyRoom.DomainEvents);
+        await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);
     }
 }

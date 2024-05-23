@@ -1,6 +1,6 @@
 ﻿namespace Application.Common;
 
-public interface IPresenter<in TResponse>
+public interface IPresenter<TResponse>
 {
-    public Task PresentAsync(TResponse response);
+    public Task PresentAsync(TResponse response, CancellationToken cancellationToken);
 }

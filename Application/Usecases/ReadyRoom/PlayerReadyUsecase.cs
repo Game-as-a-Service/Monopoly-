@@ -11,7 +11,8 @@ public record PlayerReadyResponse(IReadOnlyList<DomainEvent> Events) : CommandRe
 public class PlayerReadyUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<PlayerReadyRequest, PlayerReadyResponse>
 {
-    public override async Task ExecuteAsync(PlayerReadyRequest request, IPresenter<PlayerReadyResponse> presenter)
+    public override async Task ExecuteAsync(PlayerReadyRequest request, IPresenter<PlayerReadyResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
@@ -23,6 +24,6 @@ public class PlayerReadyUsecase(IReadyRoomRepository repository, IEventBus<Domai
         await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await eventBus.PublishAsync(readyRoom.DomainEvents);
+        await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);
     }
 }

@@ -11,7 +11,8 @@ public record BuildHouseResponse(IReadOnlyList<DomainEvent> Events) : CommandRes
 public class BuildHouseUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<BuildHouseRequest, BuildHouseResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(BuildHouseRequest request, IPresenter<BuildHouseResponse> presenter)
+    public override async Task ExecuteAsync(BuildHouseRequest request, IPresenter<BuildHouseResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class BuildHouseUsecase(ICommandRepository repository, IEventBus<DomainEv
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new BuildHouseResponse(game.DomainEvents));
+        await presenter.PresentAsync(new BuildHouseResponse(game.DomainEvents), cancellationToken);
     }
 }

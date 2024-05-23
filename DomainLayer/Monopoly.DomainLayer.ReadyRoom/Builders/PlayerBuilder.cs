@@ -5,6 +5,8 @@ namespace Monopoly.DomainLayer.ReadyRoom.Builders;
 public sealed class PlayerBuilder
 {
     private string Id { get; set; } = Guid.NewGuid().ToString();
+    
+    private string Name { get; set; } = Guid.NewGuid().ToString();
 
     private LocationEnum Location { get; set; } = LocationEnum.None;
 
@@ -38,6 +40,6 @@ public sealed class PlayerBuilder
 
     public Player Build()
     {
-        return new Player(Id, Location, RoleId, ReadyState);
+        return new Player(Id, Name, Location, RoleId, ReadyState);
     }
 }

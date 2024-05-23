@@ -11,7 +11,7 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
     : PlayerRollDiceUsecase(repository, eventBus)
 {
     public override async Task ExecuteAsync(PlayerRollDiceRequest request,
-        IPresenter<PlayerRollDiceResponse> presenter)
+        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -26,6 +26,6 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
     }
 }

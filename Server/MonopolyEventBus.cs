@@ -8,7 +8,7 @@ internal class MonopolyEventBus(IEnumerable<IMonopolyEventHandler> handlers) : I
 {
     private readonly Dictionary<Type, IMonopolyEventHandler> _handlers = handlers.ToDictionary(h => h.EventType, h => h);
 
-    public async Task PublishAsync(IEnumerable<DomainEvent> events)
+    public async Task PublishAsync(IEnumerable<DomainEvent> events, CancellationToken cancellationToken)
     {
         foreach (var e in events)
         {

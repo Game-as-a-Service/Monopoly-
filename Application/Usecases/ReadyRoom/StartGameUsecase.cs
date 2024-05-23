@@ -11,7 +11,8 @@ public record StartGameResponse(IReadOnlyList<DomainEvent> Events) : CommandResp
 public class StartGameUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<StartGameRequest, StartGameResponse>
 {
-    public override async Task ExecuteAsync(StartGameRequest request, IPresenter<StartGameResponse> presenter)
+    public override async Task ExecuteAsync(StartGameRequest request, IPresenter<StartGameResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
@@ -23,7 +24,7 @@ public class StartGameUsecase(IReadyRoomRepository repository, IEventBus<DomainE
         await repository.SaveReadyRoomAsync(readyRoom);
 
         //推
-        await eventBus.PublishAsync(readyRoom.DomainEvents);
+        await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);
         //await presenter.PresentAsync(new GameStartResponse(readyRoom.DomainEvents));
     }
 }

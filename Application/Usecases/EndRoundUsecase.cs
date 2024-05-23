@@ -11,7 +11,8 @@ public record EndRoundResponse(IReadOnlyList<DomainEvent> Events) : CommandRespo
 public class EndRoundUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<EndRoundRequest, EndRoundResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(EndRoundRequest request, IPresenter<EndRoundResponse> presenter)
+    public override async Task ExecuteAsync(EndRoundRequest request, IPresenter<EndRoundResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class EndRoundUsecase(ICommandRepository repository, IEventBus<DomainEven
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new EndRoundResponse(game.DomainEvents));
+        await presenter.PresentAsync(new EndRoundResponse(game.DomainEvents), cancellationToken);
     }
 }

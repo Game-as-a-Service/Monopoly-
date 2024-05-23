@@ -12,7 +12,7 @@ public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<Doma
     : CommandUsecase<PlayerRollDiceRequest, PlayerRollDiceResponse>(repository, eventBus)
 {
     public override async Task ExecuteAsync(PlayerRollDiceRequest request,
-        IPresenter<PlayerRollDiceResponse> presenter)
+        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -24,6 +24,6 @@ public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<Doma
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
     }
 }
