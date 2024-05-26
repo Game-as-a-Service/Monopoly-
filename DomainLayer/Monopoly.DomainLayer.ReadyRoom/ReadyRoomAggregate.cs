@@ -58,4 +58,14 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
         var gameId = GameIdProvider.GetGameId();
         AddDomainEvent(new GameStartedEvent(gameId));
     }
+
+    public void PlayerJoin(string playerId)
+    {
+        if (players.Count >= 4) throw new CannotJoinReadyRoomDueToRoomIsFullException();
+        if (players.Any(p => p.Id == playerId)) throw new PlayerAlreadyInRoomException();
+
+        var player = new PlayerBuilder().WithId(playerId).Build();
+        players.Add(player);
+        AddDomainEvent(new PlayerJoinReadyRoomEvent(playerId));
+    }
 }
