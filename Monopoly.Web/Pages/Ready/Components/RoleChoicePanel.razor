@@ -6,7 +6,8 @@
         <div class="choice-role-row">
             @foreach (var role in new[] { RoleEnum.OldMan, RoleEnum.Baby, RoleEnum.Dai, RoleEnum.Mei })
             {
-                <div class="choice-role-item @(CurrentPlayer.Role == role ? "selected" : string.Empty)" @onclick="() => ChangeRole(role)">
+                var selectedCss = CurrentPlayer.Role == role ? "selected" : string.Empty;
+                <div class="choice-role-item @selectedCss" @onclick="async () => await OnSelectRole.InvokeAsync(role.ToString())">
                     <div class="picture @(role.ToLowerCaseName())"></div>
                 </div>
             }

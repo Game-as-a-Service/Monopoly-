@@ -3,13 +3,13 @@
 }
 else if (CurrentPlayer.IsHost)
 {
-    <div class="button @(GetStartButtonCss())" @onclick="@Start">
+    <div class="button @(GetStartButtonCss())" @onclick="OnStart">
         <div class="start-button-text"></div>
     </div>
 }
 else
 {
-    <div class="button @(GetReadyButtonCss())" @onclick="@Ready">
+    <div class="button @(GetReadyButtonCss())" @onclick="OnReady">
         <div class="ready-button-text"></div>
     </div>
 }
@@ -29,7 +29,7 @@ else
 
     private string GetStartButtonCss()
     {
-        var allPlayersReady = Parent.Players
+        var allPlayersReady = Players
             .Where(p => p != CurrentPlayer)
             .All(p => p.IsReady);
         return EnabledToReady && allPlayersReady ? "enabled-to-start" : string.Empty;

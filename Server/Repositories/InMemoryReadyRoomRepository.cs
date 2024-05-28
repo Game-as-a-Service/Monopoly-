@@ -14,6 +14,8 @@ public class InMemoryReadyRoomRepository : IReadyRoomRepository
 
     public Task<ReadyRoomAggregate> GetReadyRoomAsync(string id)
     {
-        return Task.FromResult(_readyRooms[id]);
+        var readyRoomAggregate = _readyRooms[id];
+        readyRoomAggregate.ClearDomainEvents();
+        return Task.FromResult(readyRoomAggregate);
     }
 }

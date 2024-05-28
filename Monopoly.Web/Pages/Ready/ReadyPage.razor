@@ -1,10 +1,17 @@
 @page "/ready-room/{roomId}"
 @using Client.Pages.Ready.Components
 <div class="background">
-    <Popup @ref="Popup" />
-    <CascadingValue Value="this">
-        <ColorChoicePanel/>
-        <RoleChoicePanel/>
-        <ReadyButton/>
-    </CascadingValue>
+    <Popup @ref="Popup"/>
+    <ColorChoicePanel 
+        CurrentPlayer="CurrentPlayer" 
+        OnSelectColor="OnSelectColor" 
+        Players="Players" />
+    <RoleChoicePanel 
+        CurrentPlayer="CurrentPlayer" 
+        OnSelectRole="OnSelectRole" />
+    <ReadyButton 
+        CurrentPlayer="CurrentPlayer" 
+        OnReady="OnReady" 
+        OnStart="OnStart" 
+        Players="Players" />
 </div>
