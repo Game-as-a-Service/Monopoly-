@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases.ReadyRoom;
 
 public record SelectRoleRequest(string GameId, string PlayerId, string Role)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record SelectRoleResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

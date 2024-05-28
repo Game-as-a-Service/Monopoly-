@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record RedeemRequest(string GameId, string PlayerId, string BlockId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record RedeemResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

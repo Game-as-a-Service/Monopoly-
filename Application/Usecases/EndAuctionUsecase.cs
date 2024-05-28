@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record EndAuctionRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record EndAuctionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

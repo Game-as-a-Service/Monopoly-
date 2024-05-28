@@ -3,7 +3,7 @@
 namespace Application.Common;
 
 public abstract class Usecase<TRequest, TResponse>()
-    where TRequest : Request where TResponse : Response
+    where TRequest : BaseRequest where TResponse : Response
 {
     public abstract Task ExecuteAsync(TRequest request, IPresenter<TResponse> presenter,
         CancellationToken cancellationToken = default);
@@ -11,14 +11,14 @@ public abstract class Usecase<TRequest, TResponse>()
 
 public abstract class CommandUsecase<TRequest, TResponse>(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<TRequest, TResponse>()
-    where TRequest : Request where TResponse : Response
+    where TRequest : GameRequest where TResponse : Response
 {
     protected ICommandRepository Repository { get; } = repository;
     protected IEventBus<DomainEvent> EventBus { get; } = eventBus;
 }
 
 public abstract class QueryUsecase<TRequest, TResponse>(ICommandRepository repository)
-    where TRequest : Request
+    where TRequest : GameRequest
 {
     protected ICommandRepository Repository { get; } = repository;
 

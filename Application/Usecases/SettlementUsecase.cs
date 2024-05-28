@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record SettlementRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record SettlementResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

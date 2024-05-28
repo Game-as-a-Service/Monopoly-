@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record PlayerBuyLandRequest(string GameId, string PlayerId, string LandID)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record PlayerBuyLandResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

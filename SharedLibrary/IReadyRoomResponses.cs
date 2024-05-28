@@ -8,4 +8,5 @@ public interface IReadyRoomResponses
     Task PlayerReadyEvent(PlayerReadyEventArgs args);
     Task PlayerSelectLocationEvent(PlayerSelectLocationEventArgs args);
     Task PlayerSelectRoleEvent(PlayerSelectRoleEventArgs args);
+    Task PlayerJoinReadyRoomEvent(PlayerJoinReadyRoomEventArgs playerJoinReadyRoomEventArgs);
 }

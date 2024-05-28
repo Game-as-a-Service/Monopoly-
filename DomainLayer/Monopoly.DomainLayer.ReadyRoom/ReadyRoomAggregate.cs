@@ -9,7 +9,7 @@ namespace Monopoly.DomainLayer.ReadyRoom;
 
 public sealed class ReadyRoomAggregate(string id, List<Player> players, string hostId) : AggregateRoot(id)
 {
-    public static ReadyRoomBuilder Builder => new();
+    public static ReadyRoomBuilder Builder() => new();
     public IGameIdProvider GameIdProvider { get; set; } = new GameIdProvider();
     public IReadOnlyList<Player> Players => players;
     public string HostId => hostId;

@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record MortgageRequest(string GameId, string PlayerId, string BlockId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record MortgageResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

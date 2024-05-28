@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases.ReadyRoom;
 
 public record PlayerReadyRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record PlayerReadyResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

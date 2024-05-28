@@ -5,26 +5,26 @@ using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
-public record CreateGameRequest(string HostId, string[] PlayerIds) : Request(null!, HostId);
+public record CreateGameRequest(string HostId, string[] PlayerIds) : GameRequest(null!, HostId);
 
 public record CreateGameResponse(string GameId) : Response;
 
 public class CreateGameUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<CreateGameRequest, CreateGameResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(CreateGameRequest request, IPresenter<CreateGameResponse> presenter,
+    public override async Task ExecuteAsync(CreateGameRequest gameRequest, IPresenter<CreateGameResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         // 查
         // 改
 
         var builder = new MonopolyBuilder();
-        foreach (var playerId in request.PlayerIds)
+        foreach (var playerId in gameRequest.PlayerIds)
         {
             builder.WithPlayer(playerId);
         }
-        builder.WithHost(request.HostId);
-        builder.WithCurrentPlayer(request.PlayerIds.First());
+        builder.WithHost(gameRequest.HostId);
+        builder.WithCurrentPlayer(gameRequest.PlayerIds.First());
         builder.WithMap(new SevenXSevenMap());
 
         // 存

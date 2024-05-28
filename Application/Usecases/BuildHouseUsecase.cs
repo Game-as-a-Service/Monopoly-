@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record BuildHouseRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record BuildHouseResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

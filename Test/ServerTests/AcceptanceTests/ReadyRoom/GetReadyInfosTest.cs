@@ -43,6 +43,7 @@ public class GetReadyInfosTest : AbstractReadyRoomTestBase
             .Build();
 
         var expectedReadyInfos = new ReadyRoomInfos(
+            player2.Id,
             [
                 new Player(player1.Id, player1.Name, true, ReadyInfoLocationEnum.First, RoleEnum.Mei),
                 new Player(player2.Id, player2.Name, false, ReadyInfoLocationEnum.None, RoleEnum.Dai),

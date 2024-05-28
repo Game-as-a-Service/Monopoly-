@@ -1,38 +1,40 @@
-﻿using System.Net.Http.Headers;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Client.HttpClients;
 
 public class MonopolyDevelopmentApiClient(HttpClient httpClient)
 {
-    public async Task<IEnumerable<PlayerModel>> GetPlayers()
+    public async Task<JwtSecurityToken> CreateUserAsync(string userName)
     {
-        var response = await httpClient.GetAsync("/users");
+        var response = await httpClient.PostAsync($"/dev/user?userName={userName}", null);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<IEnumerable<PlayerModel>>() ?? [];
+        var token = await response.Content.ReadFromJsonAsync<string>();
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        return jwtToken;
     }
-    
-    public async Task<IEnumerable<string>> GetRooms()
-    {
-        var response = await httpClient.GetAsync("/rooms");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<IEnumerable<string>>() ?? [];
-    }
-    
-    public async Task CreateGame(string hostToken, IEnumerable<PlayerModel> players)
+
+    public async Task<string> CreateRoomAsync(JwtSecurityToken hostToken, string[] playerIds)
     {
         var payload = new
         {
-            Players = players.ToArray()
+            PlayerIds = playerIds
         };
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", hostToken);
-        var response = await httpClient.PostAsJsonAsync("/games", payload);
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", hostToken.RawData);
+        var response = await httpClient.PostAsJsonAsync("/dev/room", payload);
         response.EnsureSuccessStatusCode();
+        var roomId = await response.Content.ReadFromJsonAsync<string>();
+        return roomId!;
     }
 }
 
-public class PlayerModel
+public static class JwtSecurityTokenExtensions
 {
-    public required string Id { get; set; }
-    public required string Token { get; set; }
+    public static string GetMonopolyPlayerId(this JwtSecurityToken token)
+    {
+        var payload = token.Payload;
+        return payload.Claims.FirstOrDefault(x => x.Type == "nameid")?.Value ?? "";
+    }
 }

@@ -5,7 +5,7 @@ using Monopoly.DomainLayer.ReadyRoom.Enums;
 namespace Application.Usecases.ReadyRoom;
 
 public record SelectLocationRequest(string GameId, string PlayerId, LocationEnum Location)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record SelectLocationResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

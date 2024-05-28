@@ -54,10 +54,17 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponses>
         );
         return await presenter.GetResultAsync();
     }
+    
+    public async Task JoinRoom(PlayerJoinReadyRoomUsecase usecase)
+    {
+        await usecase.ExecuteAsync(
+            new PlayerJoinReadyRoomRequest(GameId, PlayerId),
+            NullPresenter<PlayerJoinReadyRoomResponse>.Instance);
+    }
 
     public override async Task OnConnectedAsync()
     {
-        var playerId = Context.User!.FindFirst(x => x.Type == ClaimTypes.Sid)!.Value;
+        var playerId = Context.UserIdentifier;
         var gameId = Context.GetHttpContext()!.Request.Query["gameId"][0];
         Context.Items[KeyOfPlayerId] = playerId;
         Context.Items[KeyOfGameId] = gameId;

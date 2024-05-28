@@ -20,6 +20,7 @@ public class ReadyRoomInfosValueReturningPresenter : ValueReturningPresenter<Rea
             ServerEnumExtensions.AsServerRoleEnum(p.RoleId)
         ));
         var readyRoomInfos = new ReadyRoomInfos(
+            response.RequestPlayerId,
             [
                 ..players
             ],

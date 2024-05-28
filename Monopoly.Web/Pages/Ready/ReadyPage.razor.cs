@@ -17,8 +17,9 @@ public partial class ReadyPage
 {
     public List<Player> Players { get; set; } = []; // 不要用 IEnumerable，因為會有問題(IEnumerable 會是延遲查詢)
     [Parameter] public string UserId { get; set; } = string.Empty;
-    [Parameter] public string GameId { get; set; } = string.Empty;
-    [Parameter] public string AccessToken { get; set; } = string.Empty;
+    [Parameter] public string RoomId { get; set; } = string.Empty;
+    [Parameter, SupplyParameterFromQuery(Name = "token")]
+    public string AccessToken { get; set; } = string.Empty;
     [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
     internal ReadyRoomHubConnection Connection { get; set; } = default!;
     public Player? CurrentPlayer => Players.FirstOrDefault(x => x.Id == UserId);
@@ -27,15 +28,19 @@ public partial class ReadyPage
     protected override async Task OnInitializedAsync()
     {
         var baseUri = new Uri(BackendApiOptions.Value.BaseUrl);
-        var url = new Uri(baseUri, $"/ready-room?gameid={GameId}");
+        var url = new Uri(baseUri, $"/ready-room?gameid={RoomId}");
         var client = new HubConnectionBuilder()
-            .WithUrl(url, options => { options.AccessTokenProvider = async () => await Task.FromResult(AccessToken); })
+            .WithUrl(url, options =>
+            {
+                options.AccessTokenProvider = async () => await Task.FromResult(AccessToken);
+            })
             .Build();
         Connection = new ReadyRoomHubConnection(client);
         Connection.PlayerSelectLocationEventHandler += OnPlayerSelectLocationEvent;
         Connection.PlayerSelectRoleEventHandler += OnPlayerSelectRoleEvent;
         Connection.PlayerReadyEventHandler += OnPlayerReadyEvent;
         Connection.GameStartedEventHandler += OnGameStartEvent;
+        await client.StartAsync();
         var readyRoomInfos = await Connection.GetReadyRoomInfos();
         Players = readyRoomInfos.Players.Select(x =>
         {
@@ -65,6 +70,7 @@ public partial class ReadyPage
                 }
             };
         }).ToList();
+        UserId = readyRoomInfos.RequestPlayerId;
     }
 
     public void Update() => StateHasChanged();
@@ -73,7 +79,7 @@ public partial class ReadyPage
     {
         var player = Players.First(x => x.Id == e.PlayerId);
         player.Color = (ColorEnum)e.LocationId;
-        Update();
+        //Update();
         return Task.CompletedTask;
     }
 
@@ -81,7 +87,7 @@ public partial class ReadyPage
     {
         var player = Players.First(x => x.Id == e.PlayerId);
         player.Role = Enum.Parse<PageRoleEnum>(e.RoleId);
-        Update();
+        //Update();
         return Task.CompletedTask;
     }
 

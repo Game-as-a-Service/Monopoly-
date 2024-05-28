@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record ChooseDirectionRequest(string GameId, string PlayerId, string Direction)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 

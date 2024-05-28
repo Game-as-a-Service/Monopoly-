@@ -2,4 +2,4 @@
 
 namespace SharedLibrary.ResponseArgs.ReadyRoom.Models;
 
-public record ReadyRoomInfos(ImmutableArray<Player> Players, string HostId);
+public record ReadyRoomInfos(string RequestPlayerId, ImmutableArray<Player> Players, string HostId);

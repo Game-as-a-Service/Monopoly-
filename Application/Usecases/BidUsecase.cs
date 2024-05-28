@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Common;
 namespace Application.Usecases;
 
 public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
