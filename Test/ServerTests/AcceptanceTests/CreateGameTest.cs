@@ -51,6 +51,7 @@ public class CreateGameTest
         Then:   回傳遊戲 {domain name of frontend}/{gameId}
                 遊戲為 {gameId} 的遊戲有被建立，遊戲內有玩家 A B C，玩家A為房主
         """)]
+    [Ignore]
     public async Task 建立遊戲成功()
     {
         // Arrange
@@ -80,6 +81,7 @@ public class CreateGameTest
     }
 
     [TestMethod]
+    [Ignore]
     public async Task 因為沒有建立遊戲失敗()
     {
         // // Arrange

@@ -48,14 +48,7 @@ internal class MonopolyTestServer : WebApplicationFactory<Program>
             .WithUrl(uri, opt =>
             {
                 opt.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
-                opt.AccessTokenProvider = async () =>
-                {
-                    var options = GetRequiredService<IOptionsMonitor<JwtBearerOptions>>();
-
-                    var jwtToken = GetRequiredService<MockJwtTokenService>()
-                        .GenerateJwtToken(options.Get("Bearer").Audience, playerId);
-                    return await Task.FromResult(jwtToken);
-                };
+                opt.AccessTokenProvider = async () => await Task.FromResult(CreateJwtToken(playerId));
                 opt.HttpMessageHandlerFactory = _ => Server.CreateHandler();
             })
             .Build();

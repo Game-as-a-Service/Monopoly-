@@ -110,7 +110,7 @@ public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses
         }
 
         Context.Items[KeyOfGameId] = gameIdStringValues.ToString();
-        Context.Items[KeyOfPlayerId] = Context.User!.FindFirst(x => x.Type == ClaimTypes.Sid)!.Value;
+        Context.Items[KeyOfPlayerId] = Context.UserIdentifier;
         if (repository.IsExist(GameId) is false)
         {
             throw new GameNotFoundException($"Can not find the game that id is {GameId}");
