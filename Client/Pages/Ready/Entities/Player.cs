@@ -1,4 +1,6 @@
-﻿namespace Client.Pages.Ready.Entities;
+﻿using Client.Pages.Enums;
+
+namespace Client.Pages.Ready.Entities;
 
 public class Player
 {

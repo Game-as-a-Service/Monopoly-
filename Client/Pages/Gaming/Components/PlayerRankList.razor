@@ -1,86 +1,33 @@
-﻿<div class="PlayerRankList">
-    <div class="Player">
-        <div class="PlayerInfo">
-            <div class="Rank">
-                <div class="Round">
-                    <span class="Number">1</span>
+﻿@using Client.Pages.Gaming.Entities
+@code {
+    [CascadingParameter] 
+    public GamingPage Parent { get; set; } = default!;
+    private IEnumerable<Player> players => Parent?.Players;
+}
+
+<div class="PlayerRankList">
+    @foreach (var (player, index) in players.OrderBy(p=>p.GetTotalMoney).Select((item, index) => (item, index)))
+    {
+        <div class="Player">
+            <div class="PlayerInfo">
+                <div class="Rank">
+                    <div class="Round">
+                        <span class="Number">@(@index + 1)</span>
+                    </div>
+                    <p class="Name">
+                        <span>@player.Name</span>
+                    </p>
                 </div>
-                <p class="Name">
-                    Jason1
-                </p>
-            </div>
-            <div class="PlayerMoney">
-                <div class="Icon oldman"></div>
-                <div class="MoneyBox">
-                    <p class="Money">1,0000</p>
-                    <p class="TotalMoney">9,000</p>
+                <div class="PlayerMoney">
+                    <div class="Icon @player.Role.ToString().ToLower()"></div>
+                    <div class="MoneyBox">
+                        <p class="Money">@player.Money</p>
+                        <p class="TotalMoney">@player.GetTotalMoney</p>
+                    </div>
                 </div>
+                <div class="Status"></div>
             </div>
-            <div class="Status"></div>
+            <div class="Host_Flag"></div>
         </div>
-        <div class="Host_Flag"></div>
-    </div>
-    <div class="Player">
-        <div class="PlayerInfo">
-            <div class="Rank">
-                <div class="Round">
-                    <span class="Number">2</span>
-                </div>
-                <p class="Name">
-                    Jason2
-                </p>
-            </div>
-            <div class="PlayerMoney">
-                <div class="Icon baby"></div>
-                <div class="MoneyBox">
-                    <p class="Money">1,0000</p>
-                    <p class="TotalMoney">9,000</p>
-                </div>
-            </div>
-            <div class="Status"></div>
-        </div>
-        <div class="Host_Flag"></div>
-    </div>
-    <div class="Player">
-        <div class="PlayerInfo">
-            <div class="Rank">
-                <div class="Round">
-                    <span class="Number">3</span>
-                </div>
-                <p class="Name">
-                    <span>Jason3</span>
-                </p>
-            </div>
-            <div class="PlayerMoney">            
-                <div class="Icon dai"></div>
-                <div class="MoneyBox">                
-                    <p class="Money">1,0000</p>
-                    <p class="TotalMoney">9,000</p>
-                </div>
-            </div>
-            <div class="Status"></div>
-        </div>
-        <div class="Host_Flag"></div>
-    </div>
-    <div class="Player">
-        <div class="PlayerInfo">
-            <div class="Rank">
-                <div class="Round">
-                    <span class="Number">4</span>
-                </div>
-                <p class="Name">
-                    <span>Jason4</span>
-                </p>
-            </div>
-            <div class="PlayerMoney">
-                <div class="Icon mei"></div>
-                <div class="MoneyBox">                
-                    <p class="Money">1,0000</p>
-                    <p class="TotalMoney">9,000</p>
-                </div>
-            </div>
-            <div class="Status"></div>
-        </div>
-        <div class="Host_Flag"></div>
-    </div>
+    }
 </div>

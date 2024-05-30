@@ -1,4 +1,4 @@
-﻿namespace Client.Pages.Ready.Entities;
+﻿namespace Client.Pages.Enums;
 
 public enum RoleEnum
 {

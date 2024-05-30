@@ -1,12 +1,15 @@
-﻿<dlv class="PlayerInfo">
+﻿@using Client.Pages.Gaming.Entities
+@code {
+    [CascadingParameter]
+    public GamingPage Parent { get; set; } = default!;
+    private Player player => Parent?.Players.FirstOrDefault();
+}
+<dlv class="PlayerInfo">
     <div class="money">
-        <span>9,000</span>
+        <span>@player.Money</span>
     </div>
     <div class="TotalMoney">
-        <span>9,000</span>
-    </div>
-    <div class="TotalMoney">
-        <span>9,000</span>
+        <span>@player.GetTotalMoney</span>
     </div>
     <hr class="withBalls">
     <div class="collapseBtn">
