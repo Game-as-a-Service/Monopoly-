@@ -1,5 +1,5 @@
-using Domain.Common;
 using Domain.Events;
+using Monopoly.DomainLayer.Common;
 
 namespace Domain;
 
@@ -46,7 +46,7 @@ public abstract class Block
         throw new Exception("此地不可購買！");
     }
 
-    internal abstract DomainEvent OnBlockEvent(Player player);
+    internal abstract DomainEvent? OnBlockEvent(Player player);
     internal abstract void DoBlockAction(Player player);
 }
 
@@ -115,7 +115,11 @@ public class Land : Block
                     player.PayToll(owner, player.Money);
                     events.Add(new PlayerPayTollEvent(player.Id, player.Money, owner.Id, owner.Money));
 
-                    events.Add(player.UpdateState());
+                    var updateStateDomainEvent = player.UpdateState();
+                    if (updateStateDomainEvent is not null)
+                    {
+                        events.Add(updateStateDomainEvent);
+                    }
                 }
                 else
                 {
@@ -166,7 +170,7 @@ public class Land : Block
         }
     }
 
-    internal override DomainEvent OnBlockEvent(Player player)
+    internal override DomainEvent? OnBlockEvent(Player player)
     {
         Player? owner = GetOwner();
         var land = this;
@@ -185,7 +189,7 @@ public class Land : Block
         {
             return new PlayerNeedsToPayTollEvent(player.Id, owner.Id, land.CalcullateToll(owner));
         }
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 
     internal override void DoBlockAction(Player player)
@@ -245,9 +249,9 @@ public class ParkingLot : Block
         player.SuspendRound("ParkingLot");
     }
 
-    internal override DomainEvent OnBlockEvent(Player player)
+    internal override DomainEvent? OnBlockEvent(Player player)
     {
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 }
 
@@ -274,7 +278,7 @@ public class Station : Land
         return new PlayerCannotBuildHouseEvent(player.Id, Id);
     }
 
-    internal override DomainEvent OnBlockEvent(Player player)
+    internal override DomainEvent? OnBlockEvent(Player player)
     {
         Player? owner = GetOwner();
         var land = this;
@@ -287,7 +291,7 @@ public class Station : Land
             DoBlockAction(player);
             return new PlayerNeedsToPayTollEvent(player.Id, owner.Id, land.CalcullateToll(owner));
         }
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 
     internal override void DoBlockAction(Player player)

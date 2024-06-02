@@ -1,17 +1,18 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
 public record PlayerBuyLandRequest(string GameId, string PlayerId, string LandID)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record PlayerBuyLandResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class PlayerBuyLandUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<PlayerBuyLandRequest, PlayerBuyLandResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerBuyLandRequest request, IPresenter<PlayerBuyLandResponse> presenter)
+    public override async Task ExecuteAsync(PlayerBuyLandRequest request, IPresenter<PlayerBuyLandResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class PlayerBuyLandUsecase(ICommandRepository repository, IEventBus<Domai
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PlayerBuyLandResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PlayerBuyLandResponse(game.DomainEvents), cancellationToken);
     }
 }

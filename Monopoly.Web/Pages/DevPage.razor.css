@@ -1,96 +1,163 @@
-﻿.background {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
-}
-
-/* 房間樣式 */
-.room {
+﻿.dev-content {
     display: flex;
-
-    justify-content: flex-start; /* 在主軸線上靠左對齊 */
-    flex-wrap: wrap; /* 允許元素換行 */
 }
 
-/* 玩家和房間的容器 */
-.players, .rooms {
-    margin-bottom: 20px;
-    max-height: 400px; /* 可以根據需要調整 */
-    overflow-y: auto; /* 需要時顯示垂直滾動條 */
+.left-panel {
+    flex: 1;
 }
 
-/* 玩家和房間的卡片樣式 */
-.player, .room {
+.right-panel {
+    flex: 2;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+}
+
+.create-player-form {
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 400px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.create-player-input-text {
     padding: 10px;
+    margin-right: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.create-player-form button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.create-player-form button:hover {
+    background-color: #4cae4c;
+}
+
+.player-list {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 400px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.player-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.player-item.in-room {
+    border: 2px solid #5c68b8;
+}
+
+.player-item.selected {
+    background-color: #bfc7f8;
+}
+
+.player-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.player-token {
+    font-size: 14px;
+    color: #666;
+}
+
+.room-setup {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    width: 400px;
+    min-height: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.room-setup button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.host-to-create-room {
+    padding: 10px;
+    border: 1px solid #ccc;
+    min-height: 30px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.players-to-create-room {
+    padding: 10px;
+    border: 1px solid #ccc;
+    min-height: 30px;
     margin-bottom: 10px;
     border-radius: 4px;
 }
 
-/* 玩家和房間的ID樣式 */
-.player-id, .room-id {
-    min-width: 50px; /* 確保ID有足夠的空間 */
+.block-highlight:hover {
+    border: 5px solid #5cb85c;
+    cursor: pointer;
+}
+
+.room-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* 房间间距 */
+}
+
+.room-card {
+    padding: 15px;
+    margin: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px; /* 卡片宽度 */
+}
+
+.room-card.selected {
+    border: 2px solid #5c68b8;
+}
+
+.room-url {
+    font-size: 18px;
     font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
 }
 
-/* 玩家的token樣式 */
-.player-token {
-    color: #555;
-    font-size: 0.9em;
-    word-break: break-word; /* 讓長文字換行 */
-    overflow-x: auto; /* 需要時顯示水平滾動條 */
+.room-players {
+    margin-bottom: 15px;
 }
 
-/* 創建房間按鈕樣式 */
-.create-room {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #007bff;
+.player-name {
+    font-size: 16px;
+    color: #666;
+    padding: 2px 0;
+}
+
+.join-spectator-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
     color: white;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
-    text-align: center;
-    margin-bottom: 20px;
 }
 
-    .create-room:hover {
-        background-color: #0056b3;
-    }
-
-/* 房間玩家樣式 */
-.room-player {
-    padding: 5px;
-    background-color: #e9ecef;
-    border-radius: 3px;
-    cursor: pointer;
+.join-spectator-btn:hover {
+    background-color: #45a049;
 }
-
-    .room-player:hover {
-        background-color: #dde2e6;
-    }
-
-/* 房間玩家列表 */
-.room-players {
-    display: flex;
-    align-items: center; /* 垂直居中對齊 */
-    gap: 10px; /* 元素之間的間隙 */
-}
-/* 確保滾動條美觀 */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }

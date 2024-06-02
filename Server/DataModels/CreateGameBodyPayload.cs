@@ -1,4 +1,3 @@
 ﻿namespace Server.DataModels;
 
-public record CreateGameBodyPayload(Player[] Players);
-public record Player(string Id, string Nickname);
+public record CreateGameBodyPayload(string[] PlayerIds);

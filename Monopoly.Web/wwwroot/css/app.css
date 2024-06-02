@@ -12,12 +12,14 @@ body {
     margin: 0;
 }
 .main-content {
+    position: relative;
     padding: 0 !important;
     width: var(--vw);
     height: var(--vh);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    position: relative;
     margin: 0 auto !important;
+    background-color: white;
+    overflow: hidden;
 }
 #blazor-error-ui {
     background: lightyellow;

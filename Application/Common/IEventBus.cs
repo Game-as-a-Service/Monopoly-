@@ -1,8 +1,8 @@
-﻿using Domain.Common;
+﻿using Monopoly.DomainLayer.Common;
 
 namespace Application.Common;
 
 public interface IEventBus<TEvent> where TEvent : DomainEvent
 {
-    public Task PublishAsync(IEnumerable<TEvent> events);
+    public Task PublishAsync(IEnumerable<TEvent> events, CancellationToken cancellationToken);
 }

@@ -6,17 +6,11 @@ namespace Client.Pages.Ready.Components;
 
 public partial class RoleChoicePanel
 {
-    [CascadingParameter] public ReadyPage Parent { get; set; } = default!;
-    private Player? CurrentPlayer => Parent.CurrentPlayer;
-    private async Task ChangeRole(RoleEnum role)
-    {
-        if (CurrentPlayer is null)
-        {
-            return;
-        }
-        await Parent.Connection.PlayerSelectRole(role.ToString());
-        Parent.Update();
-    }
+    [Parameter, EditorRequired]
+    public Player? CurrentPlayer { get; set; }
+    
+    [Parameter, EditorRequired]
+    public EventCallback<string> OnSelectRole { get; set; }
 }
 
 public static class RoleEnumExtensions

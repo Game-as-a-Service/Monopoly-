@@ -53,11 +53,11 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
 
                   public partial class {{nodeInfo.Name}} : {{nodeInfo.RequestInterfaceName}}
                   {
-                      private readonly HubConnection hubConnection;
+                      private readonly HubConnection _hubConnection;
                   {{GenerateDelegates(nodeInfo.ResponseMethods)}}
                       public {{nodeInfo.Name}}(HubConnection hubConnection)
                       {
-                          this.hubConnection = hubConnection;
+                          _hubConnection = hubConnection;
                   {{GenerateEventRegistration(nodeInfo.ResponseMethods)}}
                       }
                   {{GenerateRequests(nodeInfo.RequestMethods)}}
@@ -73,12 +73,29 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
             var parameters = string.Join(", ", x.Parameters.Select(p => $"{p.Type} {p.Name}"));
             var parametersInSend = string.Join(", ", x.Parameters.Select(p => p.Name));
             var comma = parametersInSend.Length > 0 ? ", " : "";
-            return $$"""
-                         public async Task {{x.Name}}({{parameters}})
-                         {
-                             await hubConnection.SendAsync("{{x.Name}}"{{comma}}{{parametersInSend}});
-                         }
-                     """;
+            switch (x.ReturnType)
+            {
+                // x. Return type is Task or Task<T>
+                case INamedTypeSymbol { Name: "Task", IsGenericType: false }:
+                    return $$"""
+                                 public async Task {{x.Name}}({{parameters}})
+                                 {
+                                     await _hubConnection.InvokeAsync("{{x.Name}}"{{comma}}{{parametersInSend}});
+                                 }
+                             """;
+                case INamedTypeSymbol { Name: "Task", IsGenericType: true } namedTypeSymbol:
+                {
+                    var returnType = namedTypeSymbol.TypeArguments[0];
+                    return $$"""
+                                 public async Task<{{returnType}}> {{x.Name}}({{parameters}})
+                                 {
+                                     return await _hubConnection.InvokeAsync<{{returnType}}>("{{x.Name}}"{{comma}}{{parametersInSend}});
+                                 }
+                             """;
+                }
+                default:
+                    return $"return type {x.ReturnType} of {x.Name} is not Task or Task<T>";
+            }
         });
         return string.Join("\n", methods);
     }
@@ -91,7 +108,7 @@ public class TypedSignalrClientGenerator : IIncrementalGenerator
             var parametersInOn = string.Join(", ", x.Parameters.Select(p => p.Name));
             var action = $"({parametersInOn}) => {x.Name}Handler?.Invoke({parametersInOn}) ?? Task.CompletedTask";
             return $"""
-                           hubConnection.On<{parameters}>("{x.Name}", {action});
+                            _hubConnection.On<{parameters}>("{x.Name}", {action});
                     """;
         });
         return string.Join("\n", events);

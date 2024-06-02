@@ -7,17 +7,18 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using Server.DataModels;
-using Server.Services;
 using ServerTests.Usecases;
 using SharedLibrary;
 using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
+using Monopoly.InterfaceAdapters.Server.Tests.Generators;
+using Server.Configurations;
+using ServerTests.Common;
+using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 
 namespace ServerTests;
 
@@ -31,7 +32,7 @@ internal class MonopolyTestServer : WebApplicationFactory<Program>
     }
 
     public T GetRequiredService<T>()
-            where T : notnull
+        where T : notnull
     {
         return Server.Services.CreateScope().ServiceProvider.GetRequiredService<T>();
     }
@@ -47,14 +48,7 @@ internal class MonopolyTestServer : WebApplicationFactory<Program>
             .WithUrl(uri, opt =>
             {
                 opt.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
-                opt.AccessTokenProvider = async () =>
-                {
-                    var options = GetRequiredService<IOptionsMonitor<JwtBearerOptions>>();
-
-                    var jwtToken = GetRequiredService<MockJwtTokenService>()
-                        .GenerateJwtToken(options.Get("Bearer").Audience, playerId);
-                    return await Task.FromResult(jwtToken);
-                };
+                opt.AccessTokenProvider = async () => await Task.FromResult(CreateJwtToken(playerId));
                 opt.HttpMessageHandlerFactory = _ => Server.CreateHandler();
             })
             .Build();
@@ -69,29 +63,66 @@ internal class MonopolyTestServer : WebApplicationFactory<Program>
     {
         builder.ConfigureTestServices(services =>
         {
-            services.AddSingleton<MockJwtTokenService>();
-            services.RemoveAll<IPlatformService>();
-            services.RemoveAll<IOptions<JwtBearerOptions>>();
-
-            services.AddSingleton<IPlatformService, MockPlatformService>();
-            services.AddOptions<JwtBearerOptions>("Bearer")
-                .Configure<MockJwtTokenService>((options, jwtToken) =>
-                {
-                    var config = new OpenIdConnectConfiguration()
-                    {
-                        Issuer = jwtToken.Issuer
-                    };
-
-                    config.SigningKeys.Add(jwtToken.SecurityKey);
-                    options.Configuration = config;
-                    options.Authority = null;
-                });
-
             services.RemoveAll<PlayerRollDiceUsecase>();
             services.AddScoped<PlayerRollDiceUsecase, MockPlayerRollDiceUsecase>();
             services.AddSingleton<MockDiceService>();
         });
     }
+
+    public async Task<ReadyRoomAssertionHub> CreateReadyRoomHubConnectionAsync(string gameId, string playerId)
+    {
+        var uri = new UriBuilder(Client.BaseAddress!)
+        {
+            Path = $"/ready-room",
+            Query = $"gameid={gameId}"
+        }.Uri;
+        var builder = new HubConnectionBuilder()
+            .WithUrl(uri, opt =>
+            {
+                opt.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.ServerSentEvents;
+                opt.AccessTokenProvider = async () => await Task.FromResult(CreateJwtToken(playerId));
+                opt.HttpMessageHandlerFactory = _ => Server.CreateHandler();
+            });
+        ReadyRoomAssertionHub readyRoomAssertionHub = new(builder);
+        await readyRoomAssertionHub.StartAsync();
+
+        return readyRoomAssertionHub;
+    }
+
+    private string CreateJwtToken(string userId)
+    {
+        var jwtSettings = GetRequiredService<IOptions<JwtSettings>>();
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Internal.SecretKey));
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name, userId)
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(jwtSettings.Value.Internal.ExpiresInMinutes),
+            Issuer = jwtSettings.Value.Internal.Issuer,
+            Audience = jwtSettings.Value.Internal.Audience,
+            SigningCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
+        return tokenString;
+    }
+}
+
+[AssertionHub(typeof(IReadyRoomRequests), typeof(IReadyRoomResponses))]
+public partial class ReadyRoomAssertionHub;
+
+public interface IReadyRoomRequests
+{
+    Task StartGame();
+    Task PlayerReady();
+    Task SelectLocation(int location);
+    Task SelectRole(string role);
+    Task JoinRoom();
+    Task<ReadyRoomInfos> GetReadyRoomInfos();
 }
 
 internal class VerificationHub
@@ -105,11 +136,13 @@ internal class VerificationHub
         _connection = connection;
         ListenAllEvent();
     }
+
     public async void VerifyDisconnection(int delay = 1000)
     {
         await Task.Delay(delay);
         Assert.AreEqual(HubConnectionState.Disconnected, _connection.State);
     }
+
     // 利用反射讀出所有HubResponse的Method，並且設置On function
     private void ListenAllEvent()
     {
@@ -158,6 +191,7 @@ internal class VerificationHub
                              {string.Join("\n", errorMessages!)}
                              """);
                 }
+
                 // 計算已經等待的時間
                 var elapsedMilliseconds = (DateTime.Now - startTime).TotalMilliseconds;
                 if (elapsedMilliseconds >= timeout)
@@ -171,6 +205,7 @@ internal class VerificationHub
                          3. 在 Domain 中，沒有 添加 Domain Event
                          """);
                 }
+
                 // 等待一段時間再繼續嘗試
                 SpinWait.SpinUntil(() => false, 50);
             }
@@ -181,9 +216,9 @@ internal class VerificationHub
             Assert.Fail(
                 $"""
 
-                IMonopolyResponses 中缺少 Method【{methodName}】
-                可以在 IMonopolyResponses 添加 【{methodName}】 以解決這個問題
-                """);
+                 IMonopolyResponses 中缺少 Method【{methodName}】
+                 可以在 IMonopolyResponses 添加 【{methodName}】 以解決這個問題
+                 """);
         }
         catch (InvalidCastException ex)
         {
@@ -191,9 +226,9 @@ internal class VerificationHub
             Assert.Fail(
                 $"""
 
-                錯誤的轉型
-                可能是【IMonopolyResponses Method的參數類型】與【驗證的參數類型】不一樣
-                """);
+                 錯誤的轉型
+                 可能是【IMonopolyResponses Method的參數類型】與【驗證的參數類型】不一樣
+                 """);
         }
     }
 
@@ -236,10 +271,12 @@ internal class VerificationHub
             {
                 continue;
             }
+
             if (method == nameof(IMonopolyResponses.WelcomeEvent))
             {
                 continue;
             }
+
             var options = new JsonSerializerOptions()
             {
                 WriteIndented = true,
@@ -247,16 +284,17 @@ internal class VerificationHub
             Assert.IsTrue(queue.IsEmpty,
                 $"""
 
-                【{method}】中還有 {queue.Count} 筆資料
-                {JsonSerializer.Serialize(queue, options)}
-                """);
+                 【{method}】中還有 {queue.Count} 筆資料
+                 {JsonSerializer.Serialize(queue, options)}
+                 """);
         }
     }
 }
 
 internal static class TestHubExtension
 {
-    public static IDisposable On(this HubConnection hubConnection, string methodName, Type[] parameterTypes, Action<object?[]> handler)
+    public static IDisposable On(this HubConnection hubConnection, string methodName, Type[] parameterTypes,
+        Action<object?[]> handler)
     {
         return hubConnection.On(methodName, parameterTypes, static (parameters, state) =>
         {
@@ -264,53 +302,5 @@ internal static class TestHubExtension
             currentHandler(parameters);
             return Task.CompletedTask;
         }, handler);
-    }
-}
-
-internal class MockJwtTokenService
-{
-    public string Issuer { get; }
-    public SecurityKey SecurityKey { get; }
-
-    private readonly SigningCredentials _signingCredentials;
-    private readonly JwtSecurityTokenHandler _tokenHandler = new();
-    private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
-    private static readonly byte[] _key = new byte[64];
-
-    public MockJwtTokenService()
-    {
-        Issuer = Guid.NewGuid().ToString();
-
-        _rng.GetBytes(_key);
-        SecurityKey = new SymmetricSecurityKey(_key) { KeyId = Guid.NewGuid().ToString() };
-        _signingCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
-    }
-
-    public string GenerateJwtToken(string? audience, string playerId)
-    {
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Issuer = Issuer,
-            Audience = audience,
-            Expires = DateTime.UtcNow.AddMinutes(20),
-            SigningCredentials = _signingCredentials,
-            Subject = new ClaimsIdentity(new Claim[] { new("Id", playerId) }),
-        };
-        var token = _tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-        return _tokenHandler.WriteToken(token);
-    }
-}
-
-public class MockPlatformService : IPlatformService
-{
-    public Task<UserInfo> GetUserInfo(string tokenString)
-    {
-        var jwt = new JwtSecurityToken(tokenString);
-
-        var id = jwt.Claims.First(x => x.Type == "Id").Value;
-
-        var userinfo = new UserInfo(id, "", "");
-
-        return Task.FromResult(userinfo);
     }
 }

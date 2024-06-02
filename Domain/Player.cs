@@ -1,6 +1,6 @@
-using Domain.Common;
 using Domain.Events;
 using Domain.Interfaces;
+using Monopoly.DomainLayer.Common;
 
 namespace Domain;
 
@@ -10,7 +10,7 @@ public class Player
     private Chess chess;
     private readonly List<LandContract> _landContractList = new();
 
-    public Player(string id, decimal money = 15000, PlayerState playerState = PlayerState.Ready, int bankruptRounds = 0, int locationId = 0, string? roleId = null)
+    public Player(string id, decimal money = 15000, PlayerState playerState = PlayerState.Normal, int bankruptRounds = 0, int locationId = 0, string? roleId = null)
     {
         Id = id;
         Money = money;
@@ -21,7 +21,7 @@ public class Player
     }
 
     public PlayerState State { get; internal set; }
-    public Monopoly Monopoly { get; internal set; }
+    public MonopolyAggregate MonopolyAggregate { get; internal set; }
     public string Id { get; }
     public decimal Money
     {
@@ -44,7 +44,7 @@ public class Player
     public int SuspendRounds { get; private set; } = 0;
     public int BankruptRounds { get; set; }
 
-    internal DomainEvent UpdateState()
+    internal DomainEvent? UpdateState()
     {
         if (Money <= 0 && !LandContractList.Any(l => !l.InMortgage))
         {
@@ -56,7 +56,7 @@ public class Player
             EndRoundFlag = true;
             return new PlayerBankruptEvent(Id);
         }
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 
     public string? RoleId { get; set; }
@@ -92,12 +92,12 @@ public class Player
 
     public List<DomainEvent> EndRound()
     {
-        List<DomainEvent> events = new();
+        var events = _landContractList
+            .Select(l => l.EndRound())
+            .Where(x => x is not null)
+            .OfType<DomainEvent>()
+            .ToList();
 
-        _landContractList.ForEach(l =>
-        {
-            events.Add(l.EndRound());
-        });
         _landContractList.RemoveAll(l => l.Deadline == 0);
 
         return events;
@@ -119,16 +119,16 @@ public class Player
         {
             dice.Roll();
         }
-        Monopoly.AddDomainEvent(new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value)));
+        MonopolyAggregate.AddDomainEvent(new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value)));
         var events = chess.Move(map, dices.Sum(dice => dice.Value));
 
-        Monopoly.AddDomainEvent(events);
+        MonopolyAggregate.AddDomainEvent(events);
     }
 
     internal void SelectDirection(Map map, Map.Direction direction)
     {
         var events = chess.ChangeDirection(map, direction);
-        Monopoly.AddDomainEvent(events);
+        MonopolyAggregate.AddDomainEvent(events);
     }
 
     internal DomainEvent MortgageLandContract(string landId)
@@ -207,12 +207,12 @@ public class Player
             return new PlayerTooPoorToBuildHouseEvent(Id, land.Id, Money, land.UpgradePrice);
         }
         // 玩家這回合沒有買地
-        else if (Monopoly.CurrentPlayerState.IsBoughtLand)
+        else if (MonopolyAggregate.CurrentPlayerState.IsBoughtLand)
         {
             return new PlayerCannotBuildHouseEvent(Id, land.Id);
         }
         // 玩家這回合沒有蓋房子
-        else if (Monopoly.CurrentPlayerState.IsUpgradeLand)
+        else if (MonopolyAggregate.CurrentPlayerState.IsUpgradeLand)
         {
             return new PlayerCannotBuildHouseEvent(Id, land.Id);
         }
@@ -265,21 +265,5 @@ public class Player
     internal bool CanNotSelectDirection(Map.Direction d)
     {
         return d == chess.CurrentDirection.Opposite();
-    }
-
-    internal DomainEvent Ready()
-    {
-        if (RoleId is null || LocationId == 0)
-        {
-            return new PlayerCannotReadyEvent(Id, State.ToString(), RoleId, LocationId);
-        }
-
-        State = State switch
-        {
-            PlayerState.Ready => PlayerState.Normal,
-            PlayerState.Normal => PlayerState.Ready,
-            _ => State
-        };
-        return new PlayerReadyEvent(Id, State.ToString());
     }
 }

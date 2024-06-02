@@ -1,17 +1,18 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
 public record PlayerRollDiceRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record PlayerRollDiceResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<PlayerRollDiceRequest, PlayerRollDiceResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerRollDiceRequest request, IPresenter<PlayerRollDiceResponse> presenter)
+    public override async Task ExecuteAsync(PlayerRollDiceRequest request,
+        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<Doma
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
     }
 }

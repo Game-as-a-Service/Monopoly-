@@ -1,17 +1,18 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
 public record RedeemRequest(string GameId, string PlayerId, string BlockId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record RedeemResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class RedeemUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<RedeemRequest, RedeemResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter)
+    public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class RedeemUsecase(ICommandRepository repository, IEventBus<DomainEvent>
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new RedeemResponse(game.DomainEvents));
+        await presenter.PresentAsync(new RedeemResponse(game.DomainEvents), cancellationToken);
     }
 }

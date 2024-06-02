@@ -15,16 +15,21 @@ public static class DependencyInjection
     {
         var assembly = typeof(DependencyInjection).Assembly;
         var types = assembly.GetTypes();
-        var useCaseType = typeof(CommandUsecase<,>);
+        var commandUseCaseType = typeof(CommandUsecase<,>);
         var queryUsecaseType = typeof(QueryUsecase<,>);
+        var usecaseType = typeof(Usecase<,>);
 
         foreach (var type in types.Where(t => t.BaseType?.IsGenericType is true && t.IsAbstract == false))
         {
-            if (type.BaseType?.GetGenericTypeDefinition() == useCaseType)
+            if (type.BaseType?.GetGenericTypeDefinition() == commandUseCaseType)
             {
                 services.AddTransient(type, type);
             }
             else if (type.BaseType?.GetGenericTypeDefinition() == queryUsecaseType)
+            {
+                services.AddTransient(type, type);
+            }
+            else if (type.BaseType?.GetGenericTypeDefinition() == usecaseType)
             {
                 services.AddTransient(type, type);
             }

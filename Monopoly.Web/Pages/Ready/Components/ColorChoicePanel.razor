@@ -3,7 +3,7 @@
     @foreach (var color in new[] { ColorEnum.Blue, ColorEnum.Red, ColorEnum.Yellow, ColorEnum.Green })
     {
         var player = GetPlayerWithColor(color);
-        <div class="choice-wrapper @GetChoiceWrapperCss(color)" @onclick="() => ChangeColor(color)">
+        <div class="choice-wrapper @GetChoiceWrapperCss(color)" @onclick="async () => await OnSelectColor.InvokeAsync(color)">
             @if (CurrentPlayer is not null)
             {
                 <div class="choice-text"></div>

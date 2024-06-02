@@ -147,7 +147,7 @@ public class AuctionTest
             .NoMore();
     }
 
-    private static Monopoly 玩家A持有1000元_玩家B持有2000元_玩家A擁有A1_玩家A正在拍賣A1(out Player player_a, out Player player_b)
+    private static MonopolyAggregate 玩家A持有1000元_玩家B持有2000元_玩家A擁有A1_玩家A正在拍賣A1(out Player player_a, out Player player_b)
     {
 
         var map = new SevenXSevenMap();

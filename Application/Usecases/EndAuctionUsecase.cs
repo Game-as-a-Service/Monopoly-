@@ -1,17 +1,18 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
 public record EndAuctionRequest(string GameId, string PlayerId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record EndAuctionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class EndAuctionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<EndAuctionRequest, EndAuctionResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(EndAuctionRequest request, IPresenter<EndAuctionResponse> presenter)
+    public override async Task ExecuteAsync(EndAuctionRequest request, IPresenter<EndAuctionResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class EndAuctionUsecase(ICommandRepository repository, IEventBus<DomainEv
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new EndAuctionResponse(game.DomainEvents));
+        await presenter.PresentAsync(new EndAuctionResponse(game.DomainEvents), cancellationToken);
     }
 }

@@ -1,17 +1,18 @@
 using Application.Common;
-using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace Application.Usecases;
 
 public record MortgageRequest(string GameId, string PlayerId, string BlockId)
-    : Request(GameId, PlayerId);
+    : GameRequest(GameId, PlayerId);
 
 public record MortgageResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class MortgageUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
     : CommandUsecase<MortgageRequest, MortgageResponse>(repository, eventBus)
 {
-    public override async Task ExecuteAsync(MortgageRequest request, IPresenter<MortgageResponse> presenter)
+    public override async Task ExecuteAsync(MortgageRequest request, IPresenter<MortgageResponse> presenter,
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -23,6 +24,6 @@ public class MortgageUsecase(ICommandRepository repository, IEventBus<DomainEven
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new MortgageResponse(game.DomainEvents));
+        await presenter.PresentAsync(new MortgageResponse(game.DomainEvents), cancellationToken);
     }
 }

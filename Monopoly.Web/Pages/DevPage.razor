@@ -1,28 +1,78 @@
 ﻿@page "/dev-page"
+@using Client.HttpClients
+@using Microsoft.AspNetCore.Components.Forms
+@inject MonopolyDevelopmentApiClient _monopolyDevelopmentApiClient
 
-<div class="background">
-    <div class="players">
-        @foreach (var player in _players)
-        {
-            <div class="player">
-                <div class="player-id">@player.Id</div>
-                <div class="player-token">@player.Token</div>
+<h1 class="">Development Page</h1>
+<div class="dev-content">
+    <div class="left-panel">
+        <div class="create-player-form">
+            <InputText style="padding: 10px; margin-right: 10px; width: 200px; border: 1px solid #ccc; border-radius: 4px;"
+                       @bind-Value="PlayerName" DisplayName="Enter player name"/>
+            <button @onclick="CreatePlayerAsync">Create Player</button>
+        </div>
+
+        <div class="player-list">
+            @foreach (var player in _players)
+            {
+                var isSelected = SelectedPlayer == player;
+                var selectCss = isSelected ? "selected" : "";
+                var isInRoom = SelectedRoom?.Players.Contains(player) ?? false;
+                var isInRoomCss = isInRoom ? "in-room" : "";
+
+                <div class="player-item block-highlight @(selectCss) @(isInRoomCss)" @onclick="() => SelectedPlayer = player">
+                    <div class="player-name">@player.Name</div>
+                    <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                </div>
+            }
+        </div>
+        <div class="room-setup">
+            <div class="host-to-create-room block-highlight" @onclick="AddHostToCreateRoom">
+                @if (HostToCreateRoom is not null)
+                {
+                    <div class="player-name">@HostToCreateRoom.Name</div>
+                    <div class="player-token">@HostToCreateRoom.Token.GetMonopolyPlayerId()</div>
+                }
+                else
+                {
+                    <div class="player-name">Host</div>
+                }
             </div>
-        }
+            <div class="players-to-create-room block-highlight" @onclick="AddPlayerToCreateRoom">
+                @foreach (var player in PlayersToCreateRoom)
+                {
+                    <div class="player-item">
+                        <div class="player-name">@player.Name</div>
+                        <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                    </div>
+                }
+            </div>
+            <button @onclick="CreateRoomAsync">Create Room</button>
+        </div>
     </div>
-    <div class="create-room" @onclick="CreateGame">Create Room</div>
-    <div class="rooms">
-        @foreach (var room in _rooms)
-        {
-            <div class="room">
-                <div class="room-id">@room.Id</div>
-                <div class="room-players">
-                    @foreach (var player in room.Players)
+
+    <div class="right-panel">
+        <div class="room-list">
+            @foreach (var room in _rooms)
+            {
+                var isSelected = SelectedRoom == room;
+                var selectCss = isSelected ? "selected" : "";
+                <div class="room-card block-highlight @(selectCss)"
+                     @onclick="() => SelectedRoom = room">
+                    <div class="room-url">@room.Url</div>
+                    <div class="room-players">
+                        @foreach (var player in room.Players)
+                        {
+                            <div class="player-name">@player.Name</div>
+                        }
+                    </div>
+
+                    @if (SelectedRoom == room && SelectedPlayer is not null)
                     {
-                        <div class="room-player" @onclick="() => EnterRoom(room, player)">@player.Id</div>
+                        <a href="@ReadyRoomUrl(SelectedPlayer, SelectedRoom)">Join Room</a>
                     }
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>

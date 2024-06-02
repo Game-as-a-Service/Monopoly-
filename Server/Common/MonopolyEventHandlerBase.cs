@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+﻿using Monopoly.DomainLayer.Common;
 
 namespace Server.Common;
 

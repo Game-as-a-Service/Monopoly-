@@ -1,4 +1,5 @@
 ﻿using Client.Pages.Enums;
+using System.Collections.Immutable;
 using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
 
@@ -6,19 +7,14 @@ namespace Client.Pages.Ready.Components;
 
 public partial class ColorChoicePanel
 {
-    [CascadingParameter] public ReadyPage Parent { get; set; } = default!;
-    private IEnumerable<Player> Players => Parent.Players;
-    private Player? CurrentPlayer => Parent.CurrentPlayer;
-
-    private async Task ChangeColor(ColorEnum color)
-    {
-        if (GetPlayerWithColor(color) is not null || CurrentPlayer is null)
-        {
-            return;
-        }
-
-        await Parent.Connection.PlayerSelectLocation((int)color);
-    }
+    [Parameter, EditorRequired]
+    public required ImmutableArray<Player> Players { get; set; }
+    
+    [Parameter, EditorRequired]
+    public required Player? CurrentPlayer { get; set; }
+    
+    [Parameter, EditorRequired]
+    public required EventCallback<ColorEnum> OnSelectColor { get; set; }
 
     private string GetChoiceWrapperCss(ColorEnum color)
     {

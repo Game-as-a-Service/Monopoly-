@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.Usecases;
 using Domain.Common;
+using Monopoly.DomainLayer.Common;
 
 namespace ServerTests.Usecases;
 
@@ -9,7 +10,8 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
                                        MockDiceService mockDiceService)
     : PlayerRollDiceUsecase(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerRollDiceRequest request, IPresenter<PlayerRollDiceResponse> presenter)
+    public override async Task ExecuteAsync(PlayerRollDiceRequest request,
+        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken)
     {
         //查
         var game = Repository.FindGameById(request.GameId).ToDomain();
@@ -24,6 +26,6 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
         Repository.Save(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents));
+        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
     }
 }
