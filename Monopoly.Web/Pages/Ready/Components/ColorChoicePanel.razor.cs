@@ -1,7 +1,8 @@
 ﻿using Client.Pages.Enums;
 using System.Collections.Immutable;
-using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
+using SharedLibrary.ResponseArgs.ReadyRoom.Models;
+using Player = Client.Pages.Ready.Entities.Player;
 
 namespace Client.Pages.Ready.Components;
 
@@ -51,6 +52,19 @@ public static class ColorEnumExtensions
             ColorEnum.Blue => "blue",
             ColorEnum.Green => "green",
             ColorEnum.Yellow => "yellow",
+            _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+        };
+    }
+    
+    public static LocationEnum ToLocationEnum(this ColorEnum color)
+    {
+        return color switch
+        {
+            ColorEnum.None => LocationEnum.None,
+            ColorEnum.Red => LocationEnum.First,
+            ColorEnum.Blue => LocationEnum.Second,
+            ColorEnum.Green => LocationEnum.Third,
+            ColorEnum.Yellow => LocationEnum.Fourth,
             _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
         };
     }

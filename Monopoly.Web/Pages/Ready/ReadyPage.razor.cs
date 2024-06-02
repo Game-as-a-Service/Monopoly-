@@ -2,7 +2,6 @@
 using Client.Options;
 using Client.Pages.Enums;
 using Client.Pages.Ready.Components;
-using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
@@ -11,7 +10,7 @@ using SharedLibrary.ResponseArgs.ReadyRoom;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 using Player = Client.Pages.Ready.Entities.Player;
 using ResponseRoleEnum = SharedLibrary.ResponseArgs.ReadyRoom.Models.RoleEnum;
-using PageRoleEnum = Client.Pages.Ready.Entities.RoleEnum;
+using PageRoleEnum = Client.Pages.Enums.RoleEnum;
 
 namespace Client.Pages.Ready;
 
@@ -131,7 +130,7 @@ public partial class ReadyPage
     
     private async Task OnSelectColor(ColorEnum color)
     {
-        await Connection.SelectLocation(color);
+        await Connection.SelectLocation(color.ToLocationEnum());
     }
     
     private async Task OnSelectRole(string role)

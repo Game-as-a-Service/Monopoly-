@@ -318,8 +318,8 @@ public class Road : Block
     {
     }
 
-    internal override DomainEvent OnBlockEvent(Player player)
+    internal override DomainEvent? OnBlockEvent(Player player)
     {
-        return DomainEvent.EmptyEvent;
+        return null;
     }
 }

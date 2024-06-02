@@ -1,5 +1,4 @@
-﻿using Client.Pages.Ready.Entities;
-using SharedLibrary;
+﻿using SharedLibrary;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 using SignalR.Client.Generator;
 
@@ -12,7 +11,7 @@ public interface IReadyRoomRequests
 {
     Task StartGame();
     Task PlayerReady();
-    Task SelectLocation(ColorEnum location);
+    Task SelectLocation(LocationEnum location);
     Task SelectRole(string role);
     Task<ReadyRoomInfos> GetReadyRoomInfos();
 }
