@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Client</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SharedLibrary\SharedLibrary.csproj"/>
+        <ProjectReference Include="..\Monopoly.Clients.Web.Generators\Monopoly.Clients.Web.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Pages/Gaming/Components/MapPanel.razor.css" CssScope="b-9s5izdb9cc"/>
+    </ItemGroup>
+
+</Project>

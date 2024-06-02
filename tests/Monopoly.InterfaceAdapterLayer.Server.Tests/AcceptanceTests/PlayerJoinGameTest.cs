@@ -1,0 +1,78 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Monopoly.ApplicationLayer.Application.Common;
+using Monopoly.InterfaceAdapterLayer.Server.Tests.Common;
+using SharedLibrary;
+using SharedLibrary.ResponseArgs.Monopoly;
+
+namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests;
+
+[TestClass]
+public class PlayerJoinGameTest
+{
+    private MonopolyTestServer server = default!;
+    private MockJwtTokenService jwtTokenService = default!;
+    private JwtBearerOptions jwtBearerOptions = default!;
+
+    [TestInitialize]
+    public void Setup()
+    {
+        server = new MonopolyTestServer();
+        jwtTokenService = server.GetRequiredService<MockJwtTokenService>();
+        server.GetRequiredService<IQueryRepository>();
+        jwtBearerOptions = server.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("Bearer");
+    }
+
+    [TestMethod]
+    [Ignore]
+    [Description("""
+        Given:  Id為1的遊戲，裡面有玩家 A B C
+        When:   玩家A建立連線到Id為1的房間
+        Then:   玩家A建立連線成功
+        """)]
+    public async Task 玩家建立連線成功()
+    {
+        // Arrange
+        await CreateGameAsync("A", "A", "B", "C");
+
+        // Act
+        var hub = await server.CreateHubConnectionAsync("1", "A");
+
+        // Assert
+        hub.Verify(nameof(IMonopolyResponses.PlayerJoinGameEvent),
+            (PlayerJoinGameEventArgs e) => e.PlayerId == "A");
+    }
+
+    [TestMethod]
+    [Ignore]
+    [Description("""
+        Given:  Id為1的遊戲，裡面有玩家 A B C
+        When:   玩家A建立連線到Id為2的房間
+        Then:   玩家A建立連線失敗
+        """)]
+    public async Task 玩家建立連線失敗因為遊戲不存在()
+    {
+        // Arrange
+        await CreateGameAsync("A", "A", "B", "C");
+
+        // Act
+        var hub = await server.CreateHubConnectionAsync("2", "A");
+
+        // Assert
+        hub.VerifyDisconnection();
+    }
+
+    /// <summary>
+    /// call API POST "/" Body: <paramref name="playerIds"/>.
+    /// </summary>
+    /// <param name="host">Host Id</param>
+    /// <param name="playerIds">Players' Id</param>
+    private async Task CreateGameAsync(string host, params string[] playerIds)
+    {
+        // CreateGameBodyPayload bodyPayload = new(playerIds.Select(id => new Player(id, "")).ToArray());
+        // var jwt = jwtTokenService.GenerateJwtToken(jwtBearerOptions.Audience, host);
+        // server.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+        // var response = await server.Client.PostAsJsonAsync("/games", bodyPayload);
+        // response.EnsureSuccessStatusCode();
+    }
+}

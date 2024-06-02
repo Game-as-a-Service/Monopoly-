@@ -1,0 +1,26 @@
+﻿using Monopoly.ApplicationLayer.Application.Common;
+using Monopoly.DomainLayer.Common;
+
+namespace Monopoly.ApplicationLayer.Application.Usecases;
+
+public record ChooseDirectionRequest(string GameId, string PlayerId, string Direction)
+    : GameRequest(GameId, PlayerId);
+
+public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
+
+public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+    : CommandUsecase<ChooseDirectionRequest, ChooseDirectionResponse>(repository, eventBus)
+{
+    public override async Task ExecuteAsync(ChooseDirectionRequest request,
+        IPresenter<ChooseDirectionResponse> presenter, CancellationToken cancellationToken = default)
+    {
+        //查
+        var game = Repository.FindGameById(request.GameId).ToDomain();
+        //改
+        game.PlayerSelectDirection(request.PlayerId, request.Direction);
+        //存
+        Repository.Save(game);
+        //推
+        await presenter.PresentAsync(new ChooseDirectionResponse(game.DomainEvents), cancellationToken);
+    }
+}

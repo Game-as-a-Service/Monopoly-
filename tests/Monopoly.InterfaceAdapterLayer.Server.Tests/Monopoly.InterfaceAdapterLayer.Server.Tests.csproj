@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.SignalR.UnitTestingSupport.Common" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+        <PackageReference Include="Moq" Version="4.20.70"/>
+        <PackageReference Include="MSTest.TestAdapter" Version="3.1.1"/>
+        <PackageReference Include="MSTest.TestFramework" Version="3.1.1"/>
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\InterfaceAdapterLayer\Monopoly.InterfaceAdapterLayer.Server\Monopoly.InterfaceAdapterLayer.Server.csproj" />
+        <ProjectReference Include="..\Monopoly.InterfaceAdapterLayer.Server.Tests.Generators\Monopoly.InterfaceAdapterLayer.Server.Tests.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+</Project>

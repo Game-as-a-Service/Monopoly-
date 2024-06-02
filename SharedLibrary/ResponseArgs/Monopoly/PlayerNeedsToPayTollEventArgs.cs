@@ -1,4 +1,4 @@
-﻿namespace SharedLibrary;
+﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
 public class PlayerNeedsToPayTollEventArgs
 {
