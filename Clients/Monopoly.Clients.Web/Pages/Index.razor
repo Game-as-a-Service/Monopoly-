@@ -1,13 +1,1 @@
-﻿@page "/games/{gameid}"
-@using Client.Pages.Gaming
-@using Client.Pages.Ready
-<CascadingValue Value="Connection">
-    @if (IsGameStarted)
-    {
-        <GamingPage />
-    }
-    else
-    {
-        <ReadyPage UserId="@UserId" RoomId="@GameId" AccessToken="@AccessToken" />
-    }
-</CascadingValue>
+﻿

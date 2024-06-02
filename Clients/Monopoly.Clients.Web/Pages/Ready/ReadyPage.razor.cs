@@ -5,7 +5,6 @@ using Client.Pages.Ready.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
-using SharedLibrary.ResponseArgs.Monopoly;
 using SharedLibrary.ResponseArgs.ReadyRoom;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 using Player = Client.Pages.Ready.Entities.Player;
@@ -98,20 +97,6 @@ public partial class ReadyPage
         player.IsReady = e.IsReady;
         StateHasChanged();
         return Task.CompletedTask;
-    }
-
-    private async Task OnPlayerCannotSelectLocationEvent(PlayerCannotSelectLocationEventArgs e)
-    {
-        if (Popup is null)
-        {
-            return;
-        }
-
-        await Popup.Show(new Popup.PopupParameter
-        {
-            Message = "Cannot select location.",
-            Delay = 500
-        });
     }
 
     private async Task OnGameStartEvent(GameStartedEventArgs e)
