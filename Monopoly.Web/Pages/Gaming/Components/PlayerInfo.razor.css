@@ -1,0 +1,79 @@
+﻿.PlayerInfo {
+    position: absolute;
+    top: calc(213 * var(--unit));
+    left: calc(1644 * var(--unit));
+    border-radius: calc(20 * var(--unit)); /* 方框圓角半徑 */
+    border: calc(4 * var(--unit)) solid white; /* 方框邊框寬度和顏色 */
+    background-color: #5B5B5B; /* 底色 */
+    padding: 1rem; /* 4邊起始位置往內推一個字(16px) */
+}
+
+    .PlayerInfo .withBalls::before, .PlayerInfo .withBalls::after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        width: .5rem;
+        height: .5rem;
+        background-color: white;
+        border-radius: 50%;
+        transform: translateY(-50%);
+    }
+
+    .PlayerInfo .withBalls::before {
+        left: 1rem;
+    }
+
+    .PlayerInfo .withBalls::after {
+        right: 1rem;
+    }
+
+    .PlayerInfo .money, .PlayerInfo .TotalMoney {
+        display: flex;
+        align-items: center;
+        width: calc(206 * var(--unit));
+        color: white;
+        font-size: calc(20 * var(--unit));
+    }
+
+        .PlayerInfo .money::before, .PlayerInfo .TotalMoney::before {
+            content: "";
+            display: inline-block;
+            width: calc(15 * var(--unit));
+            height: calc(15 * var(--unit));
+            margin-right: calc(4 * var(--unit));
+            margin-bottom: calc(-3 * var(--unit));
+            background-size: cover;
+            background-position: center;
+        }
+
+        .PlayerInfo .money::before {
+            background-image: url('./images/gamepage/icon_mini_money.svg');
+        }
+
+        .PlayerInfo .TotalMoney::before {
+            background-image: url('./images/gamepage/icon_mini_home.svg');
+        }
+
+    .PlayerInfo .MortgageList {
+        color: #D8C292;
+        font-size: 20px;
+    }
+
+    .PlayerInfo .collapseBtn {
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        font-size: 1.25rem;
+        user-select: none;
+    }
+
+    .PlayerInfo .collapseBtn:hover {
+        text-decoration: underline;
+    }
+
+    .PlayerInfo .MortgageList.collapseHide {
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }

@@ -1,0 +1,52 @@
+﻿
+.Settings {
+    position: absolute;
+    width: calc(228 * var(--unit));
+    height: calc(48 * var(--unit));
+    top: calc(32 * var(--unit));
+    left: calc(1660 * var(--unit));
+}
+
+.HostBetton {
+    position: absolute;
+    width: calc(48 * var(--unit));
+    height: calc(48 * var(--unit));
+    top: 0;
+    left: 0;
+    background-image: url('./images/gamepage/Icon_Host.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+.InformationBetton {
+    position: absolute;
+    width: calc(48 * var(--unit));
+    height: calc(48 * var(--unit));
+    top: 0;
+    left: calc(60 * var(--unit));
+    background-image: url('./images/gamepage/Icon_Information.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+.SettingBetton {
+    position: absolute;
+    width: calc(48 * var(--unit));
+    height: calc(48 * var(--unit));
+    top: 0;
+    left: calc(120 * var(--unit));
+    background-image: url('./images/gamepage/Icon_Setting.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+.LeaveBetton {
+    position: absolute;
+    width: calc(48 * var(--unit));
+    height: calc(48 * var(--unit));
+    top: 0;
+    left: calc(180 * var(--unit));
+    background-image: url('./images/gamepage/Icon_Leave.svg');
+    background-size: cover;
+    background-position: center;
+}

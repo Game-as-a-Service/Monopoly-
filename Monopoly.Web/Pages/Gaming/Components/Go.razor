@@ -1,0 +1,32 @@
+﻿<dlv class="Go">
+    <dlv class="GoBetton"></dlv>
+    <dlv class="AutoBetton"></dlv>
+</dlv>
+
+<script>
+    //按下Go按鈕時切換圖片，放開時還原圖片
+    const dlv_Go = document.querySelector('.GoBetton');
+
+    dlv_Go.addEventListener('mousedown', () => {
+        dlv_Go.classList.add('Pressed');
+    });
+
+    dlv_Go.addEventListener('mouseup', () => {
+        dlv_Go.classList.remove('Pressed');
+    });
+</script>
+
+<script>
+    //按Auto按鈕切換狀態、圖片
+    const dlv_Auto = document.querySelector('.AutoBetton');
+
+    dlv_Auto.addEventListener('click', () => {
+        const classList = dlv_Auto.classList;
+
+        if (classList.contains('Open')) {
+            classList.remove('Open');
+        } else {
+            classList.add('Open');
+        }
+    });
+</script>

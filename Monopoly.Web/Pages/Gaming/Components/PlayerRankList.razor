@@ -1,0 +1,33 @@
+﻿@using Client.Pages.Gaming.Entities
+@code {
+    [CascadingParameter] 
+    public GamingPage Parent { get; set; } = default!;
+    private IEnumerable<Player> players => Parent?.Players;
+}
+
+<div class="PlayerRankList">
+    @foreach (var (player, index) in players.OrderBy(p=>p.GetTotalMoney).Select((item, index) => (item, index)))
+    {
+        <div class="Player">
+            <div class="PlayerInfo">
+                <div class="Rank">
+                    <div class="Round">
+                        <span class="Number">@(@index + 1)</span>
+                    </div>
+                    <p class="Name">
+                        <span>@player.Name</span>
+                    </p>
+                </div>
+                <div class="PlayerMoney">
+                    <div class="Icon @player.Role.ToString().ToLower()"></div>
+                    <div class="MoneyBox">
+                        <p class="Money">@player.Money</p>
+                        <p class="TotalMoney">@player.GetTotalMoney</p>
+                    </div>
+                </div>
+                <div class="Status"></div>
+            </div>
+            <div class="Host_Flag"></div>
+        </div>
+    }
+</div>

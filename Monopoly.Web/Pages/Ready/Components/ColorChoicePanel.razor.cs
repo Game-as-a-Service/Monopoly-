@@ -1,4 +1,5 @@
-﻿using Client.Pages.Ready.Entities;
+﻿using Client.Pages.Enums;
+using Client.Pages.Ready.Entities;
 using Microsoft.AspNetCore.Components;
 
 namespace Client.Pages.Ready.Components;

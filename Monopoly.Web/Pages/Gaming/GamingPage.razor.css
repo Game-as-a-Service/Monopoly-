@@ -1,7 +1,50 @@
+﻿/*.menu-l {
+    margin: 0;
+    float: left;
+    width: 20%;
+    height: 100dvh;
+    background-color: dodgerblue;
+}
+
+.content {
+    margin: 0;
+    float: left;
+    width: 60%;
+    height: 100dvh;*/
+    /*background-color: rgb(226, 129, 129);*/
+/*}
+
+.menu-r {
+    margin: 0;
+    float: left;
+    width: 20%;
+    height: 100dvh;*/
+    /*background-color: cornflowerblue;*/
+/*}*/
+
 .background {
+    margin: 0;
     width: calc(1920 * var(--unit));
     height: calc(1080 * var(--unit));
     background-image: url('./images/gamepage/background.svg');
     background-size: cover;
     background-position: center;
+}
+
+.menu-l {
+    position: absolute;
+    width: calc(1469 * var(--unit));
+    height: calc(851 * var(--unit));
+    top: calc(113 * var(--unit));
+    left: calc(240 * var(--unit));
+    background-color: rgb(226, 129, 129);
+}
+
+.content.map {
+    position: absolute;
+    width: calc(1469 * var(--unit));
+    height: calc(851 * var(--unit));
+    top: calc(113 * var(--unit));
+    left: calc(240 * var(--unit));
+    background-color: rgb(226, 129, 129);
 }

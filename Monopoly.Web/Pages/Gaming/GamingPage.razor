@@ -1,6 +1,16 @@
-﻿@using Client.Pages.Gaming.Components
+﻿@page "/GamingPage"
+@using Client.Pages.Gaming.Components
+
 <div class="background">
     <CascadingValue Value="this">
-        <MapPanel />
+    	<MapPanel />
+
+        <GameRound></GameRound>
+        <PlayerRankList></PlayerRankList>
+        <ChatBox></ChatBox>
+
+        <Settings></Settings>
+        <PlayerInfo></PlayerInfo>
+        <Go></Go>
     </CascadingValue>
 </div>

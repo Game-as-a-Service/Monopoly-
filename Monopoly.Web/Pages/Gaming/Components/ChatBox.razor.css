@@ -1,0 +1,9 @@
+﻿
+.ChatBox {
+    position: absolute;
+    width: calc(603 * var(--unit));
+    height: calc(180 * var(--unit));
+    top: calc(888 * var(--unit));
+    left: calc(32 * var(--unit));
+    background-color: coral;
+}
