@@ -115,16 +115,28 @@ public partial class ReadyPage
     
     private async Task OnSelectColor(ColorEnum color)
     {
+        if (CurrentPlayer is null)
+        {
+            return;
+        }
         await Connection.SelectLocation(color.ToLocationEnum());
     }
     
     private async Task OnSelectRole(string role)
     {
+        if (CurrentPlayer is null)
+        {
+            return;
+        }
         await Connection.SelectRole(role);
     }
     
     private async Task OnReady()
     {
+        if (CurrentPlayer is null)
+        {
+            return;
+        }
         await Connection.PlayerReady();
     }
     
