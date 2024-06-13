@@ -6,8 +6,8 @@ namespace Client.Pages;
 
 public partial class DevPage
 {
-    private List<DevPlayer> _players = [];
-    private List<DevRoom> _rooms = [];
+    private readonly List<DevPlayer> _players = [];
+    private readonly List<DevRoom> _rooms = [];
     private string PlayerName { get; set; } = Guid.NewGuid().ToString();
     private DevPlayer? SelectedPlayer { get; set; }
     private DevPlayer? HostToCreateRoom { get; set; }
@@ -71,7 +71,7 @@ public partial class DevPage
         PlayersToCreateRoom.Clear();
     }
 
-    private string ReadyRoomUrl(DevPlayer devPlayer, DevRoom devRoom)
+    private static string ReadyRoomUrl(DevPlayer devPlayer, DevRoom devRoom)
     {
         // navigate to {devRoom.Url}?token={devPlayer.Token.RowData}
         return $"{devRoom.Url}?token={devPlayer.Token.RawData}";
