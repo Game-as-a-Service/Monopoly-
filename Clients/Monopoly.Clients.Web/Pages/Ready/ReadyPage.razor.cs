@@ -16,6 +16,7 @@ namespace Client.Pages.Ready;
 
 public partial class ReadyPage
 {
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
     public ImmutableArray<Player> Players { get; set; } = []; 
     [Parameter] public string UserId { get; set; } = string.Empty;
     [Parameter] public string RoomId { get; set; } = string.Empty;
@@ -100,18 +101,15 @@ public partial class ReadyPage
         return Task.CompletedTask;
     }
 
-    private async Task OnGameStartEvent(GameStartedEventArgs e)
+    private Task OnGameStartEvent(GameStartedEventArgs e)
     {
         if (Popup is null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        await Popup.Show(new Popup.PopupParameter
-        {
-            Message = $"({e.GameId}) Game start!",
-            Delay = 500
-        });
+        NavigationManager.NavigateTo($"/GamingPage?gameid={RoomId}");
+        return Task.CompletedTask;
     }
     
     private async Task OnSelectColor(ColorEnum color)
