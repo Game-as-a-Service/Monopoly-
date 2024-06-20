@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
+using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.ReadyRoom.Builders;
 using Monopoly.DomainLayer.ReadyRoom.Common;
 using Moq;
@@ -15,6 +17,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
         Given:  房內有4名玩家，除了玩家A以外的所有玩家都已經準備
         When:   房主按下開始遊戲
         Then:   遊戲開始
+                repository 的遊戲存在
         """)]
     public async Task 房主成功開始遊戲()
     {
@@ -56,6 +59,9 @@ public class GameStartTest : AbstractReadyRoomTestBase
 
         // Assert
         hub.FluentAssert.GameStartedEvent(new GameStartedEventArgs(gameId));
+        
+        var gameRepository = Server.Services.GetRequiredService<ICommandRepository>();
+        var game = gameRepository.FindGameById(gameId);
     }
 
     [TestMethod]

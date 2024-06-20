@@ -6,7 +6,7 @@ namespace Monopoly.DomainLayer.Domain.Builders;
 
 public class MonopolyBuilder
 {
-    public string GameId { get; private set; }
+    public string? GameId { get; private set; }
 
     public List<PlayerBuilder> PlayerBuilders { get; private set; }
 
@@ -25,7 +25,7 @@ public class MonopolyBuilder
         PlayerBuilders = new();
     }
 
-    public MonopolyBuilder WithId(string id)
+    public MonopolyBuilder WithId(string? id)
     {
         GameId = id;
         return this;

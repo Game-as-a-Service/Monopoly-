@@ -13,6 +13,7 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
     public IGameIdProvider GameIdProvider { get; set; } = new GameIdProvider();
     public IReadOnlyList<Player> Players => players;
     public string HostId => hostId;
+    public string? GameId { get; private set; } 
 
     private Player GetPlayer(string playerId)
     {
@@ -55,8 +56,8 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
         var unreadyPlayers = players.Where(p => p.IsReady is not true && p.Id != hostId);
         if (unreadyPlayers.Any()) throw new HostCannotStartGameException();
 
-        var gameId = GameIdProvider.GetGameId();
-        AddDomainEvent(new GameStartedEvent(gameId));
+        GameId = GameIdProvider.GetGameId();
+        AddDomainEvent(new GameStartedEvent(GameId));
     }
 
     public void PlayerJoin(string playerId)
