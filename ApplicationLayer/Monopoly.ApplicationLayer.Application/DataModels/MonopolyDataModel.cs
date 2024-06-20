@@ -2,7 +2,7 @@
 
 namespace Monopoly.ApplicationLayer.Application.DataModels;
 
-public record MonopolyDataModel(string Id, Player[] Players, Map Map, string HostId, CurrentPlayerState CurrentPlayerState, LandHouse[] LandHouses, GameStage GameStage);
+public record MonopolyDataModel(string Id, Player[] Players, Map Map, string HostId, CurrentPlayerState CurrentPlayerState, LandHouse[] LandHouses);
 
 public record Player(string Id, decimal Money, Chess Chess, LandContract[] LandContracts, PlayerState PlayerState, int BankruptRounds, int LocationId, string? RoleId);
 public record CurrentPlayerState(string PlayerId, bool IsPayToll, bool IsBoughtLand, bool IsUpgradeLand, Auction? Auction, int RemainingSteps, bool HadSelectedDirection);
@@ -35,9 +35,3 @@ public record StartPoint(string Id) : Block(Id);
 public record Station(string Id) : Land(Id);
 
 public record Road(string Id) : Block(Id);
-
-public enum GameStage
-{
-    Preparing,
-    Gaming,
-}

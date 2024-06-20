@@ -3,6 +3,7 @@ using Client.Options;
 using Client.Pages.Enums;
 using Client.Pages.Ready.Components;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
 using SharedLibrary.ResponseArgs.ReadyRoom;
@@ -119,7 +120,19 @@ public partial class ReadyPage
         {
             return;
         }
-        await Connection.SelectLocation(color.ToLocationEnum());
+
+        try
+        {
+            await Connection.SelectLocation(color.ToLocationEnum());
+        }
+        catch (HubException)
+        {
+            Popup?.Show(new Popup.PopupParameter
+            {
+                Message = "無法選擇此位置",
+                Delay = 1000
+            });
+        }
     }
     
     private async Task OnSelectRole(string role)

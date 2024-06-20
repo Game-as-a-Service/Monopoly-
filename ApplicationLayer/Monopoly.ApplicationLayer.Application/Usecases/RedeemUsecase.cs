@@ -15,7 +15,7 @@ public class RedeemUsecase(ICommandRepository repository, IEventBus<DomainEvent>
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var game = Repository.FindGameById(request.GameId);
 
         //改
         game.RedeemLandContract(request.PlayerId, request.BlockId);

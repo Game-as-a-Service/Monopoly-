@@ -13,7 +13,7 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
         IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var game = Repository.FindGameById(request.GameId);
 
         // Mock Dice
         game.Dices = mockDiceService.Dices;

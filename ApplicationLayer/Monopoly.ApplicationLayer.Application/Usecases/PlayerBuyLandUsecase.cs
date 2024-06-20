@@ -15,7 +15,7 @@ public class PlayerBuyLandUsecase(ICommandRepository repository, IEventBus<Domai
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var game = Repository.FindGameById(request.GameId);
 
         //改
         game.BuyLand(request.PlayerId, request.LandID);

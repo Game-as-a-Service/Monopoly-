@@ -6,7 +6,6 @@ using Auction = Monopoly.ApplicationLayer.Application.DataModels.Auction;
 using Block = Monopoly.ApplicationLayer.Application.DataModels.Block;
 using Chess = Monopoly.ApplicationLayer.Application.DataModels.Chess;
 using CurrentPlayerState = Monopoly.ApplicationLayer.Application.DataModels.CurrentPlayerState;
-using GameStage = Monopoly.DomainLayer.Domain.GameStage;
 using Jail = Monopoly.DomainLayer.Domain.Jail;
 using Land = Monopoly.DomainLayer.Domain.Land;
 using LandContract = Monopoly.ApplicationLayer.Application.DataModels.LandContract;
@@ -21,18 +20,12 @@ namespace Monopoly.ApplicationLayer.Application.Common;
 
 public static class RepositoryExtensions
 {
-    public static string Save(this IRepository repository, MonopolyAggregate domainMonopolyAggregate)
-    {
-        var monopoly = domainMonopolyAggregate.ToApplication();
-        return repository.Save(monopoly);
-    }
-
     /// <summary>
     /// (Monopoly) Domain to Application
     /// </summary>
     /// <param name="domainMonopolyAggregate"></param>
     /// <returns></returns>
-    private static MonopolyDataModel ToApplication(this MonopolyAggregate domainMonopolyAggregate)
+    public static MonopolyDataModel ToApplication(this MonopolyAggregate domainMonopolyAggregate)
     {
         var players = domainMonopolyAggregate.Players.Select(player =>
         {
@@ -58,18 +51,6 @@ public static class RepositoryExtensions
         Map map = new(domainMonopolyAggregate.Map.Id, domainMonopolyAggregate.Map.Blocks
             .Select(row => { return row.Select(block => block?.ToApplicationBlock()).ToArray(); }).ToArray()
         );
-        var gamestage = domainMonopolyAggregate.GameStage switch
-        {
-            GameStage.Ready => DataModels.GameStage.Preparing,
-            GameStage.Gaming => DataModels.GameStage.Gaming,
-            _ => throw new NotImplementedException(),
-        };
-        if (gamestage == DataModels.GameStage.Preparing)
-        {
-            return new MonopolyDataModel(domainMonopolyAggregate.Id, [..players], map, domainMonopolyAggregate.HostId, null!,
-                null!, gamestage);
-        }
-
         var currentPlayer =
             domainMonopolyAggregate.Players.First(player =>
                 player.Id == domainMonopolyAggregate.CurrentPlayerState.PlayerId);
@@ -90,8 +71,8 @@ public static class RepositoryExtensions
             .Select(land => new LandHouse(land.Id, land.House)).ToArray();
 
 
-        return new DataModels.MonopolyDataModel(domainMonopolyAggregate.Id, players, map, domainMonopolyAggregate.HostId,
-            currentPlayerState, LandHouses, gamestage);
+        return new MonopolyDataModel(domainMonopolyAggregate.Id, players, map, domainMonopolyAggregate.HostId,
+            currentPlayerState, LandHouses);
     }
 
     private static Block ToApplicationBlock(this DomainLayer.Domain.Block domainBlock)
@@ -137,16 +118,6 @@ public static class RepositoryExtensions
                     .WithRole(p.RoleId)
                     .WithState(p.PlayerState)
             ));
-        builder.WithGameStage(monopolyDataModel.GameStage switch
-        {
-            DataModels.GameStage.Preparing => GameStage.Ready,
-            DataModels.GameStage.Gaming => GameStage.Gaming,
-            _ => throw new NotImplementedException(),
-        });
-        if (monopolyDataModel.GameStage == DataModels.GameStage.Preparing)
-        {
-            return builder.Build();
-        }
 
         var cps = monopolyDataModel.CurrentPlayerState;
         if (cps.Auction is null)
@@ -175,21 +146,6 @@ public static class RepositoryExtensions
             builder.WithLandContract(landContract.LandId, landContract.InMortgage, landContract.Deadline);
         });
         return builder;
-    }
-
-    private static DomainLayer.Domain.Block? ToDomainBlock(this Block? block)
-    {
-        return block switch
-        {
-            DataModels.StartPoint startBlock => new StartPoint(startBlock.Id),
-            DataModels.Station stationBlock => new Station(stationBlock.Id),
-            DataModels.Land landBlock => new Land(landBlock.Id),
-            DataModels.ParkingLot parkingLotBlock => new ParkingLot(parkingLotBlock.Id),
-            DataModels.Jail prisonBlock => new Jail(prisonBlock.Id),
-            DataModels.Road roadBlock => new Road(roadBlock.Id),
-            EmptyBlock => null,
-            _ => throw new NotImplementedException(),
-        };
     }
 
     private static Direction ToApplicationDirection(this DomainLayer.Domain.Map.Direction direction)

@@ -15,7 +15,7 @@ public class EndRoundUsecase(ICommandRepository repository, IEventBus<DomainEven
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId).ToDomain();
+        var game = Repository.FindGameById(request.GameId);
 
         //改
         game.EndRound();

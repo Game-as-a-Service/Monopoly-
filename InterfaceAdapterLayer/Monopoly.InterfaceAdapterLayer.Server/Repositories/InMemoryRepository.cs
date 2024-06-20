@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.DataModels;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 
@@ -7,7 +8,7 @@ public class InMemoryRepository : ICommandRepository, IQueryRepository
 {
     private readonly Dictionary<string, MonopolyDataModel> games = new();
 
-    public MonopolyDataModel FindGameById(string id)
+    public MonopolyAggregate FindGameById(string id)
     {
         games.TryGetValue(id, out var game);
         if (game == null)
@@ -15,7 +16,7 @@ public class InMemoryRepository : ICommandRepository, IQueryRepository
             throw new GameNotFoundException(id);
         }
 
-        return game;
+        return game.ToDomain();
     }
 
     public string[] GetRooms()
@@ -28,10 +29,10 @@ public class InMemoryRepository : ICommandRepository, IQueryRepository
         return games.ContainsKey(id);
     }
 
-    public string Save(MonopolyDataModel monopolyDataModel)
+    public string Save(MonopolyAggregate monopoly)
     {
-        var id = GetGameId(monopolyDataModel.Id);
-        var game = monopolyDataModel with { Id = id };
+        var id = GetGameId(monopoly.Id);
+        var game = monopoly.ToApplication() with { Id = id };
         games[game.Id] = game;
         return game.Id;
     }

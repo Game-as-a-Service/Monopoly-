@@ -9,7 +9,6 @@ namespace Monopoly.DomainLayer.Domain;
 public class MonopolyAggregate : AbstractAggregateRoot
 {
     public string Id { get; set; }
-    public GameStage GameStage { get; private set; }
     public int[]? CurrentDice { get; set; } = null;
     public CurrentPlayerState CurrentPlayerState => _currentPlayerState;
     public IDice[] Dices { set; get; }
@@ -28,10 +27,9 @@ public class MonopolyAggregate : AbstractAggregateRoot
     public int Rounds { get; private set; }
 
 
-    internal MonopolyAggregate(string gameId, Player[] players, GameStage gameStage, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0)
+    internal MonopolyAggregate(string gameId, Player[] players, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0)
     {
         Id = gameId;
-        GameStage = gameStage;
         _players = players.ToList();
         _map = map;
         HostId = hostId;

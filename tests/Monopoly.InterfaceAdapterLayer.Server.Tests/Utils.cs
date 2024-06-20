@@ -8,7 +8,6 @@ using SharedLibrary.ResponseArgs.Monopoly;
 using Auction = Monopoly.ApplicationLayer.Application.DataModels.Auction;
 using Chess = Monopoly.ApplicationLayer.Application.DataModels.Chess;
 using CurrentPlayerState = Monopoly.ApplicationLayer.Application.DataModels.CurrentPlayerState;
-using GameStage = Monopoly.ApplicationLayer.Application.DataModels.GameStage;
 using LandContract = Monopoly.ApplicationLayer.Application.DataModels.LandContract;
 using Map = Monopoly.ApplicationLayer.Application.DataModels.Map;
 using Player = Monopoly.ApplicationLayer.Application.DataModels.Player;
@@ -52,12 +51,10 @@ public class Utils
         private CurrentPlayerState CurrentPlayerState { get; set; }
         private List<LandHouse> LandHouses { get; set; } = [];
         public Map Map { get; private set; }
-        private GameStage GameStage { get; set; }
 
         public MonopolyBuilder(string id)
         {
             GameId = id;
-            GameStage = GameStage.Gaming;
         }
 
         public MonopolyBuilder WithPlayer(Player player)
@@ -96,7 +93,6 @@ public class Utils
                 Players: [..Players],
                 Map: Map,
                 HostId: HostId,
-                GameStage: GameStage,
                 CurrentPlayerState: CurrentPlayerState,
                 LandHouses: LandHouses.ToArray());
         }
@@ -104,15 +100,9 @@ public class Utils
         internal void Save(MonopolyTestServer server)
         {
             var monopoly = Build();
-            server.GetRequiredService<ICommandRepository>().Save(monopoly);
+            server.GetRequiredService<ICommandRepository>().Save(monopoly.ToDomain());
             server.GetRequiredService<MockDiceService>().Dices =
                 Dices.Select(value => new MockDice(value)).ToArray<IDice>();
-        }
-
-        internal MonopolyBuilder WithGameStage(GameStage gameStage)
-        {
-            GameStage = gameStage;
-            return this;
         }
     }
 
