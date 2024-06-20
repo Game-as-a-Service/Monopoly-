@@ -20,6 +20,7 @@ public partial class ReadyPage
     public ImmutableArray<Player> Players { get; set; } = []; 
     [Parameter] public string UserId { get; set; } = string.Empty;
     [Parameter] public string RoomId { get; set; } = string.Empty;
+    
     [Parameter, SupplyParameterFromQuery(Name = "token")]
     public string AccessToken { get; set; } = string.Empty;
     [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
@@ -108,7 +109,7 @@ public partial class ReadyPage
             return Task.CompletedTask;
         }
 
-        NavigationManager.NavigateTo($"/GamingPage?gameid={RoomId}");
+        NavigationManager.NavigateTo($"/GamingPage?gameid={e.GameId}&token={AccessToken}");
         return Task.CompletedTask;
     }
     
@@ -153,6 +154,17 @@ public partial class ReadyPage
     
     private async Task OnStart()
     {
-        await Connection.StartGame();
+        try
+        {
+            await Connection.StartGame();
+        }
+        catch (HubException)
+        {
+            Popup?.Show(new Popup.PopupParameter
+            {
+                Message = "有人還沒準備，無法開始遊戲",
+                Delay = 1000
+            });
+        }
     }
 }
