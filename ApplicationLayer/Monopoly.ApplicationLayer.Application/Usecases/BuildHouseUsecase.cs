@@ -9,19 +9,19 @@ public record BuildHouseRequest(string GameId, string PlayerId)
 public record BuildHouseResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class BuildHouseUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<BuildHouseRequest, BuildHouseResponse>(repository, eventBus)
+    : Usecase<BuildHouseRequest, BuildHouseResponse>
 {
     public override async Task ExecuteAsync(BuildHouseRequest request, IPresenter<BuildHouseResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         //改
         game.BuildHouse(request.PlayerId);
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new BuildHouseResponse(game.DomainEvents), cancellationToken);

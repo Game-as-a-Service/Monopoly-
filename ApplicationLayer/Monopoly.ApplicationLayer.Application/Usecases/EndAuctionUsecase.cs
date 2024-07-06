@@ -9,19 +9,19 @@ public record EndAuctionRequest(string GameId, string PlayerId)
 public record EndAuctionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class EndAuctionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<EndAuctionRequest, EndAuctionResponse>(repository, eventBus)
+    : Usecase<EndAuctionRequest, EndAuctionResponse>
 {
     public override async Task ExecuteAsync(EndAuctionRequest request, IPresenter<EndAuctionResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         //改
         game.EndAuction();
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new EndAuctionResponse(game.DomainEvents), cancellationToken);

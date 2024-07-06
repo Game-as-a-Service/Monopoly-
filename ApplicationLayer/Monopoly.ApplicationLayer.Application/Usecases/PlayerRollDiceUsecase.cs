@@ -9,19 +9,19 @@ public record PlayerRollDiceRequest(string GameId, string PlayerId)
 public record PlayerRollDiceResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class PlayerRollDiceUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<PlayerRollDiceRequest, PlayerRollDiceResponse>(repository, eventBus)
+    : Usecase<PlayerRollDiceRequest, PlayerRollDiceResponse>
 {
     public override async Task ExecuteAsync(PlayerRollDiceRequest request,
         IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         //改
         game.PlayerRollDice(request.PlayerId);
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);

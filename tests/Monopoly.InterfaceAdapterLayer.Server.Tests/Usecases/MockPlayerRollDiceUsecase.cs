@@ -10,10 +10,10 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
     : PlayerRollDiceUsecase(repository, eventBus)
 {
     public override async Task ExecuteAsync(PlayerRollDiceRequest request,
-        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken)
+        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         // Mock Dice
         game.Dices = mockDiceService.Dices;
@@ -22,7 +22,7 @@ public class MockPlayerRollDiceUsecase(ICommandRepository repository,
         game.PlayerRollDice(request.PlayerId);
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);

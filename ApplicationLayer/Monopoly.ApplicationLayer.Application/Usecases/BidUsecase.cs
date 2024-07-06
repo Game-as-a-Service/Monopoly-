@@ -9,19 +9,19 @@ public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
 public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class BidUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<BidRequest, BidResponse>(repository, eventBus)
+    : Usecase<BidRequest, BidResponse>
 {
     public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         //改
         game.PlayerBid(request.PlayerId, request.BidPrice);
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new BidResponse(game.DomainEvents), cancellationToken);

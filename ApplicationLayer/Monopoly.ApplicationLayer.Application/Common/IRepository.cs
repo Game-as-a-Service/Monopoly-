@@ -1,4 +1,3 @@
-using Monopoly.ApplicationLayer.Application.DataModels;
 using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Common;

@@ -14,25 +14,14 @@ public static class DependencyInjection
     private static IServiceCollection AddUseCases(this IServiceCollection services)
     {
         var assembly = typeof(DependencyInjection).Assembly;
-        var types = assembly.GetTypes();
-        var commandUseCaseType = typeof(CommandUsecase<,>);
-        var queryUsecaseType = typeof(QueryUsecase<,>);
         var usecaseType = typeof(Usecase<,>);
 
-        foreach (var type in types.Where(t => t.BaseType?.IsGenericType is true && t.IsAbstract == false))
+        var types = assembly.GetTypes()
+            .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true})
+            .Where(t => t.BaseType?.GetGenericTypeDefinition() == usecaseType);
+        foreach (var type in types)
         {
-            if (type.BaseType?.GetGenericTypeDefinition() == commandUseCaseType)
-            {
-                services.AddTransient(type, type);
-            }
-            else if (type.BaseType?.GetGenericTypeDefinition() == queryUsecaseType)
-            {
-                services.AddTransient(type, type);
-            }
-            else if (type.BaseType?.GetGenericTypeDefinition() == usecaseType)
-            {
-                services.AddTransient(type, type);
-            }
+            services.AddTransient(type);
         }
 
         return services;

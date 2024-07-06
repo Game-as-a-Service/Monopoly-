@@ -9,19 +9,19 @@ public record SettlementRequest(string GameId, string PlayerId)
 public record SettlementResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class SettlementUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<SettlementRequest, SettlementResponse>(repository, eventBus)
+    : Usecase<SettlementRequest, SettlementResponse>
 {
     public override async Task ExecuteAsync(SettlementRequest request, IPresenter<SettlementResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
 
         //改
         game.Settlement();
 
         //存
-        Repository.Save(game);
+        repository.Save(game);
 
         //推
         await presenter.PresentAsync(new SettlementResponse(game.DomainEvents), cancellationToken);

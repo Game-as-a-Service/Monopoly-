@@ -9,17 +9,17 @@ public record ChooseDirectionRequest(string GameId, string PlayerId, string Dire
 public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
-    : CommandUsecase<ChooseDirectionRequest, ChooseDirectionResponse>(repository, eventBus)
+    : Usecase<ChooseDirectionRequest, ChooseDirectionResponse>
 {
     public override async Task ExecuteAsync(ChooseDirectionRequest request,
         IPresenter<ChooseDirectionResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
-        var game = Repository.FindGameById(request.GameId);
+        var game = repository.FindGameById(request.GameId);
         //改
         game.PlayerSelectDirection(request.PlayerId, request.Direction);
         //存
-        Repository.Save(game);
+        repository.Save(game);
         //推
         await presenter.PresentAsync(new ChooseDirectionResponse(game.DomainEvents), cancellationToken);
     }
