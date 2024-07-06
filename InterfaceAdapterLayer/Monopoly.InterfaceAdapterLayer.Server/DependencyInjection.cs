@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using Monopoly.ApplicationLayer.Application.Common;
-using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Common;

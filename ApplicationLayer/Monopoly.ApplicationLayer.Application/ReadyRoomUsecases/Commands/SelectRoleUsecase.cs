@@ -1,7 +1,7 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
 public record SelectRoleRequest(string GameId, string PlayerId, string Role)
     : GameRequest(GameId, PlayerId);

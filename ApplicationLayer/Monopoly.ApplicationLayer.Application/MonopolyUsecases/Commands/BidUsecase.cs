@@ -2,7 +2,7 @@ using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases;
+namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 
 public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
     : GameRequest(GameId, PlayerId);

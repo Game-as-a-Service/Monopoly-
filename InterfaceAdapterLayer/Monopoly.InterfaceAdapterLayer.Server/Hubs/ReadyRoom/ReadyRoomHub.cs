@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Monopoly.ApplicationLayer.Application.Queries;
-using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Queries;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;

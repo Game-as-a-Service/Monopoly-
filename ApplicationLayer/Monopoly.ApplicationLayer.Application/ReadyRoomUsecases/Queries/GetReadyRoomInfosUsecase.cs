@@ -1,8 +1,8 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
-using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 using Monopoly.DomainLayer.ReadyRoom;
 
-namespace Monopoly.ApplicationLayer.Application.Queries;
+namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Queries;
 
 public record GetReadyRoomInfosRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);

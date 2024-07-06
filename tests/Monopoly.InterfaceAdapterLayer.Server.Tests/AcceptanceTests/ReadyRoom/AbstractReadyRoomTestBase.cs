@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests.ReadyRoom;
 

@@ -2,7 +2,7 @@ using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases;
+namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 
 public record PlayerBuyLandRequest(string GameId, string PlayerId, string LandID)
     : GameRequest(GameId, PlayerId);

@@ -1,4 +1,4 @@
-﻿using Monopoly.ApplicationLayer.Application.Queries;
+﻿using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Queries;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;
 using Player = SharedLibrary.ResponseArgs.ReadyRoom.Models.Player;
 

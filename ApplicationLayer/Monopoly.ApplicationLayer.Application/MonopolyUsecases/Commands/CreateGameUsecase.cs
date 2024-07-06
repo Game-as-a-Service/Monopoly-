@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Domain;
 using Monopoly.DomainLayer.Domain.Builders;
 using Monopoly.DomainLayer.Domain.Maps;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases;
+namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 
 public record CreateGameRequest(string HostId, string[] PlayerIds) : GameRequest(null!, HostId);
 

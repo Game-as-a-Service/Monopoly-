@@ -2,7 +2,7 @@
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases;
+namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 
 public record ChooseDirectionRequest(string GameId, string PlayerId, string Direction)
     : GameRequest(GameId, PlayerId);

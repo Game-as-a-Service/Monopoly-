@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Monopoly.ApplicationLayer.Application.Common;
-using Monopoly.ApplicationLayer.Application.Usecases;
+using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;

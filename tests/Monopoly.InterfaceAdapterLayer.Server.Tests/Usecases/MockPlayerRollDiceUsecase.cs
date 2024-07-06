@@ -1,5 +1,5 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
-using Monopoly.ApplicationLayer.Application.Usecases;
+using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 

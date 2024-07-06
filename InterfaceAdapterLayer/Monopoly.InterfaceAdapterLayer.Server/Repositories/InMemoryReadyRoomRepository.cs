@@ -1,4 +1,4 @@
-﻿using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+﻿using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;

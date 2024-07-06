@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Monopoly.ApplicationLayer.Application;
 using Monopoly.ApplicationLayer.Application.Common;
-using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server;
 using Monopoly.InterfaceAdapterLayer.Server.Configurations;

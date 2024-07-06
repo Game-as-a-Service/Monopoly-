@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Domain;
 using Monopoly.DomainLayer.Domain.Builders;
 using Monopoly.DomainLayer.Domain.Maps;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
 public record StartGameRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);

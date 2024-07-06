@@ -1,6 +1,6 @@
 ﻿using Monopoly.DomainLayer.ReadyRoom;
 
-namespace Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
 public interface IReadyRoomRepository
 {

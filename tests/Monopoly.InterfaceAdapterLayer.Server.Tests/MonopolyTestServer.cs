@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Monopoly.ApplicationLayer.Application.Usecases;
+using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 using Monopoly.InterfaceAdapterLayer.Server.Configurations;
 using Monopoly.InterfaceAdapterLayer.Server.Tests.Usecases;
 using Monopoly.InterfaceAdapters.Server.Tests.Generators;
