@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Usecases;
 
@@ -8,14 +9,14 @@ public record BuildHouseRequest(string GameId, string PlayerId)
 
 public record BuildHouseResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class BuildHouseUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
+public class BuildHouseUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<BuildHouseRequest, BuildHouseResponse>
 {
     public override async Task ExecuteAsync(BuildHouseRequest request, IPresenter<BuildHouseResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindGameById(request.GameId);
+        var game = repository.FindById(request.GameId);
 
         //改
         game.BuildHouse(request.PlayerId);

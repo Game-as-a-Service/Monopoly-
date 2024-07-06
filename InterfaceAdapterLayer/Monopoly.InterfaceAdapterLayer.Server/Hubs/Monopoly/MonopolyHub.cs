@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.Usecases;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
@@ -10,7 +11,7 @@ using SharedLibrary.ResponseArgs.ReadyRoom;
 namespace Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 
 [Authorize]
-public class MonopolyHub(IRepository repository) : Hub<IMonopolyResponses>
+public class MonopolyHub(IRepository<MonopolyAggregate> repository) : Hub<IMonopolyResponses>
 {
     private const string KeyOfPlayerId = "PlayerId";
     private const string KeyOfGameId = "GameId";

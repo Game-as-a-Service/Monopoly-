@@ -10,6 +10,11 @@ public abstract class Entity(string id)
     {
         _domainEvents.Add(domainEvent);
     }
+    
+    protected void AddDomainEvent(IEnumerable<DomainEvent> domainEvents)
+    {
+        _domainEvents.AddRange(domainEvents);
+    }
 
     public void ClearDomainEvents()
     {

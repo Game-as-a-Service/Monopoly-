@@ -1,4 +1,5 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
@@ -63,8 +64,8 @@ public class SelectDirectionTest
                 (SuspendRoundEventArgs e) => e is { PlayerId: "A", SuspendRounds: 2 });
         hub.VerifyNoElseEvent();
 
-        var repo = server.GetRequiredService<IRepository>();
-        var game = repo.FindGameById("1");
+        var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
+        var game = repo.FindById("1");
         var player = game.Players.First(p => p.Id == a.Id);
         Assert.AreEqual("Jail", player.Chess.CurrentBlockId);
     }
@@ -115,8 +116,8 @@ public class SelectDirectionTest
 
         hub.VerifyNoElseEvent();
 
-        var repo = server.GetRequiredService<IRepository>();
-        var game = repo.FindGameById("1");
+        var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
+        var game = repo.FindById("1");
         var player = game.Players.First(p => p.Id == a.Id);
         Assert.AreEqual("ParkingLot", player.Chess.CurrentBlockId);
     }

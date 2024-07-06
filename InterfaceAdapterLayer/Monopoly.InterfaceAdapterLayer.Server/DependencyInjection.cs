@@ -2,6 +2,7 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Common;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using Monopoly.InterfaceAdapterLayer.Server.Repositories;
@@ -13,7 +14,7 @@ public static class DependencyInjection
     public static IServiceCollection AddMonopolyServer(this IServiceCollection services)
     {
         services.AddSingleton<IReadyRoomRepository, InMemoryReadyRoomRepository>();
-        services.AddSingleton<IRepository, InMemoryRepository>()
+        services.AddSingleton<IRepository<MonopolyAggregate>, InMemoryRepository>()
                 .AddSingleton<IEventBus<DomainEvent>, MonopolyEventBus>()
                 .AddTransient(typeof(SignalrDefaultPresenter<>), typeof(SignalrDefaultPresenter<>));
         services.AddSignalREventHandlers();

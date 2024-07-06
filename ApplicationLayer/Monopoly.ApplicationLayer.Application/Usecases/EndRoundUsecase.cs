@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Usecases;
 
@@ -8,14 +9,14 @@ public record EndRoundRequest(string GameId, string PlayerId)
 
 public record EndRoundResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class EndRoundUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
+public class EndRoundUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<EndRoundRequest, EndRoundResponse>
 {
     public override async Task ExecuteAsync(EndRoundRequest request, IPresenter<EndRoundResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindGameById(request.GameId);
+        var game = repository.FindById(request.GameId);
 
         //改
         game.EndRound();

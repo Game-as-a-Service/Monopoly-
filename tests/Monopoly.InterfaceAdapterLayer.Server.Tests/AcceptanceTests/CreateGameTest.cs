@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Monopoly.ApplicationLayer.Application.Common;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server.Tests.Common;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests;
@@ -9,7 +10,7 @@ namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests;
 public class CreateGameTest
 {
     private MonopolyTestServer server = default!;
-    private IRepository repository = default!;
+    private IRepository<MonopolyAggregate> repository = default!;
     private MockJwtTokenService jwtTokenService = default!;
     private JwtBearerOptions jwtBearerOptions = default!;
 
@@ -18,7 +19,7 @@ public class CreateGameTest
     {
         server = new MonopolyTestServer();
         jwtTokenService = server.GetRequiredService<MockJwtTokenService>();
-        repository = server.GetRequiredService<IRepository>();
+        repository = server.GetRequiredService<IRepository<MonopolyAggregate>>();
         jwtBearerOptions = server.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("Bearer");
     }
 

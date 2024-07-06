@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Usecases;
 
@@ -8,14 +9,14 @@ public record RedeemRequest(string GameId, string PlayerId, string BlockId)
 
 public record RedeemResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class RedeemUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
+public class RedeemUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<RedeemRequest, RedeemResponse>
 {
     public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindGameById(request.GameId);
+        var game = repository.FindById(request.GameId);
 
         //改
         game.RedeemLandContract(request.PlayerId, request.BlockId);

@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Usecases;
 
@@ -8,14 +9,14 @@ public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
 
 public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class BidUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
+public class BidUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<BidRequest, BidResponse>
 {
     public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindGameById(request.GameId);
+        var game = repository.FindById(request.GameId);
 
         //改
         game.PlayerBid(request.PlayerId, request.BidPrice);

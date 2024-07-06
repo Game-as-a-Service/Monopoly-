@@ -1,11 +1,11 @@
-using Monopoly.DomainLayer.Domain;
+using Monopoly.DomainLayer.Common;
 
 namespace Monopoly.ApplicationLayer.Application.Common;
 
-public interface IRepository
+public interface IRepository<TAggregate> where TAggregate : AggregateRoot
 {
-    public MonopolyAggregate FindGameById(string id);
+    public TAggregate FindById(string id);
     public string[] GetRooms();
     public bool IsExist(string id);
-    public string Save(MonopolyAggregate monopoly);
+    public string Save(TAggregate aggregate);
 }

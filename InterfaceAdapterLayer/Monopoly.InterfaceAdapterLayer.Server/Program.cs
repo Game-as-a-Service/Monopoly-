@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Monopoly.ApplicationLayer.Application;
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.Usecases.ReadyRoom;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server;
 using Monopoly.InterfaceAdapterLayer.Server.Configurations;
 using Monopoly.InterfaceAdapterLayer.Server.DataModels;
@@ -172,7 +173,7 @@ app.MapGet("/map", (string mapId) =>
 
 app.MapGet("/rooms", () =>
 {
-    var repository = app.Services.CreateScope().ServiceProvider.GetRequiredService<IRepository>();
+    var repository = app.Services.CreateScope().ServiceProvider.GetRequiredService<IRepository<MonopolyAggregate>>();
     return Results.Json(repository.GetRooms());
 });
 

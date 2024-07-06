@@ -113,22 +113,25 @@ public class Player
         }
     }
 
-    internal void RollDice(Map map, IDice[] dices)
+    internal IEnumerable<DomainEvent> RollDice(Map map, IDice[] dices)
     {
         foreach (var dice in dices)
         {
             dice.Roll();
         }
-        MonopolyAggregate.AddDomainEvent(new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value)));
+        yield return new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value));
         var events = chess.Move(map, dices.Sum(dice => dice.Value));
 
-        MonopolyAggregate.AddDomainEvent(events);
+        foreach (var e in events)
+        {
+            yield return e;
+        }
     }
 
-    internal void SelectDirection(Map map, Map.Direction direction)
+    internal IEnumerable<DomainEvent> SelectDirection(Map map, Map.Direction direction)
     {
         var events = chess.ChangeDirection(map, direction);
-        MonopolyAggregate.AddDomainEvent(events);
+        return events;
     }
 
     internal DomainEvent MortgageLandContract(string landId)

@@ -4,11 +4,11 @@ using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 
-public class InMemoryRepository : IRepository
+public class InMemoryRepository : IRepository<MonopolyAggregate>
 {
     private readonly Dictionary<string, MonopolyDataModel> games = new();
 
-    public MonopolyAggregate FindGameById(string id)
+    public MonopolyAggregate FindById(string id)
     {
         games.TryGetValue(id, out var game);
         if (game == null)

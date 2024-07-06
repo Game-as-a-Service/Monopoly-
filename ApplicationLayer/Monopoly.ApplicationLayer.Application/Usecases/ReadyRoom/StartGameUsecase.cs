@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 using Monopoly.DomainLayer.Domain.Builders;
 using Monopoly.DomainLayer.Domain.Maps;
 
@@ -10,7 +11,7 @@ public record StartGameRequest(string GameId, string PlayerId)
 
 public record StartGameResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IRepository gameRepository, IEventBus<DomainEvent> eventBus)
+public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IRepository<MonopolyAggregate> gameRepository, IEventBus<DomainEvent> eventBus)
     : Usecase<StartGameRequest, StartGameResponse>
 {
     public override async Task ExecuteAsync(StartGameRequest gameRequest, IPresenter<StartGameResponse> presenter,

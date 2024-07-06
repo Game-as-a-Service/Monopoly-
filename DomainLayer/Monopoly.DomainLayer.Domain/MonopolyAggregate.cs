@@ -1,12 +1,12 @@
+using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain.Builders;
-using Monopoly.DomainLayer.Domain.Common;
 using Monopoly.DomainLayer.Domain.Events;
 using Monopoly.DomainLayer.Domain.Interfaces;
 using static Monopoly.DomainLayer.Domain.Map;
 
 namespace Monopoly.DomainLayer.Domain;
 
-public class MonopolyAggregate : AbstractAggregateRoot
+public class MonopolyAggregate : AggregateRoot
 {
     public string Id { get; set; }
     public int[]? CurrentDice { get; set; } = null;
@@ -27,7 +27,8 @@ public class MonopolyAggregate : AbstractAggregateRoot
     public int Rounds { get; private set; }
 
 
-    internal MonopolyAggregate(string gameId, Player[] players, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0)
+    internal MonopolyAggregate(string gameId, Player[] players, Map map, string hostId, CurrentPlayerState currentPlayerState, IDice[]? dices = null, int rounds = 0) 
+        : base(gameId)
     {
         Id = gameId;
         _players = players.ToList();
@@ -79,7 +80,8 @@ public class MonopolyAggregate : AbstractAggregateRoot
             AddDomainEvent(new PlayerChooseInvalidDirectionEvent(playerId, direction));
             return;
         }
-        player.SelectDirection(_map, d);
+        var events = player.SelectDirection(_map, d);
+        AddDomainEvent(events);
     }
 
     private static Direction GetDirection(string direction)
@@ -112,7 +114,8 @@ public class MonopolyAggregate : AbstractAggregateRoot
     {
         Player player = GetPlayer(playerId);
         VerifyCurrentPlayer(player);
-        player.RollDice(_map, Dices);
+        var events = player.RollDice(_map, Dices);
+        AddDomainEvent(events);
     }
 
     public void EndAuction()

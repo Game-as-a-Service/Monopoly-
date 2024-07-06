@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.ApplicationLayer.Application.Usecases;
 
@@ -8,14 +9,14 @@ public record EndAuctionRequest(string GameId, string PlayerId)
 
 public record EndAuctionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class EndAuctionUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
+public class EndAuctionUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<EndAuctionRequest, EndAuctionResponse>
 {
     public override async Task ExecuteAsync(EndAuctionRequest request, IPresenter<EndAuctionResponse> presenter,
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindGameById(request.GameId);
+        var game = repository.FindById(request.GameId);
 
         //改
         game.EndAuction();
