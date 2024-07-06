@@ -19,7 +19,7 @@ public class PlayerJoinGameTest
     {
         server = new MonopolyTestServer();
         jwtTokenService = server.GetRequiredService<MockJwtTokenService>();
-        server.GetRequiredService<IQueryRepository>();
+        server.GetRequiredService<IRepository>();
         jwtBearerOptions = server.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("Bearer");
     }
 

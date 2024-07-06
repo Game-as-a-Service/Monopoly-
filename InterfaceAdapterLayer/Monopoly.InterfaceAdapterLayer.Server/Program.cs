@@ -172,7 +172,7 @@ app.MapGet("/map", (string mapId) =>
 
 app.MapGet("/rooms", () =>
 {
-    var repository = app.Services.CreateScope().ServiceProvider.GetRequiredService<IQueryRepository>();
+    var repository = app.Services.CreateScope().ServiceProvider.GetRequiredService<IRepository>();
     return Results.Json(repository.GetRooms());
 });
 

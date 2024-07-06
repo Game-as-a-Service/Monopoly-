@@ -10,7 +10,7 @@ public record StartGameRequest(string GameId, string PlayerId)
 
 public record StartGameResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, ICommandRepository gameRepository, IEventBus<DomainEvent> eventBus)
+public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IRepository gameRepository, IEventBus<DomainEvent> eventBus)
     : Usecase<StartGameRequest, StartGameResponse>
 {
     public override async Task ExecuteAsync(StartGameRequest gameRequest, IPresenter<StartGameResponse> presenter,

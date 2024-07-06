@@ -8,7 +8,7 @@ public record ChooseDirectionRequest(string GameId, string PlayerId, string Dire
 
 public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class ChooseDirectionUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+public class ChooseDirectionUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<ChooseDirectionRequest, ChooseDirectionResponse>
 {
     public override async Task ExecuteAsync(ChooseDirectionRequest request,

@@ -60,7 +60,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
         // Assert
         hub.FluentAssert.GameStartedEvent(new GameStartedEventArgs(gameId));
         
-        var gameRepository = Server.Services.GetRequiredService<ICommandRepository>();
+        var gameRepository = Server.Services.GetRequiredService<IRepository>();
         var game = gameRepository.FindGameById(gameId);
     }
 

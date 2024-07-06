@@ -4,7 +4,7 @@ using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 
-public class InMemoryRepository : ICommandRepository, IQueryRepository
+public class InMemoryRepository : IRepository
 {
     private readonly Dictionary<string, MonopolyDataModel> games = new();
 

@@ -8,7 +8,7 @@ public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
 
 public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class BidUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+public class BidUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<BidRequest, BidResponse>
 {
     public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter,

@@ -8,7 +8,7 @@ public record MortgageRequest(string GameId, string PlayerId, string BlockId)
 
 public record MortgageResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class MortgageUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+public class MortgageUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<MortgageRequest, MortgageResponse>
 {
     public override async Task ExecuteAsync(MortgageRequest request, IPresenter<MortgageResponse> presenter,

@@ -9,7 +9,7 @@ public record CreateGameRequest(string HostId, string[] PlayerIds) : GameRequest
 
 public record CreateGameResponse(string GameId) : Response;
 
-public class CreateGameUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+public class CreateGameUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<CreateGameRequest, CreateGameResponse>
 {
     public override async Task ExecuteAsync(CreateGameRequest gameRequest, IPresenter<CreateGameResponse> presenter,

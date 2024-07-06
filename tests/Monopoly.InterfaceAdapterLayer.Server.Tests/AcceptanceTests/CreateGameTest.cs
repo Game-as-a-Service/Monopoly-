@@ -18,7 +18,7 @@ public class CreateGameTest
     {
         server = new MonopolyTestServer();
         jwtTokenService = server.GetRequiredService<MockJwtTokenService>();
-        repository = server.GetRequiredService<IQueryRepository>();
+        repository = server.GetRequiredService<IRepository>();
         jwtBearerOptions = server.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>().Get("Bearer");
     }
 

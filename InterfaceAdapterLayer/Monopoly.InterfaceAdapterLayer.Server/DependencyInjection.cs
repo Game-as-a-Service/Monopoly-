@@ -12,10 +12,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddMonopolyServer(this IServiceCollection services)
     {
-        var repository = new InMemoryRepository();
         services.AddSingleton<IReadyRoomRepository, InMemoryReadyRoomRepository>();
-        services.AddSingleton<ICommandRepository>(repository)
-                .AddSingleton<IQueryRepository>(repository)
+        services.AddSingleton<IRepository, InMemoryRepository>()
                 .AddSingleton<IEventBus<DomainEvent>, MonopolyEventBus>()
                 .AddTransient(typeof(SignalrDefaultPresenter<>), typeof(SignalrDefaultPresenter<>));
         services.AddSignalREventHandlers();

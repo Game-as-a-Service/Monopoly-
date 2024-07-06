@@ -10,7 +10,7 @@ using SharedLibrary.ResponseArgs.ReadyRoom;
 namespace Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 
 [Authorize]
-public class MonopolyHub(ICommandRepository repository) : Hub<IMonopolyResponses>
+public class MonopolyHub(IRepository repository) : Hub<IMonopolyResponses>
 {
     private const string KeyOfPlayerId = "PlayerId";
     private const string KeyOfGameId = "GameId";

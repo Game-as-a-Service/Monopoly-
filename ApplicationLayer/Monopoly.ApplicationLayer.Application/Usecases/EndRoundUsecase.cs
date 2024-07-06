@@ -8,7 +8,7 @@ public record EndRoundRequest(string GameId, string PlayerId)
 
 public record EndRoundResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class EndRoundUsecase(ICommandRepository repository, IEventBus<DomainEvent> eventBus)
+public class EndRoundUsecase(IRepository repository, IEventBus<DomainEvent> eventBus)
     : Usecase<EndRoundRequest, EndRoundResponse>
 {
     public override async Task ExecuteAsync(EndRoundRequest request, IPresenter<EndRoundResponse> presenter,

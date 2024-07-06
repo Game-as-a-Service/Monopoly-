@@ -9,11 +9,3 @@ public interface IRepository
     public bool IsExist(string id);
     public string Save(MonopolyAggregate monopoly);
 }
-
-public interface ICommandRepository : IRepository
-{
-}
-
-public interface IQueryRepository : IRepository
-{
-}
