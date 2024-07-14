@@ -7,13 +7,14 @@ public class FakeInMemoryDatabase<T> where T : AggregateRoot
 {
     private readonly Dictionary<string, T> _database = new();
     
-    public T? FindById(string id)
+    public Task<T?> FindByIdAsync(string id)
     {
-        return _database.GetValueOrDefault(id);
+        return Task.FromResult(_database.GetValueOrDefault(id));
     }
     
-    public void Save(T aggregate)
+    public Task SaveAsync(T aggregate)
     {
         _database[aggregate.Id] = aggregate;
+        return Task.CompletedTask;
     }
 }

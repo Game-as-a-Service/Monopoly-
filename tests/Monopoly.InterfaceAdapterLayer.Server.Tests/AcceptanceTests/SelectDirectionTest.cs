@@ -65,7 +65,7 @@ public class SelectDirectionTest
         hub.VerifyNoElseEvent();
 
         var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
-        var game = repo.FindById("1");
+        var game = await repo.FindByIdAsync("1");
         var player = game.Players.First(p => p.Id == a.Id);
         Assert.AreEqual("Jail", player.Chess.CurrentBlockId);
     }
@@ -117,7 +117,7 @@ public class SelectDirectionTest
         hub.VerifyNoElseEvent();
 
         var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
-        var game = repo.FindById("1");
+        var game = await repo.FindByIdAsync("1");
         var player = game.Players.First(p => p.Id == a.Id);
         Assert.AreEqual("ParkingLot", player.Chess.CurrentBlockId);
     }

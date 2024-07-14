@@ -15,13 +15,13 @@ public class PlayerReadyUsecase(IReadyRoomRepository repository, IEventBus<Domai
         CancellationToken cancellationToken = default)
     {
         //查
-        var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
+        var readyRoom = await repository.FindByIdAsync(request.GameId);
 
         //改
         readyRoom.PlayerReady(request.PlayerId);
 
         //存
-        await repository.SaveReadyRoomAsync(readyRoom);
+        await repository.SaveAsync(readyRoom);
 
         //推
         await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);

@@ -16,13 +16,13 @@ public class BidUsecase(IRepository<MonopolyAggregate> repository, IEventBus<Dom
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindById(request.GameId);
+        var game = await repository.FindByIdAsync(request.GameId);
 
         //改
         game.PlayerBid(request.PlayerId, request.BidPrice);
 
         //存
-        repository.Save(game);
+        await repository.SaveAsync(game);
 
         //推
         await presenter.PresentAsync(new BidResponse(game.DomainEvents), cancellationToken);

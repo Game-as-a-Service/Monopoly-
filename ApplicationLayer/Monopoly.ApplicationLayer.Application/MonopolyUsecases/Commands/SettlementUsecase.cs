@@ -16,13 +16,13 @@ public class SettlementUsecase(IRepository<MonopolyAggregate> repository, IEvent
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindById(request.GameId);
+        var game = await repository.FindByIdAsync(request.GameId);
 
         //改
         game.Settlement();
 
         //存
-        repository.Save(game);
+        await repository.SaveAsync(game);
 
         //推
         await presenter.PresentAsync(new SettlementResponse(game.DomainEvents), cancellationToken);

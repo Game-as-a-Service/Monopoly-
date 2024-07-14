@@ -16,13 +16,13 @@ public class EndAuctionUsecase(IRepository<MonopolyAggregate> repository, IEvent
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindById(request.GameId);
+        var game = await repository.FindByIdAsync(request.GameId);
 
         //改
         game.EndAuction();
 
         //存
-        repository.Save(game);
+        await repository.SaveAsync(game);
 
         //推
         await presenter.PresentAsync(new EndAuctionResponse(game.DomainEvents), cancellationToken);

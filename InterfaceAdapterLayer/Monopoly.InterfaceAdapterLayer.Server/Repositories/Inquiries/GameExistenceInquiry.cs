@@ -8,7 +8,7 @@ internal class GameExistenceInquiry(FakeInMemoryDatabase<MonopolyAggregate> data
 {
     public bool CheckGameExistence(string gameId)
     {
-        var monopoly = database.FindById(gameId);
+        var monopoly = database.FindByIdAsync(gameId);
         return monopoly is not null;
     }
 }

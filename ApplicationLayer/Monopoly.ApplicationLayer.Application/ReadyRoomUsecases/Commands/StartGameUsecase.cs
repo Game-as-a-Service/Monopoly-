@@ -18,7 +18,7 @@ public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IReposit
         CancellationToken cancellationToken = default)
     {
         //查
-        var readyRoom = await readyRoomRepository.GetReadyRoomAsync(gameRequest.GameId);
+        var readyRoom = await readyRoomRepository.FindByIdAsync(gameRequest.GameId);
 
         //改
         readyRoom.StartGame(gameRequest.PlayerId);
@@ -35,8 +35,8 @@ public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IReposit
         var game = builder.Build();
         
         //存
-        await readyRoomRepository.SaveReadyRoomAsync(readyRoom);
-        gameRepository.Save(game);
+        await readyRoomRepository.SaveAsync(readyRoom);
+        gameRepository.SaveAsync(game);
 
         //推
         await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);

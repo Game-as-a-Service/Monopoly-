@@ -25,7 +25,7 @@ public class SelectLocationTest : AbstractReadyRoomTestBase
             .Build();
         const LocationEnum location = LocationEnum.First;
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
@@ -57,7 +57,7 @@ public class SelectLocationTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .WithPlayer(playerB)
             .Build();
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act & Assert
@@ -81,7 +81,7 @@ public class SelectLocationTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .Build();
         const LocationEnum location = LocationEnum.Second;
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act

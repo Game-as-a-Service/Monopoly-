@@ -15,13 +15,13 @@ public class SelectRoleUsecase(IReadyRoomRepository repository, IEventBus<Domain
         CancellationToken cancellationToken = default)
     {
         //查
-        var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
+        var readyRoom = await repository.FindByIdAsync(request.GameId);
 
         //改
         readyRoom.SelectRole(request.PlayerId, request.Role);
 
         //存
-        await repository.SaveReadyRoomAsync(readyRoom);
+        await repository.SaveAsync(readyRoom);
 
         //推
         await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);

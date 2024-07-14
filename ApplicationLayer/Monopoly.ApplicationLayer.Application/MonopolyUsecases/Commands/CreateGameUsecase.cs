@@ -29,7 +29,7 @@ public class CreateGameUsecase(IRepository<MonopolyAggregate> repository, IEvent
         builder.WithMap(new SevenXSevenMap());
 
         // 存
-        var id = repository.Save(builder.Build());
+        var id = await repository.SaveAsync(builder.Build());
 
         // 推
         await presenter.PresentAsync(new CreateGameResponse(id), cancellationToken);

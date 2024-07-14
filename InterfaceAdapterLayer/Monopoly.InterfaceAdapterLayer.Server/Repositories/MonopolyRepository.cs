@@ -5,9 +5,9 @@ namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 
 public class MonopolyRepository(FakeInMemoryDatabase<MonopolyAggregate> database) : IRepository<MonopolyAggregate>
 {
-    public MonopolyAggregate FindById(string id)
+    public async Task<MonopolyAggregate> FindByIdAsync(string id)
     {
-        var game = database.FindById(id);
+        var game = await database.FindByIdAsync(id);
         if (game == null)
         {
             throw new GameNotFoundException(id);
@@ -16,12 +16,12 @@ public class MonopolyRepository(FakeInMemoryDatabase<MonopolyAggregate> database
         return game;
     }
 
-    public string Save(MonopolyAggregate monopoly)
+    public async Task<string> SaveAsync(MonopolyAggregate monopoly)
     {
         var id = GetGameId(monopoly.Id);
         var newMonopoly = monopoly.ToApplication() with { Id = id };
         
-        database.Save(newMonopoly.ToDomain());
+        await database.SaveAsync(newMonopoly.ToDomain());
         return monopoly.Id;
     }
 

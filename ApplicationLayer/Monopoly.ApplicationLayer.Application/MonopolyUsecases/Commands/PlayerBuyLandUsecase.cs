@@ -16,13 +16,13 @@ public class PlayerBuyLandUsecase(IRepository<MonopolyAggregate> repository, IEv
         CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindById(request.GameId);
+        var game = await repository.FindByIdAsync(request.GameId);
 
         //改
         game.BuyLand(request.PlayerId, request.LandID);
 
         //存
-        repository.Save(game);
+        await repository.SaveAsync(game);
 
         //推
         await presenter.PresentAsync(new PlayerBuyLandResponse(game.DomainEvents), cancellationToken);

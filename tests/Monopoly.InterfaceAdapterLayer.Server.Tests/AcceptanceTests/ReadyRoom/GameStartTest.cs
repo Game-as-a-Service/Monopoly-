@@ -51,7 +51,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
             .WithGameIdProvider(gameIdProvider.Object)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
 
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
@@ -62,7 +62,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
         hub.FluentAssert.GameStartedEvent(new GameStartedEventArgs(gameId));
         
         var gameRepository = Server.Services.GetRequiredService<IRepository<MonopolyAggregate>>();
-        var game = gameRepository.FindById(gameId);
+        var game = gameRepository.FindByIdAsync(gameId);
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
             .WithHost(playerA.Id)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act & Assert
@@ -137,7 +137,7 @@ public class GameStartTest : AbstractReadyRoomTestBase
             .WithHost(playerA.Id)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerB.Id);
 
         // Act & Assert

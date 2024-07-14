@@ -9,12 +9,12 @@ public interface IReadyRoomRepository
     /// </summary>
     /// <param name="aggregate">Ready room aggregate</param>
     /// <returns></returns>
-    Task SaveReadyRoomAsync(ReadyRoomAggregate aggregate);
+    Task SaveAsync(ReadyRoomAggregate aggregate);
 
     /// <summary>
     /// Gat ready room from repository with identifier.
     /// </summary>
     /// <param name="id">Identifier of ready room.</param>
     /// <returns>Ready room aggregate.</returns>
-    Task<ReadyRoomAggregate> GetReadyRoomAsync(string id);
+    Task<ReadyRoomAggregate> FindByIdAsync(string id);
 }

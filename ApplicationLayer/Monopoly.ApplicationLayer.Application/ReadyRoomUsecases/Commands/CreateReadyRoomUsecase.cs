@@ -15,7 +15,7 @@ public sealed class CreateReadyRoomUsecase(IReadyRoomRepository repository) : Us
             .WithHost(request.PlayerId)
             .Build();
         
-        await repository.SaveReadyRoomAsync(readyRoom);
+        await repository.SaveAsync(readyRoom);
         
         await presenter.PresentAsync(new CreateReadyRoomResponse(readyRoom.Id), cancellationToken);
     }

@@ -24,7 +24,7 @@ public class SelectRoleTest : AbstractReadyRoomTestBase
 
         const string roleId = "1";
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
@@ -51,7 +51,7 @@ public class SelectRoleTest : AbstractReadyRoomTestBase
 
         const string newRoleId = "2";
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act & Assert

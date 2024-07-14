@@ -27,7 +27,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
@@ -56,7 +56,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act
@@ -83,7 +83,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act & Assert
@@ -108,7 +108,7 @@ public class ReadyTest : AbstractReadyRoomTestBase
             .WithPlayer(playerA)
             .Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerA.Id);
 
         // Act & Assert

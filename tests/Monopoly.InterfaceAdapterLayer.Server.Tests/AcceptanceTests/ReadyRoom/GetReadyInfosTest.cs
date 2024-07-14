@@ -54,8 +54,8 @@ public class GetReadyInfosTest : AbstractReadyRoomTestBase
 
         var readyRoom2 = new ReadyRoomBuilder().Build();
 
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom2);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom2);
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, player2.Id);
 
         // Act

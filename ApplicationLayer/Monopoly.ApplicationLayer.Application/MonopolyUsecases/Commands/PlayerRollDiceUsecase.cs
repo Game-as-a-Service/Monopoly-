@@ -16,13 +16,13 @@ public class PlayerRollDiceUsecase(IRepository<MonopolyAggregate> repository, IE
         IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
     {
         //查
-        var game = repository.FindById(request.GameId);
+        var game = await repository.FindByIdAsync(request.GameId);
 
         //改
         game.PlayerRollDice(request.PlayerId);
 
         //存
-        repository.Save(game);
+        await repository.SaveAsync(game);
 
         //推
         await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);

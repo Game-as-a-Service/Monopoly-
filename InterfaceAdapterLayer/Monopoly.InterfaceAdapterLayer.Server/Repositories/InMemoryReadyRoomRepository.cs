@@ -6,13 +6,13 @@ namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 public class InMemoryReadyRoomRepository : IReadyRoomRepository
 {
     private readonly Dictionary<string, ReadyRoomAggregate> _readyRooms = new();
-    public Task SaveReadyRoomAsync(ReadyRoomAggregate aggregate)
+    public Task SaveAsync(ReadyRoomAggregate aggregate)
     {
         _readyRooms[aggregate.Id] = aggregate;
         return Task.CompletedTask;
     }
 
-    public Task<ReadyRoomAggregate> GetReadyRoomAsync(string id)
+    public Task<ReadyRoomAggregate> FindByIdAsync(string id)
     {
         var readyRoomAggregate = _readyRooms[id];
         readyRoomAggregate.ClearDomainEvents();

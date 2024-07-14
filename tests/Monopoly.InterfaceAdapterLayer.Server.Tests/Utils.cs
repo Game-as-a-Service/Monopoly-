@@ -100,7 +100,7 @@ public class Utils
         internal void Save(MonopolyTestServer server)
         {
             var monopoly = Build();
-            server.GetRequiredService<IRepository<MonopolyAggregate>>().Save(monopoly.ToDomain());
+            server.GetRequiredService<IRepository<MonopolyAggregate>>().SaveAsync(monopoly.ToDomain());
             server.GetRequiredService<MockDiceService>().Dices =
                 Dices.Select(value => new MockDice(value)).ToArray<IDice>();
         }

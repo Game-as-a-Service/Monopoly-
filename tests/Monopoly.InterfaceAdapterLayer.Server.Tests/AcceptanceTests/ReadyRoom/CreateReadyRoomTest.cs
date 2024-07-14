@@ -36,7 +36,7 @@ public class CreateReadyRoomTest : AbstractReadyRoomTestBase
         
         var roomId = urlOfRoom.Split('/').Last();
         
-        var readyRoom = await ReadyRoomRepository.GetReadyRoomAsync(roomId);
+        var readyRoom = await ReadyRoomRepository.FindByIdAsync(roomId);
         Assert.IsNotNull(readyRoom);
     } 
 }

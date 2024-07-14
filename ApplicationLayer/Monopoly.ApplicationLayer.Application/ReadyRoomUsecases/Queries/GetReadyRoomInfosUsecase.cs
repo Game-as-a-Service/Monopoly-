@@ -14,7 +14,7 @@ public class GetReadyRoomInfosUsecase(IReadyRoomRepository repository)
     public override async Task ExecuteAsync(GetReadyRoomInfosRequest request,
         IPresenter<GetReadyRoomInfosResponse> presenter, CancellationToken cancellationToken = default)
     {
-        var readyRoom = await repository.GetReadyRoomAsync(request.GameId);
+        var readyRoom = await repository.FindByIdAsync(request.GameId);
         await presenter.PresentAsync(new GetReadyRoomInfosResponse(request.PlayerId, readyRoom), cancellationToken);
     }
 }

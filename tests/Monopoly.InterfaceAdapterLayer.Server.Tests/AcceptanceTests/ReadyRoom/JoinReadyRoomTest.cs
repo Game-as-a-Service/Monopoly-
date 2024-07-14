@@ -20,7 +20,7 @@ public class JoinReadyRoomTest : AbstractReadyRoomTestBase
         var readyRoom = new ReadyRoomBuilder()
             .Build();
         
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, "PlayerB");
         
@@ -28,7 +28,7 @@ public class JoinReadyRoomTest : AbstractReadyRoomTestBase
         await hub.Requests.JoinRoom();
         
         // Assert
-        var readyRoomAfterPlayerJoinRoom = await ReadyRoomRepository.GetReadyRoomAsync(readyRoom.Id);
+        var readyRoomAfterPlayerJoinRoom = await ReadyRoomRepository.FindByIdAsync(readyRoom.Id);
         Assert.AreEqual(1, readyRoomAfterPlayerJoinRoom.Players.Count);
         Assert.AreEqual("PlayerB", readyRoomAfterPlayerJoinRoom.Players[0].Id);
     }
@@ -49,7 +49,7 @@ public class JoinReadyRoomTest : AbstractReadyRoomTestBase
             .WithPlayer(playerB)
             .Build();
         
-        await ReadyRoomRepository.SaveReadyRoomAsync(readyRoom);
+        await ReadyRoomRepository.SaveAsync(readyRoom);
         
         var hub = await Server.CreateReadyRoomHubConnectionAsync(readyRoom.Id, playerB.Id);
         
