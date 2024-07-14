@@ -3,6 +3,7 @@ using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 using Monopoly.DomainLayer.Domain.Builders;
 using Monopoly.DomainLayer.Domain.Maps;
+using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
@@ -11,7 +12,7 @@ public record StartGameRequest(string GameId, string PlayerId)
 
 public record StartGameResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IRepository<MonopolyAggregate> gameRepository, IEventBus<DomainEvent> eventBus)
+public class StartGameUsecase(IRepository<ReadyRoomAggregate> readyRoomRepository, IRepository<MonopolyAggregate> gameRepository, IEventBus<DomainEvent> eventBus)
     : Usecase<StartGameRequest, StartGameResponse>
 {
     public override async Task ExecuteAsync(StartGameRequest gameRequest, IPresenter<StartGameResponse> presenter,
@@ -36,7 +37,7 @@ public class StartGameUsecase(IReadyRoomRepository readyRoomRepository, IReposit
         
         //存
         await readyRoomRepository.SaveAsync(readyRoom);
-        gameRepository.SaveAsync(game);
+        await gameRepository.SaveAsync(game);
 
         //推
         await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);

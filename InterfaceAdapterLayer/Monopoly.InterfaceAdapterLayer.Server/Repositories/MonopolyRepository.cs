@@ -3,6 +3,7 @@ using Monopoly.DomainLayer.Domain;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Repositories;
 
+/// <inheritdoc />
 public class MonopolyRepository(FakeInMemoryDatabase<MonopolyAggregate> database) : IRepository<MonopolyAggregate>
 {
     public async Task<MonopolyAggregate> FindByIdAsync(string id)

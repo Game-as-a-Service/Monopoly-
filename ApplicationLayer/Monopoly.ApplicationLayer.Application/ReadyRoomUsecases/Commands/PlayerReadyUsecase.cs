@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
@@ -8,7 +9,7 @@ public record PlayerReadyRequest(string GameId, string PlayerId)
 
 public record PlayerReadyResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class PlayerReadyUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+public class PlayerReadyUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<PlayerReadyRequest, PlayerReadyResponse>
 {
     public override async Task ExecuteAsync(PlayerReadyRequest request, IPresenter<PlayerReadyResponse> presenter,

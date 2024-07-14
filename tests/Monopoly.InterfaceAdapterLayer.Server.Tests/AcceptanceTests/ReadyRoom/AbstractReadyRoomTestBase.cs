@@ -1,19 +1,21 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
+using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests.ReadyRoom;
 
 public abstract class AbstractReadyRoomTestBase
 {
     private protected MonopolyTestServer Server = default!;
-    private protected IReadyRoomRepository ReadyRoomRepository = default!;
+    private protected IRepository<ReadyRoomAggregate> ReadyRoomRepository = default!;
 
     [TestInitialize]
     public void Setup()
     {
         Server = new MonopolyTestServer();
-        ReadyRoomRepository = Server.GetRequiredService<IReadyRoomRepository>();
+        ReadyRoomRepository = Server.GetRequiredService<IRepository<ReadyRoomAggregate>>();
     }
 
     [TestCleanup]

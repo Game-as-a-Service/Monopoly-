@@ -8,7 +8,7 @@ public record GetReadyRoomInfosRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 public record GetReadyRoomInfosResponse(string RequestPlayerId, ReadyRoomAggregate ReadyRoom) : Response;
 
-public class GetReadyRoomInfosUsecase(IReadyRoomRepository repository)
+public class GetReadyRoomInfosUsecase(IRepository<ReadyRoomAggregate> repository)
     : Usecase<GetReadyRoomInfosRequest, GetReadyRoomInfosResponse>
 {
     public override async Task ExecuteAsync(GetReadyRoomInfosRequest request,

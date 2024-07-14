@@ -1,5 +1,6 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
@@ -8,7 +9,7 @@ public record SelectRoleRequest(string GameId, string PlayerId, string Role)
 
 public record SelectRoleResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class SelectRoleUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+public class SelectRoleUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<SelectRoleRequest, SelectRoleResponse>
 {
     public override async Task ExecuteAsync(SelectRoleRequest request, IPresenter<SelectRoleResponse> presenter,

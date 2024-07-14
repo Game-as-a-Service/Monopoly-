@@ -1,5 +1,6 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom;
 
 namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 
@@ -7,7 +8,7 @@ public record PlayerJoinReadyRoomRequest(string RoomId, string PlayerId) : BaseR
 
 public record PlayerJoinReadyRoomResponse : Response;
 
-public class PlayerJoinReadyRoomUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+public class PlayerJoinReadyRoomUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<PlayerJoinReadyRoomRequest, PlayerJoinReadyRoomResponse>
 {
     public override async Task ExecuteAsync(PlayerJoinReadyRoomRequest request,

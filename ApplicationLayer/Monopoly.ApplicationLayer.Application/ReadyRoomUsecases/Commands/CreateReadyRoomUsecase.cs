@@ -7,7 +7,7 @@ public record CreateReadyRoomRequest(string PlayerId) : BaseRequest;
 
 public record CreateReadyRoomResponse(string RoomId) : Response;
 
-public sealed class CreateReadyRoomUsecase(IReadyRoomRepository repository) : Usecase<CreateReadyRoomRequest, CreateReadyRoomResponse>
+public sealed class CreateReadyRoomUsecase(IRepository<ReadyRoomAggregate> repository) : Usecase<CreateReadyRoomRequest, CreateReadyRoomResponse>
 {
     public override async Task ExecuteAsync(CreateReadyRoomRequest request, IPresenter<CreateReadyRoomResponse> presenter, CancellationToken cancellationToken = default)
     {

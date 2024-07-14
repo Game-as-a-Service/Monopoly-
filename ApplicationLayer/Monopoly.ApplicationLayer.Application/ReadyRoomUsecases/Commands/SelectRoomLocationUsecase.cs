@@ -1,5 +1,6 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Common;
+using Monopoly.DomainLayer.ReadyRoom;
 using Monopoly.DomainLayer.ReadyRoom.Enums;
 
 namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
@@ -9,7 +10,7 @@ public record SelectLocationRequest(string GameId, string PlayerId, LocationEnum
 
 public record SelectLocationResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
-public class SelectLocationUsecase(IReadyRoomRepository repository, IEventBus<DomainEvent> eventBus)
+public class SelectLocationUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
     : Usecase<SelectLocationRequest, SelectLocationResponse>
 {
     public override async Task ExecuteAsync(SelectLocationRequest request,
