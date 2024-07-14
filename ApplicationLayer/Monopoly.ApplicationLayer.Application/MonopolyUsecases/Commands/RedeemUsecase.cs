@@ -7,12 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record RedeemRequest(string GameId, string PlayerId, string BlockId)
     : GameRequest(GameId, PlayerId);
 
-public record RedeemResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class RedeemUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<RedeemRequest, RedeemResponse>
+    : Usecase<RedeemRequest>
 {
-    public override async Task ExecuteAsync(RedeemRequest request, IPresenter<RedeemResponse> presenter,
+    public override async Task ExecuteAsync(RedeemRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +23,6 @@ public class RedeemUsecase(IRepository<MonopolyAggregate> repository, IEventBus<
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new RedeemResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

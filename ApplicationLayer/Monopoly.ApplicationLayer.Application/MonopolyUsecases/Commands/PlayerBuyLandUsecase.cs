@@ -7,12 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record PlayerBuyLandRequest(string GameId, string PlayerId, string LandID)
     : GameRequest(GameId, PlayerId);
 
-public record PlayerBuyLandResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class PlayerBuyLandUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<PlayerBuyLandRequest, PlayerBuyLandResponse>
+    : Usecase<PlayerBuyLandRequest>
 {
-    public override async Task ExecuteAsync(PlayerBuyLandRequest request, IPresenter<PlayerBuyLandResponse> presenter,
+    public override async Task ExecuteAsync(PlayerBuyLandRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +23,6 @@ public class PlayerBuyLandUsecase(IRepository<MonopolyAggregate> repository, IEv
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new PlayerBuyLandResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

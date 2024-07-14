@@ -7,13 +7,11 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record PlayerRollDiceRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record PlayerRollDiceResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class PlayerRollDiceUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<PlayerRollDiceRequest, PlayerRollDiceResponse>
+    : Usecase<PlayerRollDiceRequest>
 {
     public override async Task ExecuteAsync(PlayerRollDiceRequest request,
-        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         //查
         var game = await repository.FindByIdAsync(request.GameId);
@@ -25,6 +23,6 @@ public class PlayerRollDiceUsecase(IRepository<MonopolyAggregate> repository, IE
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

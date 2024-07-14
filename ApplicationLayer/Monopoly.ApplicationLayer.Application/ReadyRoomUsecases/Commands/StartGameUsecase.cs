@@ -10,13 +10,13 @@ namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 public record StartGameRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record StartGameResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
-public class StartGameUsecase(IRepository<ReadyRoomAggregate> readyRoomRepository, IRepository<MonopolyAggregate> gameRepository, IEventBus<DomainEvent> eventBus)
-    : Usecase<StartGameRequest, StartGameResponse>
+public class StartGameUsecase(
+    IRepository<ReadyRoomAggregate> readyRoomRepository,
+    IRepository<MonopolyAggregate> gameRepository,
+    IEventBus<DomainEvent> eventBus)
+    : Usecase<StartGameRequest>
 {
-    public override async Task ExecuteAsync(StartGameRequest gameRequest, IPresenter<StartGameResponse> presenter,
-        CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(StartGameRequest gameRequest, CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await readyRoomRepository.FindByIdAsync(gameRequest.GameId);
@@ -29,18 +29,18 @@ public class StartGameUsecase(IRepository<ReadyRoomAggregate> readyRoomRepositor
         {
             builder.WithPlayer(player.Id);
         }
+
         builder.WithId(readyRoom.GameId)
             .WithHost(readyRoom.HostId)
             .WithCurrentPlayer(readyRoom.Players[0].Id)
             .WithMap(new SevenXSevenMap());
         var game = builder.Build();
-        
+
         //存
         await readyRoomRepository.SaveAsync(readyRoom);
         await gameRepository.SaveAsync(game);
 
         //推
         await eventBus.PublishAsync(readyRoom.DomainEvents, cancellationToken);
-        //await presenter.PresentAsync(new GameStartResponse(readyRoom.DomainEvents));
     }
 }

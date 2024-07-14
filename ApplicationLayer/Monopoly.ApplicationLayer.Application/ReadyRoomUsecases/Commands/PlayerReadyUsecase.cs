@@ -7,13 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 public record PlayerReadyRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record PlayerReadyResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class PlayerReadyUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<PlayerReadyRequest, PlayerReadyResponse>
+    : Usecase<PlayerReadyRequest>
 {
-    public override async Task ExecuteAsync(PlayerReadyRequest request, IPresenter<PlayerReadyResponse> presenter,
-        CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PlayerReadyRequest request, CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.FindByIdAsync(request.GameId);

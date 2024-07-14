@@ -15,10 +15,11 @@ public static class DependencyInjection
     {
         var assembly = typeof(DependencyInjection).Assembly;
         var usecaseType = typeof(Usecase<,>);
+        var usecaseType2 = typeof(Usecase<>);
 
         var types = assembly.GetTypes()
             .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true})
-            .Where(t => t.BaseType?.GetGenericTypeDefinition() == usecaseType);
+            .Where(t => t.BaseType?.GetGenericTypeDefinition() == usecaseType || t.BaseType?.GetGenericTypeDefinition() == usecaseType2);
         foreach (var type in types)
         {
             services.AddTransient(type);

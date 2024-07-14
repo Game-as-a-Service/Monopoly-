@@ -8,13 +8,11 @@ namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 public record SelectLocationRequest(string GameId, string PlayerId, LocationEnum Location)
     : GameRequest(GameId, PlayerId);
 
-public record SelectLocationResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class SelectLocationUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<SelectLocationRequest, SelectLocationResponse>
+    : Usecase<SelectLocationRequest>
 {
     public override async Task ExecuteAsync(SelectLocationRequest request,
-        IPresenter<SelectLocationResponse> presenter, CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.FindByIdAsync(request.GameId);

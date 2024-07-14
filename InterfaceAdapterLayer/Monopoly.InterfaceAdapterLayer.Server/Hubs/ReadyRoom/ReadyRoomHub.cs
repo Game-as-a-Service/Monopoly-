@@ -19,29 +19,25 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponses>
     public async Task StartGame(StartGameUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new StartGameRequest(GameId, PlayerId),
-            NullPresenter<StartGameResponse>.Instance);
+            new StartGameRequest(GameId, PlayerId));
     }
 
     public async Task PlayerReady(PlayerReadyUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new PlayerReadyRequest(GameId, PlayerId),
-            NullPresenter<PlayerReadyResponse>.Instance);
+            new PlayerReadyRequest(GameId, PlayerId));
     }
 
     public async Task SelectLocation(LocationEnum location, SelectLocationUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new SelectLocationRequest(GameId, PlayerId, location.AsDomainLocationEnum()),
-            NullPresenter<SelectLocationResponse>.Instance);
+            new SelectLocationRequest(GameId, PlayerId, location.AsDomainLocationEnum()));
     }
 
     public async Task SelectRole(string role, SelectRoleUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new SelectRoleRequest(GameId, PlayerId, role),
-            NullPresenter<SelectRoleResponse>.Instance);
+            new SelectRoleRequest(GameId, PlayerId, role));
     }
 
     public async Task<ReadyRoomInfos> GetReadyRoomInfos(GetReadyRoomInfosUsecase usecase)
@@ -53,12 +49,11 @@ public sealed class ReadyRoomHub : Hub<IReadyRoomResponses>
         );
         return await presenter.GetResultAsync();
     }
-    
+
     public async Task JoinRoom(PlayerJoinReadyRoomUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new PlayerJoinReadyRoomRequest(GameId, PlayerId),
-            NullPresenter<PlayerJoinReadyRoomResponse>.Instance);
+            new PlayerJoinReadyRoomRequest(GameId, PlayerId));
     }
 
     public override async Task OnConnectedAsync()

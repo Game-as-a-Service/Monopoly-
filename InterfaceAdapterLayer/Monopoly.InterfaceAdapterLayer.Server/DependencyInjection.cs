@@ -20,7 +20,6 @@ public static class DependencyInjection
         services.AddTransient<IRepository<MonopolyAggregate>, MonopolyRepository>()
             .AddTransient<IRepository<ReadyRoomAggregate>, ReadyRoomRepository>()
             .AddSingleton<IEventBus<DomainEvent>, MonopolyEventBus>()
-            .AddTransient(typeof(SignalrDefaultPresenter<>), typeof(SignalrDefaultPresenter<>))
             .AddTransient(typeof(DefaultPresenter<>), typeof(DefaultPresenter<>));
         services.AddInquiries();
         services.AddSignalREventHandlers();

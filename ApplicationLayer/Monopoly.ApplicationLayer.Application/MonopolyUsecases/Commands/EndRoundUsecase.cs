@@ -7,12 +7,11 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record EndRoundRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record EndRoundResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class EndRoundUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<EndRoundRequest, EndRoundResponse>
+    : Usecase<EndRoundRequest>
 {
-    public override async Task ExecuteAsync(EndRoundRequest request, IPresenter<EndRoundResponse> presenter,
+    public override async Task ExecuteAsync(EndRoundRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +24,6 @@ public class EndRoundUsecase(IRepository<MonopolyAggregate> repository, IEventBu
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new EndRoundResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

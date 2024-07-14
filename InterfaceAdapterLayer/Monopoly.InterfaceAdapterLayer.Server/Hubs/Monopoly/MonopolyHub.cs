@@ -17,86 +17,79 @@ public class MonopolyHub(CheckGameExistenceQuery checkGameExistenceQuery) : Hub<
     private string GameId => Context.Items[KeyOfGameId] as string ?? "";
     private string PlayerId => Context.Items[KeyOfPlayerId] as string ?? "";
 
-    public async Task PlayerRollDice(PlayerRollDiceUsecase usecase,
-        SignalrDefaultPresenter<PlayerRollDiceResponse> presenter)
+    public async Task PlayerRollDice(PlayerRollDiceUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new PlayerRollDiceRequest(GameId, PlayerId),
-            presenter);
+            new PlayerRollDiceRequest(GameId, PlayerId));
     }
 
-    public async Task PlayerChooseDirection(string direction, ChooseDirectionUsecase usecase,
-        SignalrDefaultPresenter<ChooseDirectionResponse> presenter)
+    public async Task PlayerChooseDirection(string direction, ChooseDirectionUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new ChooseDirectionRequest(GameId, PlayerId, direction),
-            presenter);
+            new ChooseDirectionRequest(GameId, PlayerId, direction)
+        );
     }
 
-    public async Task PlayerBuyLand(string blockId, PlayerBuyLandUsecase usecase,
-        SignalrDefaultPresenter<PlayerBuyLandResponse> presenter)
+    public async Task PlayerBuyLand(string blockId, PlayerBuyLandUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new PlayerBuyLandRequest(GameId, PlayerId, blockId),
-            presenter);
+            new PlayerBuyLandRequest(GameId, PlayerId, blockId)
+        );
     }
 
-    public async Task PlayerPayToll(PayTollUsecase usecase, SignalrDefaultPresenter<PayTollResponse> presenter)
+    public async Task PlayerPayToll(PayTollUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new PayTollRequest(GameId, PlayerId),
-            presenter);
+            new PayTollRequest(GameId, PlayerId)
+        );
     }
 
-    public async Task PlayerBuildHouse(BuildHouseUsecase usecase, SignalrDefaultPresenter<BuildHouseResponse> presenter)
+    public async Task PlayerBuildHouse(BuildHouseUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new BuildHouseRequest(GameId, PlayerId),
-            presenter);
+            new BuildHouseRequest(GameId, PlayerId));
     }
 
-    public async Task PlayerMortgage(string blockId, MortgageUsecase usecase,
-        SignalrDefaultPresenter<MortgageResponse> presenter)
+    public async Task PlayerMortgage(string blockId, MortgageUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new MortgageRequest(GameId, PlayerId, blockId),
-            presenter);
+            new MortgageRequest(GameId, PlayerId, blockId)
+        );
     }
 
-    public async Task PlayerRedeem(string blockId, RedeemUsecase usecase,
-        SignalrDefaultPresenter<RedeemResponse> presenter)
+    public async Task PlayerRedeem(string blockId, RedeemUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new RedeemRequest(GameId, PlayerId, blockId),
-            presenter);
+            new RedeemRequest(GameId, PlayerId, blockId)
+        );
     }
 
-    public async Task PlayerBid(decimal bidPrice, BidUsecase usecase, SignalrDefaultPresenter<BidResponse> presenter)
+    public async Task PlayerBid(decimal bidPrice, BidUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new BidRequest(GameId, PlayerId, bidPrice),
-            presenter);
+            new BidRequest(GameId, PlayerId, bidPrice)
+        );
     }
 
-    public async Task EndAuction(EndAuctionUsecase usecase, SignalrDefaultPresenter<EndAuctionResponse> presenter)
+    public async Task EndAuction(EndAuctionUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new EndAuctionRequest(GameId, PlayerId),
-            presenter);
+            new EndAuctionRequest(GameId, PlayerId)
+        );
     }
 
-    public async Task EndRound(EndRoundUsecase usecase, SignalrDefaultPresenter<EndRoundResponse> presenter)
+    public async Task EndRound(EndRoundUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new EndRoundRequest(GameId, PlayerId),
-            presenter);
+            new EndRoundRequest(GameId, PlayerId)
+        );
     }
 
-    public async Task Settlement(SettlementUsecase usecase, SignalrDefaultPresenter<SettlementResponse> presenter)
+    public async Task Settlement(SettlementUsecase usecase)
     {
         await usecase.ExecuteAsync(
-            new SettlementRequest(GameId, PlayerId),
-            presenter);
+            new SettlementRequest(GameId, PlayerId)
+        );
     }
 
     public override async Task OnConnectedAsync()

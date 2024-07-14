@@ -7,12 +7,11 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record SettlementRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record SettlementResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
 
 public class SettlementUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<SettlementRequest, SettlementResponse>
+    : Usecase<SettlementRequest>
 {
-    public override async Task ExecuteAsync(SettlementRequest request, IPresenter<SettlementResponse> presenter,
+    public override async Task ExecuteAsync(SettlementRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +24,6 @@ public class SettlementUsecase(IRepository<MonopolyAggregate> repository, IEvent
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new SettlementResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

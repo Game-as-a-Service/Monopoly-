@@ -7,13 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
 public record SelectRoleRequest(string GameId, string PlayerId, string Role)
     : GameRequest(GameId, PlayerId);
 
-public record SelectRoleResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class SelectRoleUsecase(IRepository<ReadyRoomAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<SelectRoleRequest, SelectRoleResponse>
+    : Usecase<SelectRoleRequest>
 {
-    public override async Task ExecuteAsync(SelectRoleRequest request, IPresenter<SelectRoleResponse> presenter,
-        CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(SelectRoleRequest request, CancellationToken cancellationToken = default)
     {
         //查
         var readyRoom = await repository.FindByIdAsync(request.GameId);

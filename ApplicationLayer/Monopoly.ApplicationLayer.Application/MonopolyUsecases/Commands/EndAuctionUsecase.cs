@@ -7,12 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record EndAuctionRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record EndAuctionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class EndAuctionUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<EndAuctionRequest, EndAuctionResponse>
+    : Usecase<EndAuctionRequest>
 {
-    public override async Task ExecuteAsync(EndAuctionRequest request, IPresenter<EndAuctionResponse> presenter,
+    public override async Task ExecuteAsync(EndAuctionRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +23,6 @@ public class EndAuctionUsecase(IRepository<MonopolyAggregate> repository, IEvent
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new EndAuctionResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

@@ -7,12 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record BidRequest(string GameId, string PlayerId, decimal BidPrice)
     : GameRequest(GameId, PlayerId);
 
-public record BidResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class BidUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<BidRequest, BidResponse>
+    : Usecase<BidRequest>
 {
-    public override async Task ExecuteAsync(BidRequest request, IPresenter<BidResponse> presenter,
+    public override async Task ExecuteAsync(BidRequest request,
         CancellationToken cancellationToken = default)
     {
         //查
@@ -25,6 +23,6 @@ public class BidUsecase(IRepository<MonopolyAggregate> repository, IEventBus<Dom
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new BidResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

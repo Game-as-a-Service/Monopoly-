@@ -7,13 +7,10 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record BuildHouseRequest(string GameId, string PlayerId)
     : GameRequest(GameId, PlayerId);
 
-public record BuildHouseResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class BuildHouseUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<BuildHouseRequest, BuildHouseResponse>
+    : Usecase<BuildHouseRequest>
 {
-    public override async Task ExecuteAsync(BuildHouseRequest request, IPresenter<BuildHouseResponse> presenter,
-        CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(BuildHouseRequest request, CancellationToken cancellationToken = default)
     {
         //查
         var game = await repository.FindByIdAsync(request.GameId);
@@ -25,6 +22,6 @@ public class BuildHouseUsecase(IRepository<MonopolyAggregate> repository, IEvent
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new BuildHouseResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

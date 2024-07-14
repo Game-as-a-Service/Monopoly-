@@ -7,13 +7,11 @@ namespace Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 public record ChooseDirectionRequest(string GameId, string PlayerId, string Direction)
     : GameRequest(GameId, PlayerId);
 
-public record ChooseDirectionResponse(IReadOnlyList<DomainEvent> Events) : CommandResponse(Events);
-
 public class ChooseDirectionUsecase(IRepository<MonopolyAggregate> repository, IEventBus<DomainEvent> eventBus)
-    : Usecase<ChooseDirectionRequest, ChooseDirectionResponse>
+    : Usecase<ChooseDirectionRequest>
 {
-    public override async Task ExecuteAsync(ChooseDirectionRequest request,
-        IPresenter<ChooseDirectionResponse> presenter, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(ChooseDirectionRequest request
+        , CancellationToken cancellationToken = default)
     {
         //查
         var game = await repository.FindByIdAsync(request.GameId);
@@ -25,6 +23,6 @@ public class ChooseDirectionUsecase(IRepository<MonopolyAggregate> repository, I
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new ChooseDirectionResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }

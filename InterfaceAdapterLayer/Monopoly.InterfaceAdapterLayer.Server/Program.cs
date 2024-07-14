@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Monopoly.ApplicationLayer.Application;
-using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
-using Monopoly.DomainLayer.Domain;
 using Monopoly.InterfaceAdapterLayer.Server;
 using Monopoly.InterfaceAdapterLayer.Server.Configurations;
 using Monopoly.InterfaceAdapterLayer.Server.DataModels;
@@ -26,13 +24,13 @@ builder.Services.AddSignalR();
 
 const string corsPolicy = "CorsPolicy";
 builder.Services.AddCors(options => options.AddPolicy(corsPolicy,
-        configurePolicy =>
-        {
-            configurePolicy.AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .SetIsOriginAllowed(_ => true)
-                   .AllowCredentials();
-        }));
+    configurePolicy =>
+    {
+        configurePolicy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(_ => true)
+            .AllowCredentials();
+    }));
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.AddOptions<JwtBearerOptions>(nameof(JwtSettings.Internal))
@@ -104,10 +102,10 @@ app.MapGet("/health", () => Results.Ok());
 // }).RequireAuthorization();
 
 app.MapPost("/dev/room", async (
-    [FromBody] CreateGameBodyPayload? payload, 
-    ClaimsPrincipal user, 
-    CreateReadyRoomUsecase createReadyRoomUsecase, 
-    PlayerJoinReadyRoomUsecase playerJoinReadyRoomUsecase, 
+    [FromBody] CreateGameBodyPayload? payload,
+    ClaimsPrincipal user,
+    CreateReadyRoomUsecase createReadyRoomUsecase,
+    PlayerJoinReadyRoomUsecase playerJoinReadyRoomUsecase,
     CancellationToken cancellationToken) =>
 {
     var playerId = user.FindFirst(ClaimTypes.NameIdentifier)!.Value;
@@ -119,14 +117,13 @@ app.MapPost("/dev/room", async (
         {
             await playerJoinReadyRoomUsecase.ExecuteAsync(
                 new PlayerJoinReadyRoomRequest(presenter.Value.RoomId, id),
-                new NullPresenter<PlayerJoinReadyRoomResponse>(),
                 cancellationToken);
-        }    
+        }
     }
-    
+
     var frontendBaseUrl = app.Configuration["FrontendBaseUrl"]!;
     var url = $"{frontendBaseUrl}ready-room/{presenter.Value.RoomId}";
-    
+
     return Results.Ok(url);
 }).RequireAuthorization();
 
@@ -134,7 +131,7 @@ app.MapPost("/dev/user", (string userName, IOptions<JwtSettings> jwtSettings) =>
 {
     // generate user id
     var userId = Guid.NewGuid().ToString();
-    
+
     // generate jwt token
     var tokenHandler = new JwtSecurityTokenHandler();
     var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Internal.SecretKey));
@@ -175,7 +172,8 @@ app.MapGet("/map", (string mapId) =>
 #if DEBUG
 app.MapGet("/users", () =>
 {
-    var platformService = app.Services.CreateScope().ServiceProvider.GetRequiredService<IPlatformService>() as DevelopmentPlatformService;
+    var platformService =
+        app.Services.CreateScope().ServiceProvider.GetRequiredService<IPlatformService>() as DevelopmentPlatformService;
     var users = platformService?.GetUsers().Select(user => new { user.Id, user.Token });
     return Results.Json(users);
 });

@@ -12,8 +12,7 @@ public class MockPlayerRollDiceUsecase(IRepository<MonopolyAggregate> repository
                                        MockDiceService mockDiceService)
     : PlayerRollDiceUsecase(repository, eventBus)
 {
-    public override async Task ExecuteAsync(PlayerRollDiceRequest request,
-        IPresenter<PlayerRollDiceResponse> presenter, CancellationToken cancellationToken = default)
+    public override async Task ExecuteAsync(PlayerRollDiceRequest request, CancellationToken cancellationToken = default)
     {
         //查
         var game = await repository.FindByIdAsync(request.GameId);
@@ -28,6 +27,6 @@ public class MockPlayerRollDiceUsecase(IRepository<MonopolyAggregate> repository
         await repository.SaveAsync(game);
 
         //推
-        await presenter.PresentAsync(new PlayerRollDiceResponse(game.DomainEvents), cancellationToken);
+        await eventBus.PublishAsync(game.DomainEvents, cancellationToken);
     }
 }
