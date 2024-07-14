@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
-using Monopoly.DomainLayer.Domain;
+using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Queries;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
@@ -11,7 +10,7 @@ using SharedLibrary.ResponseArgs.ReadyRoom;
 namespace Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 
 [Authorize]
-public class MonopolyHub(IRepository<MonopolyAggregate> repository) : Hub<IMonopolyResponses>
+public class MonopolyHub(CheckGameExistenceQuery checkGameExistenceQuery) : Hub<IMonopolyResponses>
 {
     private const string KeyOfPlayerId = "PlayerId";
     private const string KeyOfGameId = "GameId";
@@ -102,23 +101,37 @@ public class MonopolyHub(IRepository<MonopolyAggregate> repository) : Hub<IMonop
 
     public override async Task OnConnectedAsync()
     {
-        var httpContext = Context.GetHttpContext()!;
-        var gameIdStringValues = httpContext.Request.Query["gameId"];
-        if (gameIdStringValues.Count is 0)
-        {
-            throw new GameNotFoundException($"Not pass game id");
-        }
+        ValidateAndSetGameIdAndPlayerId();
 
-        Context.Items[KeyOfGameId] = gameIdStringValues.ToString();
-        Context.Items[KeyOfPlayerId] = Context.UserIdentifier;
-        if (repository.IsExist(GameId) is false)
-        {
-            throw new GameNotFoundException($"Can not find the game that id is {GameId}");
-        }
+        await EnsureGameExists();
 
         await Groups.AddToGroupAsync(Context.ConnectionId, GameId);
         await Clients.Caller.WelcomeEvent(new WelcomeEventArgs { PlayerId = PlayerId });
         await Clients.Group(GameId).PlayerJoinGameEvent(new PlayerJoinGameEventArgs { PlayerId = PlayerId });
+    }
+
+    private async Task EnsureGameExists()
+    {
+        var presenter = new DefaultPresenter<CheckGameExistenceQuery.Response>();
+        var checkGameExistenceRequest = new CheckGameExistenceQuery.Request(GameId);
+        await checkGameExistenceQuery.ExecuteAsync(checkGameExistenceRequest, presenter);
+        if (presenter.Value.IsExist is false)
+        {
+            throw new GameNotFoundException($"Can not find the game that id is {GameId}");
+        }
+    }
+
+    private void ValidateAndSetGameIdAndPlayerId()
+    {
+        var httpContext = Context.GetHttpContext()!;
+        var gameIdStringValues = httpContext.Request.Query["gameId"];
+        if (gameIdStringValues.Count is 0)
+        {
+            throw new GameNotFoundException("Not pass game id");
+        }
+
+        Context.Items[KeyOfGameId] = gameIdStringValues.ToString();
+        Context.Items[KeyOfPlayerId] = Context.UserIdentifier;
     }
 
     private class GameNotFoundException(string message) : Exception(message);

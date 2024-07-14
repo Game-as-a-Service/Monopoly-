@@ -15,8 +15,4 @@
     <ProjectReference Include="..\..\DomainLayer\Monopoly.DomainLayer.ReadyRoom\Monopoly.DomainLayer.ReadyRoom.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MonopolyUsecases\Queries\" />
-  </ItemGroup>
-
 </Project>

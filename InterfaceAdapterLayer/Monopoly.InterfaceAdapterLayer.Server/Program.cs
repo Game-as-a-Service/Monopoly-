@@ -171,11 +171,6 @@ app.MapGet("/map", (string mapId) =>
     return Results.Json(data, MonopolyMap.JsonSerializerOptions);
 });
 
-app.MapGet("/rooms", () =>
-{
-    var repository = app.Services.CreateScope().ServiceProvider.GetRequiredService<IRepository<MonopolyAggregate>>();
-    return Results.Json(repository.GetRooms());
-});
 
 #if DEBUG
 app.MapGet("/users", () =>

@@ -120,7 +120,14 @@ public class MonopolyAggregate : AggregateRoot
 
     public void EndAuction()
     {
-        AddDomainEvent(_currentPlayerState.Auction.End());
+        if (CurrentPlayerState.Auction is null)
+        {
+            throw new Exception("沒有拍賣");
+        }
+        var domainEvent = _currentPlayerState.Auction!.End();
+        _currentPlayerState = _currentPlayerState with { Auction = null };
+        
+        AddDomainEvent(domainEvent);
     }
 
     public void PlayerSellLandContract(string playerId, string landId)
