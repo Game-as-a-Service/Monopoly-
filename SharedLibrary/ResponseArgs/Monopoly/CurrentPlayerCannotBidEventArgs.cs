@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class CurrentPlayerCannotBidEventArgs : EventArgs
+public record CurrentPlayerCannotBidEventArgs
 {
     public required string PlayerId { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerPayTollEventArgs : EventArgs
+public record PlayerPayTollEventArgs
 {
     public required string PlayerId { get; init; }
     public required decimal PlayerMoney { get; init; }

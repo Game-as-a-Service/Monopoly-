@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerChooseDirectionEventArgs : EventArgs
+public record PlayerChooseDirectionEventArgs
 {
     public required string PlayerId { get; init; }
     public required string Direction { get; init; }

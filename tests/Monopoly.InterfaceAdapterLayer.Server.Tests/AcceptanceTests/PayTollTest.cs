@@ -48,7 +48,7 @@ public class PayTollTest
             .WithLandContract(a1.Id)
             .Build()
         )
-        .WithMockDice(new[] { 1 })
+        .WithMockDice([1])
         .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
@@ -56,13 +56,17 @@ public class PayTollTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
+        await hub.Requests.PlayerPayToll();
 
         // Assert
         // A 付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerPayTollEvent),
-                (PlayerPayTollEventArgs e) => e is { PlayerId: "A", PlayerMoney: 950, OwnerId: "B", OwnerMoney: 1050 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerPayTollEvent(new PlayerPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 950,
+            OwnerId = b.Id,
+            OwnerMoney = 1050
+        });
     }
 
     [TestMethod]
@@ -99,7 +103,7 @@ public class PayTollTest
             .WithLandContract(a1.Id)
             .Build()
         )
-        .WithMockDice(new[] { 1 })
+        .WithMockDice([1])
         .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(server);
@@ -107,13 +111,15 @@ public class PayTollTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
+        await hub.Requests.PlayerPayToll();
 
         // Assert
         // A 付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerDoesntNeedToPayTollEvent),
-            (PlayerDoesntNeedToPayTollEventArgs e) => e is { PlayerId: "A", PlayerMoney: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerDoesntNeedToPayTollEvent(new PlayerDoesntNeedToPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 1000
+        });
     }
 
     [TestMethod]
@@ -157,13 +163,15 @@ public class PayTollTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
+        await hub.Requests.PlayerPayToll();
 
         // Assert
         // A 付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerDoesntNeedToPayTollEvent),
-                  (PlayerDoesntNeedToPayTollEventArgs e) => e is { PlayerId: "A", PlayerMoney: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerDoesntNeedToPayTollEvent(new PlayerDoesntNeedToPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 1000
+        });
     }
 
     [TestMethod]
@@ -206,13 +214,16 @@ public class PayTollTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
+        await hub.Requests.PlayerPayToll();
 
         // Assert
         // A 付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerTooPoorToPayTollEvent),
-            (PlayerTooPoorToPayTollEventArgs e) => e is { PlayerId: "A", PlayerMoney: 30, Toll: 50 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerTooPoorToPayTollEvent(new PlayerTooPoorToPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 30,
+            Toll = 50
+        });
     }
 
     [TestMethod]
@@ -254,13 +265,17 @@ public class PayTollTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll));
+        await hub.Requests.PlayerPayToll();
 
         // Assert
         // A 付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerPayTollEvent),
-                (PlayerPayTollEventArgs e) => e is { PlayerId: "A", PlayerMoney: 2000, OwnerId: "B", OwnerMoney: 2000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerPayTollEvent(new PlayerPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 2000,
+            OwnerId = b.Id,
+            OwnerMoney = 2000
+        });
     }
 
     [TestMethod]
@@ -303,18 +318,21 @@ public class PayTollTest
 
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerPayToll), "1", "A");
+        await hub.Requests.PlayerPayToll();
+        
         // Assert
         // A 須支付過路費1000元
         // A 破產
-        hub.Verify<string, decimal, string, decimal>(
-                       nameof(IMonopolyResponses.PlayerPayTollEvent),
-                                  (playerId, playerMoney, ownerId, ownerMoney)
-                                  => playerId == "A" && playerMoney == 0 && ownerId == "B" && ownerMoney == 1200);
-        hub.Verify<string>(
-                       nameof(IMonopolyResponses.PlayerBankruptEvent),
-                                  (playerId)
-                                  => playerId == "A");
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerPayTollEvent(new PlayerPayTollEventArgs
+        {
+            PlayerId = "A",
+            PlayerMoney = 0,
+            OwnerId = "B",
+            OwnerMoney = 1200
+        })
+        .PlayerBankruptEvent(new PlayerBankruptEventArgs
+        {
+            PlayerId = "A"
+        });
     }
 }

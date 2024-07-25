@@ -49,15 +49,15 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
+        await hub.Requests.PlayerBuyLand(f4.Id);
 
         // Assert
         // A 購買土地
-        hub.Verify(nameof(IMonopolyResponses.PlayerBuyBlockEvent),
-                  (PlayerBuyBlockEventArgs e) => e is { PlayerId: "A", LandId: "F4" });
-
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBuyBlockEvent(new PlayerBuyBlockEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = f4.Id
+        });
     }
 
     [TestMethod]
@@ -94,15 +94,16 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
+        await hub.Requests.PlayerBuyLand(f4.Id);
 
         // Assert
         // A 購買土地金額不足
-        hub.Verify(nameof(IMonopolyResponses.PlayerBuyBlockInsufficientFundsEvent),
-                  (PlayerBuyBlockInsufficientFundsEventArgs e) => e is { PlayerId: "A", LandId: "F4", Price: 1000 });
-
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBuyBlockInsufficientFundsEvent(new PlayerBuyBlockInsufficientFundsEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = f4.Id,
+            Price = 1000
+        });
     }
 
     [TestMethod]
@@ -148,15 +149,15 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "F4");
+        await hub.Requests.PlayerBuyLand(f4.Id);
 
         // Assert
         // A 購買土地非空地
-        hub.Verify(nameof(IMonopolyResponses.PlayerBuyBlockOccupiedByOtherPlayerEvent),
-                   (PlayerBuyBlockOccupiedByOtherPlayerEventArgs e) => e is { PlayerId: "A", LandId: "F4" });
-
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBuyBlockOccupiedByOtherPlayerEvent(new PlayerBuyBlockOccupiedByOtherPlayerEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = f4.Id
+        });
     }
 
     // TODO: 目前可以指定要買哪個地，但應該只能買腳下的土地，玩家會發送 BuyLand 而不是 BuyLand(A1)
@@ -236,14 +237,14 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuyLand), "R2");
+        await hub.Requests.PlayerBuyLand("R2");
 
         // Assert
         // A 無法購買道路
-        hub.Verify(nameof(IMonopolyResponses.PlayerBuyBlockOccupiedByOtherPlayerEvent),
-                   (PlayerBuyBlockOccupiedByOtherPlayerEventArgs e) => e is { PlayerId: "A", LandId: "R2" });
-
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBuyBlockOccupiedByOtherPlayerEvent(new PlayerBuyBlockOccupiedByOtherPlayerEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = r2.Id
+        });
     }
 }

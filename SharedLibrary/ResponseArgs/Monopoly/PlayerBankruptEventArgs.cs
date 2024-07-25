@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerBankruptEvent : EventArgs
+public record PlayerBankruptEventArgs
 {
     public required string PlayerId { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class OnlyOnePersonEventArgs : EventArgs
+public record OnlyOnePersonEventArgs
 {
     public required string GameStage { get; init; }
 }

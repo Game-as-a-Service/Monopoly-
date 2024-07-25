@@ -59,13 +59,16 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, b.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBid),  1500);
+        await hub.Requests.PlayerBid(1500);
 
         // Assert
         // B 喊價
-        hub.Verify(nameof(IMonopolyResponses.PlayerBidEvent),
-                  (PlayerBidEventArgs e) => e is { PlayerId: "B", LandId: "A1", HighestPrice: 1500 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBidEvent(new PlayerBidEventArgs
+        {
+            PlayerId = "B",
+            LandId = "A1",
+            HighestPrice = 1500
+        });
     }
 
     [TestMethod]
@@ -108,13 +111,17 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, "B");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBid),  3000);
+        await hub.Requests.PlayerBid(3000);
 
         // Assert
         // B 喊價
-        hub.Verify(nameof(IMonopolyResponses.PlayerTooPoorToBidEvent),
-                   (PlayerTooPoorToBidEventArgs e) => e is { PlayerId: "B", PlayerMoney: 2000, BidPrice: 3000, HighestPrice: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerTooPoorToBidEvent(new PlayerTooPoorToBidEventArgs
+        {
+            PlayerId = "B",
+            PlayerMoney = 2000,
+            BidPrice = 3000,
+            HighestPrice = 1000
+        });
     }
 
     [TestMethod]
@@ -157,13 +164,17 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, "B");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBid), 800);
+        await hub.Requests.PlayerBid(800);
 
         // Assert
         // B 喊價
-        hub.Verify(nameof(IMonopolyResponses.PlayerBidFailEvent),
-                  (PlayerBidFailEventArgs e) => e is { PlayerId: "B", LandId: "A1", BidPrice: 800, HighestPrice: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBidFailEvent(new PlayerBidFailEventArgs
+        {
+            PlayerId = "B",
+            LandId = "A1",
+            BidPrice = 800,
+            HighestPrice = 1000
+        });
     }
 
     [TestMethod]
@@ -202,21 +213,19 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndAuction));
+        await hub.Requests.EndAuction();
 
         // Assert
         // 流拍
         // 在流拍中，土地為系統所有，OwnerMoney值回傳0
-        hub.Verify(nameof(IMonopolyResponses.EndAuctionEvent),
-                   (EndAuctionEventArgs e) => e is
-                       {
-                           PlayerId: "A",
-                           PlayerMoney: 3400,
-                           LandId: "A1",
-                           OwnerId: null,
-                           OwnerMoney: 0
-                       });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndAuctionEvent(new EndAuctionEventArgs
+        {
+            PlayerId = "A",
+            PlayerMoney = 3400,
+            LandId = "A1",
+            OwnerId = null,
+            OwnerMoney = 0
+        });
     }
 
     [TestMethod]
@@ -262,20 +271,18 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndAuction));
+        await hub.Requests.EndAuction();
 
         // Assert
         // 拍賣結算
-        hub.Verify(nameof(IMonopolyResponses.EndAuctionEvent),
-                   (EndAuctionEventArgs e) => e is
-                       {
-                           PlayerId: "A",
-                           PlayerMoney: 1600,
-                           LandId: "A1",
-                           OwnerId: "B",
-                           OwnerMoney: 1400
-                       });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndAuctionEvent(new EndAuctionEventArgs
+        {
+            PlayerId = "A",
+            PlayerMoney = 1600,
+            LandId = "A1",
+            OwnerId = "B",
+            OwnerMoney = 1400
+        });
     }
 
     [TestMethod]
@@ -318,12 +325,13 @@ public class AuctionTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBid), 1500);
+        await hub.Requests.PlayerBid(1500);
 
         // Assert
         // A 喊價
-        hub.Verify(nameof(IMonopolyResponses.CurrentPlayerCannotBidEvent),
-                   (CurrentPlayerCannotBidEventArgs e) => e.PlayerId == "A");
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.CurrentPlayerCannotBidEvent(new CurrentPlayerCannotBidEventArgs
+        {
+            PlayerId = "A"
+        });
     }
 }

@@ -1,5 +1,3 @@
-using Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
-using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static Monopoly.InterfaceAdapterLayer.Server.Tests.Utils;
 
@@ -36,34 +34,32 @@ public class EndRoundTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition(a2.Id, Direction.Left)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithMoney(b.Money)
-            .WithLandContract(a2.Id)
-            .Build()
-        )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
-            .Build()
-        );
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition(a2.Id, Direction.Left)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithMoney(b.Money)
+                    .WithLandContract(a2.Id)
+                    .Build()
+            )
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
+                .Build()
+            );
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound));
+        await hub.Requests.EndRound();
 
         // Assert
         // A 結束回合
-        hub.Verify(nameof(IMonopolyResponses.EndRoundFailEvent),
-                   (EndRoundFailEventArgs e) => e is { PlayerId: "A" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndRoundFailEvent(new EndRoundFailEventArgs { PlayerId = "A" });
     }
 
     [TestMethod]
@@ -86,35 +82,33 @@ public class EndRoundTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition(a2.Id, Direction.Up)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithMoney(b.Money)
-            .WithLandContract(a2.Id)
-            .Build()
-        )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
-            .WithPayToll()
-            .Build()
-        );
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition(a2.Id, Direction.Up)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithMoney(b.Money)
+                    .WithLandContract(a2.Id)
+                    .Build()
+            )
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
+                .WithPayToll()
+                .Build()
+            );
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound));
+        await hub.Requests.EndRound();
 
         // Assert
         // A 結束回合                      
-        hub.Verify(nameof(IMonopolyResponses.EndRoundEvent),
-                  (EndRoundEventArgs e) => e is { PlayerId: "A", NextPlayerId: "B" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndRoundEvent(new EndRoundEventArgs { PlayerId = "A", NextPlayerId = "B" });
     }
 
     [TestMethod]
@@ -138,37 +132,35 @@ public class EndRoundTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition("A1", Direction.Right)
-            .WithLandContract("A1", true, 1)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithMoney(b.Money)
-            .WithPosition("A1", Direction.Right)
-            .WithLandContract("A2")
-            .Build()
-        )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .WithLandContract("A1", true, 1)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithMoney(b.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .WithLandContract("A2")
+                    .Build()
+            )
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound));
+        await hub.Requests.EndRound();
 
         // Assert
         // A 結束回合
         // A1 抵押到期
-        hub.Verify(nameof(IMonopolyResponses.EndRoundEvent),
-                  (EndRoundEventArgs e) => e is { PlayerId: "A", NextPlayerId: "B" });
-        hub.Verify(nameof(IMonopolyResponses.MortgageDueEvent),
-                  (MortgageDueEventArgs e) => e is { PlayerId: "A", LandId: "A1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert
+            .MortgageDueEvent(new MortgageDueEventArgs { PlayerId = "A", LandId = "A1" })
+            .EndRoundEvent(new EndRoundEventArgs { PlayerId = "A", NextPlayerId = "B" });
     }
 
     [TestMethod]
@@ -193,41 +185,38 @@ public class EndRoundTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition("A1", Direction.Right)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithMoney(b.Money)
-            .WithPosition("A1", Direction.Right)
-            .WithBankrupt(5)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(c.Id)
-            .WithMoney(c.Money)
-            .WithPosition("A1", Direction.Right)
-            .WithLandContract("A2")
-            .Build()
-        )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithMoney(b.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .WithBankrupt(5)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(c.Id)
+                    .WithMoney(c.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .WithLandContract("A2")
+                    .Build()
+            )
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build());
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound));
+        await hub.Requests.EndRound();
 
         // Assert
         // A 結束回合，輪到下一個未破產玩家
-        hub.Verify(nameof(IMonopolyResponses.EndRoundEvent),
-                   (EndRoundEventArgs e)
-                                  => e is { PlayerId: "A", NextPlayerId: "C" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndRoundEvent(new EndRoundEventArgs { PlayerId = "A", NextPlayerId = "C" });
     }
 
     [TestMethod]
@@ -251,44 +240,39 @@ public class EndRoundTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition("A1", Direction.Right)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithMoney(b.Money)
-            .WithPosition("Jail", Direction.Right)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(c.Id)
-            .WithMoney(c.Money)
-            .WithPosition("A1", Direction.Right)
-            .Build()
-        )
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll().Build()); // TODO：是否可以結束回合應該不只有看玩家是否付完過路費，因為玩家有可能根本不需要付
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithMoney(b.Money)
+                    .WithPosition("Jail", Direction.Right)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(c.Id)
+                    .WithMoney(c.Money)
+                    .WithPosition("A1", Direction.Right)
+                    .Build()
+            )
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).WithPayToll()
+                .Build()); // TODO：是否可以結束回合應該不只有看玩家是否付完過路費，因為玩家有可能根本不需要付
 
         monopolyBuilder.Save(server);
 
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.EndRound));
+        await hub.Requests.EndRound();
 
         // Assert
         // A 結束回合，輪到下一個玩家 B
         // B 在監獄，輪到下一個玩家 C
-
-        hub.Verify(nameof(IMonopolyResponses.EndRoundEvent),
-                   (EndRoundEventArgs e) => e is { PlayerId: "A", NextPlayerId: "B" });
-        hub.Verify(nameof(IMonopolyResponses.SuspendRoundEvent),
-             (SuspendRoundEventArgs e) => e is { PlayerId: "B", SuspendRounds: 1 });
-        hub.Verify(nameof(IMonopolyResponses.EndRoundEvent),
-                  (EndRoundEventArgs e) => e is { PlayerId: "B", NextPlayerId: "C" });
-                                  
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.EndRoundEvent(new EndRoundEventArgs { PlayerId = "A", NextPlayerId = "B" })
+            .SuspendRoundEvent(new SuspendRoundEventArgs { PlayerId = "B", SuspendRounds = 1 })
+            .EndRoundEvent(new EndRoundEventArgs { PlayerId = "B", NextPlayerId = "C" });
     }
 }

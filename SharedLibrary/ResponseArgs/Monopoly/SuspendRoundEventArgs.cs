@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class SuspendRoundEventArgs : EventArgs
+public record SuspendRoundEventArgs
 {
     public required string PlayerId { get; init; }
     public required int SuspendRounds { get; init; }

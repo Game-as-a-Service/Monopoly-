@@ -30,20 +30,20 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition("F4", Direction.Up)
-            .Build()
-        )
-        .WithMockDice([6])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition("F4", Direction.Up)
+                    .Build()
+            )
+            .WithMockDice([6])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
 
         // Assert
         // A 擲了 6 點
@@ -53,8 +53,17 @@ public class RollDiceTest
         // A 移動到 A2，方向為 Right，剩下 2 步
         // A 移動到 A3，方向為 Down，剩下 1 步
         // A 移動到 A4，方向為 Down，剩下 0 步
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-            (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 6 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+            {
+                PlayerId = a.Id,
+                DiceCount = 6
+            })
+            .ThroughStartEvent(new PlayerThroughStartEventArgs
+            {
+                PlayerId = a.Id,
+                GainMoney = 3000,
+                TotalMoney = 18000
+            });
         VerifyChessMovedEvent(hub, "A", "Start", "Right", 5);
         VerifyChessMovedEvent(hub, "A", "A1", "Right", 4);
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 3);
@@ -76,23 +85,23 @@ public class RollDiceTest
     {
         // Arrange
         var a = new { Id = "A" };
-        string[] expectedDirections = [ "Right", "Down", "Left" ];
+        string[] expectedDirections = ["Right", "Down", "Left"];
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition("F4", Direction.Up)
-            .Build()
-        )
-        .WithMockDice([2, 6])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition("F4", Direction.Up)
+                    .Build()
+            )
+            .WithMockDice([2, 6])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
 
         //Assert
         // A 擲了 8 點
@@ -104,26 +113,29 @@ public class RollDiceTest
         // A 移動到 A4，方向為 Down，剩下 2 步
         // A 移動到 ParkingLot，方向為 Down，剩下 1 步
         // A 需要選擇方向，可選擇的方向為 Right, Down, Left
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-            (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 8 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 8
+        });
+        hub.FluentAssert.ThroughStartEvent(new PlayerThroughStartEventArgs
+        {
+            PlayerId = a.Id,
+            GainMoney = 3000,
+            TotalMoney = 18000
+        });
         VerifyChessMovedEvent(hub, "A", "Start", "Right", 7);
         VerifyChessMovedEvent(hub, "A", "A1", "Right", 6);
-        hub.Verify(
-            nameof(IMonopolyResponses.ThroughStartEvent),
-            (PlayerThroughStartEventArgs e) => e is { PlayerId: "A", GainMoney: 3000, TotalMoney: 18000 });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 5);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 4);
         VerifyChessMovedEvent(hub, "A", "A3", "Down", 3);
         VerifyChessMovedEvent(hub, "A", "A4", "Down", 2);
         //VerifyChessMovedEvent(hub, "A", "ParkingLot", "Down", 1);
-        hub.Verify(
-            nameof(IMonopolyResponses.PlayerNeedToChooseDirectionEvent),
-            (PlayerNeedToChooseDirectionEventArgs e) =>
-            {
-                return e.PlayerId == "A" && e.Directions.OrderBy(x => x)
-                    .SequenceEqual(expectedDirections.OrderBy(x => x));
-            });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerNeedToChooseDirectionEvent(new PlayerNeedToChooseDirectionEventArgs
+        {
+            PlayerId = a.Id,
+            Directions = expectedDirections
+        });
     }
 
     [TestMethod]
@@ -146,21 +158,21 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition("F3", Direction.Up)
-            .Build()
-        )
-        .WithMockDice([2, 2])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition("F3", Direction.Up)
+                    .Build()
+            )
+            .WithMockDice([2, 2])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
 
         // Assert
         // A 擲了 4 點
@@ -169,18 +181,27 @@ public class RollDiceTest
         // A 移動到 Start，方向為 Right，剩下 1 步
         // A 獲得獎勵金3000，共持有4000元
         // A 移動到 A1，方向為 Right，剩下 0 步
-        hub.Verify(
-            nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-            (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 4 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 4
+        });
         VerifyChessMovedEvent(hub, "A", "Station4", "Up", 3);
         VerifyChessMovedEvent(hub, "A", "F4", "Up", 2);
+        hub.FluentAssert.ThroughStartEvent(new PlayerThroughStartEventArgs
+        {
+            PlayerId = a.Id,
+            GainMoney = 3000,
+            TotalMoney = 4000
+        });
         VerifyChessMovedEvent(hub, "A", "Start", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A1", "Right", 0);
-        hub.Verify(nameof(IMonopolyResponses.ThroughStartEvent),
-            (PlayerThroughStartEventArgs e) => e is { PlayerId: "A", GainMoney: 3000, TotalMoney: 4000 });
-        hub.Verify(nameof(IMonopolyResponses.PlayerCanBuyLandEvent),
-            (PlayerCanBuyLandEventArgs e) => e is { PlayerId: "A", LandId: "A1", Price: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCanBuyLandEvent(new PlayerCanBuyLandEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = "A1",
+            Price = 1000
+        });
     }
 
     [TestMethod]
@@ -200,21 +221,21 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithMoney(a.Money)
-            .WithPosition("F3", Direction.Up)
-            .Build()
-        )
-        .WithMockDice([2, 1])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithMoney(a.Money)
+                    .WithPosition("F3", Direction.Up)
+                    .Build()
+            )
+            .WithMockDice([2, 1])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
 
         // Assert
         // A 擲了 3 點
@@ -222,27 +243,30 @@ public class RollDiceTest
         // A 移動到 F4，方向為 Up，剩下 1 步
         // A 移動到 Start，方向為 Right，剩下 0 步
         // A 沒有獲得獎勵金，共持有1000元
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-            (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 3 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 3
+        });
         VerifyChessMovedEvent(hub, "A", "Station4", "Up", 2);
         VerifyChessMovedEvent(hub, "A", "F4", "Up", 1);
         VerifyChessMovedEvent(hub, "A", "Start", "Right", 0);
-        hub.Verify(
-            nameof(IMonopolyResponses.CannotGetRewardBecauseStandOnStartEvent),
-            (CannotGetRewardBecauseStandOnStartEventArgs e) => e.PlayerId == "A");
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.CannotGetRewardBecauseStandOnStartEvent(new CannotGetRewardBecauseStandOnStartEventArgs
+        {
+            PlayerId = a.Id
+        });
     }
 
     [TestMethod]
     [Description("""
-                Given:  目前玩家在A1
-                        玩家持有A2
-                        A2房子不足5間
-                When:   玩家擲骰得到2點
-                Then:   玩家移動到 A2
-                        玩家剩餘步數為 0
-                        提示可以蓋房子
-                """)]
+                 Given:  目前玩家在A1
+                         玩家持有A2
+                         A2房子不足5間
+                 When:   玩家擲骰得到2點
+                 Then:   玩家移動到 A2
+                         玩家剩餘步數為 0
+                         提示可以蓋房子
+                 """)]
     public async Task 玩家擲骰後移動棋子到自己擁有地()
     {
         // Arrange
@@ -252,46 +276,55 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition(a1.Id, Direction.Right)
-            .WithLandContract(a2.Id)
-            .Build()
-        )
-        .WithMockDice([1, 1])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
-        .WithLandHouse(a2.Id, a2.House);
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition(a1.Id, Direction.Right)
+                    .WithLandContract(a2.Id)
+                    .Build()
+            )
+            .WithMockDice([1, 1])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build())
+            .WithLandHouse(a2.Id, a2.House);
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
+
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
+
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步
         // A 可以蓋房子
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-                                  (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 2 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 2
+        });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
-        hub.Verify(nameof(IMonopolyResponses.PlayerCanBuildHouseEvent),
-             (PlayerCanBuildHouseEventArgs e) => e is { PlayerId: "A", LandId: "A2", HouseCount: 4, Price: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCanBuildHouseEvent(new PlayerCanBuildHouseEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = a2.Id,
+            HouseCount = 4,
+            Price = 1000
+        });
     }
 
     [TestMethod]
     [Description("""
-                Given
-                    目前玩家A在A1
-                    玩家B持有A2(無房子)
-                When
-                    玩家擲骰得到2點
-                Then
-                    玩家A移動到 A2
-                    玩家剩餘步數為 0
-                    提示需要付過路費
-                """)]
+                 Given
+                     目前玩家A在A1
+                     玩家B持有A2(無房子)
+                 When
+                     玩家擲骰得到2點
+                 Then
+                     玩家A移動到 A2
+                     玩家剩餘步數為 0
+                     提示需要付過路費
+                 """)]
     public async Task 玩家擲骰後移動棋子到他人擁有地()
     {
         // Arrange
@@ -301,45 +334,53 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition("A1", Direction.Right)
-            .Build()
-        )
-        .WithPlayer(
-            new PlayerBuilder(b.Id)
-            .WithLandContract(a2.Id)
-            .Build()
-        )
-        .WithMockDice([2])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition("A1", Direction.Right)
+                    .Build()
+            )
+            .WithPlayer(
+                new PlayerBuilder(b.Id)
+                    .WithLandContract(a2.Id)
+                    .Build()
+            )
+            .WithMockDice([2])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
+
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
+
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步
         // A 需要支付過路費
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-                (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 2 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 2
+        });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
-        hub.Verify(nameof(IMonopolyResponses.PlayerNeedsToPayTollEvent),
-                                  (PlayerNeedsToPayTollEventArgs e) => e is { PlayerId: "A", OwnerId: "B", Toll: 50 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerNeedsToPayTollEvent(new PlayerNeedsToPayTollEventArgs
+        {
+            PlayerId = a.Id,
+            OwnerId = b.Id,
+            Toll = 50
+        });
     }
 
     [TestMethod]
     [Description("""
-                Given:  目前玩家在A1
-                When:   玩家擲骰得到2點
-                Then:   玩家移動到 A2
-                        玩家剩餘步數為 0
-                        提示可以購買空地
-                """)]
+                 Given:  目前玩家在A1
+                 When:   玩家擲骰得到2點
+                 Then:   玩家移動到 A2
+                         玩家剩餘步數為 0
+                         提示可以購買空地
+                 """)]
     public async Task 玩家擲骰後移動棋子到空地()
     {
         // Arrange
@@ -347,39 +388,46 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition("A1", Direction.Right)
-            .Build()
-        )
-        .WithMockDice([2])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition("A1", Direction.Right)
+                    .Build()
+            )
+            .WithMockDice([2])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
+
         // Assert
         // A 擲了 2 點
         // A 移動到 A2，方向為 Right，剩下 0 步
         // A 可以購買空地
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-                                  (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 2 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 2
+        });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
-        hub.Verify(nameof(IMonopolyResponses.PlayerCanBuyLandEvent),
-                                  (PlayerCanBuyLandEventArgs e) => e is { PlayerId:"A", LandId: "A2", Price: 1000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCanBuyLandEvent(new PlayerCanBuyLandEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = "A2",
+            Price = 1000
+        });
     }
 
     [TestMethod]
     [Description("""
-                Given:  目前玩家在Station2
-                When:   玩家擲骰得到2點
-                Then:   玩家移動到 R2
-                        玩家剩餘步數為 0
-                """)]
+                 Given:  目前玩家在Station2
+                 When:   玩家擲骰得到2點
+                 Then:   玩家移動到 R2
+                         玩家剩餘步數為 0
+                 """)]
     public async Task 玩家擲骰後移動棋子到道路()
     {
         // Arrange
@@ -387,27 +435,31 @@ public class RollDiceTest
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
-        .WithPlayer(
-            new PlayerBuilder(a.Id)
-            .WithPosition("Station2", Direction.Down)
-            .Build()
-        )
-        .WithMockDice([2])
-        .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
+            .WithPlayer(
+                new PlayerBuilder(a.Id)
+                    .WithPosition("Station2", Direction.Down)
+                    .Build()
+            )
+            .WithMockDice([2])
+            .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id).Build());
 
         monopolyBuilder.Save(_server);
 
         var hub = await _server.CreateHubConnectionAsync(gameId, "A");
+
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRollDice));
+        await hub.Requests.PlayerRollDice();
+
         // Assert
         // A 擲了 2 點
         // A 移動到 R2，方向為 Left，剩下 0 步
         // A 可以購買空地
-        hub.Verify(nameof(IMonopolyResponses.PlayerRolledDiceEvent),
-                                  (PlayerRolledDiceEventArgs e) => e is { PlayerId: "A", DiceCount: 2 });
+        hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
+        {
+            PlayerId = a.Id,
+            DiceCount = 2
+        });
         VerifyChessMovedEvent(hub, "A", "D1", "Down", 1);
         VerifyChessMovedEvent(hub, "A", "R2", "Left", 0);
-        hub.VerifyNoElseEvent();
     }
 }

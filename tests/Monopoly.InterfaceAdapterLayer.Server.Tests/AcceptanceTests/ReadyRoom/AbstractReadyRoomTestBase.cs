@@ -19,9 +19,9 @@ public abstract class AbstractReadyRoomTestBase
     }
 
     [TestCleanup]
-    public void Cleanup()
+    public async Task Cleanup()
     {
-        Server.Dispose();
+        await Server.DisposeAsync();
     }
 
     protected async Task<string> CreateUser(string userName)

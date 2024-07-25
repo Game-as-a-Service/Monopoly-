@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class GameStartEventArgs : EventArgs
+public record GameStartEventArgs
 {
     public required string GameStage { get; init; }
     public required string CurrentPlayerId { get; init; }

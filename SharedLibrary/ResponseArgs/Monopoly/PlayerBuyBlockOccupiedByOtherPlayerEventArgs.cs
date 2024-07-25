@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerBuyBlockOccupiedByOtherPlayerEventArgs : EventArgs
+public record PlayerBuyBlockOccupiedByOtherPlayerEventArgs
 {
     public required string PlayerId { get; init; }
     public required string LandId { get; init; }

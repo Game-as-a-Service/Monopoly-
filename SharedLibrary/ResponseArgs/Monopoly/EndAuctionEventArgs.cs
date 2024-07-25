@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class EndAuctionEventArgs : EventArgs
+public record EndAuctionEventArgs
 {
     public required string PlayerId { get; init; }
     public required decimal PlayerMoney { get; init; }

@@ -4,8 +4,6 @@ using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Queries;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;
-using SharedLibrary.ResponseArgs.Monopoly;
-using SharedLibrary.ResponseArgs.ReadyRoom;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 
@@ -99,8 +97,9 @@ public class MonopolyHub(CheckGameExistenceQuery checkGameExistenceQuery) : Hub<
         await EnsureGameExists();
 
         await Groups.AddToGroupAsync(Context.ConnectionId, GameId);
-        await Clients.Caller.WelcomeEvent(new WelcomeEventArgs { PlayerId = PlayerId });
-        await Clients.Group(GameId).PlayerJoinGameEvent(new PlayerJoinGameEventArgs { PlayerId = PlayerId });
+        // 暫時不需要，之後考慮有沒有必要
+        // await Clients.Caller.WelcomeEvent(new WelcomeEventArgs { PlayerId = PlayerId });
+        // await Clients.Group(GameId).PlayerJoinGameEvent(new PlayerJoinGameEventArgs { PlayerId = PlayerId });
     }
 
     private async Task EnsureGameExists()

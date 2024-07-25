@@ -1,7 +1,5 @@
 ﻿using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.DomainLayer.Domain;
-using Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
-using SharedLibrary;
 using SharedLibrary.ResponseArgs.Monopoly;
 using static Monopoly.InterfaceAdapterLayer.Server.Tests.Utils;
 
@@ -52,17 +50,22 @@ public class SelectDirectionTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerChooseDirection), Direction.Left.ToString());
+        await hub.Requests.PlayerChooseDirection(Direction.Left.ToString());
 
         // Assert
         // A 選擇方向為 Left
         // A 停在 Jail，方向為 Left，剩下 0 步
         // A 下一回合無法行動，暫停2回合
-        hub.Verify(nameof(IMonopolyResponses.PlayerChooseDirectionEvent),
-            (PlayerChooseDirectionEventArgs e) => e is { PlayerId: "A", Direction: "Left" });
-        hub.Verify(nameof(IMonopolyResponses.SuspendRoundEvent),
-                (SuspendRoundEventArgs e) => e is { PlayerId: "A", SuspendRounds: 2 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerChooseDirectionEvent(new PlayerChooseDirectionEventArgs
+        {
+            PlayerId = a.Id,
+            Direction = Direction.Left.ToString()
+        })
+        .SuspendRoundEvent(new SuspendRoundEventArgs
+        {
+            PlayerId = a.Id,
+            SuspendRounds = 2
+        });
 
         var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
         var game = await repo.FindByIdAsync("1");
@@ -105,16 +108,16 @@ public class SelectDirectionTest
         var hub = await server.CreateHubConnectionAsync(gameId, a.Id);
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerChooseDirection), Direction.Left.ToString());
+        await hub.Requests.PlayerChooseDirection(Direction.Left.ToString());
 
         // Assert
         // A 選擇方向為 Left
         // A 停在 ParkingLot，方向為 Left，剩下 0 步
-
-        hub.Verify(nameof(IMonopolyResponses.PlayerChooseDirectionEvent),
-            (PlayerChooseDirectionEventArgs e) => e.PlayerId == a.Id && e.Direction == Direction.Left.ToString());
-
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerChooseDirectionEvent(new PlayerChooseDirectionEventArgs
+        {
+            PlayerId = a.Id,
+            Direction = Direction.Left.ToString()
+        });
 
         var repo = server.GetRequiredService<IRepository<MonopolyAggregate>>();
         var game = await repo.FindByIdAsync("1");

@@ -30,12 +30,16 @@ public class Utils
     //    return dice;
     //}
 
-    internal static void VerifyChessMovedEvent(VerificationHub hub, string playerId, string blockId, string direction,
+    internal static void VerifyChessMovedEvent(MonopolyAssertionHub hub, string playerId, string blockId, string direction,
         int remainingSteps)
     {
-        hub.Verify(nameof(IMonopolyResponses.ChessMovedEvent), (ChessMovedEventArgs e) =>
-            e.PlayerId == playerId && e.BlockId == blockId && e.Direction == direction &&
-            e.RemainingSteps == remainingSteps);
+        hub.FluentAssert.ChessMovedEvent(new ChessMovedEventArgs
+        {
+            PlayerId = playerId,
+            BlockId = blockId,
+            Direction = direction,
+            RemainingSteps = remainingSteps
+        });
     }
 
     public class MonopolyBuilder
@@ -189,7 +193,7 @@ public class Utils
         Left,
         Right
     }
-
+    
     public class CurrentPlayerStateBuilder(string id)
     {
         private string Id { get; set; } = id;

@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class HouseMaxEventArgs : EventArgs
+public record HouseMaxEventArgs
 {
     public required string PlayerId { get; init; }
     public required string LandId { get; init; }

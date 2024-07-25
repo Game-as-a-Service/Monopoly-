@@ -1,6 +1,4 @@
-﻿using Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
-using SharedLibrary;
-using SharedLibrary.ResponseArgs.Monopoly;
+﻿using SharedLibrary.ResponseArgs.Monopoly;
 using static Monopoly.InterfaceAdapterLayer.Server.Tests.Utils;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests;
@@ -11,7 +9,6 @@ public class MortgageTest
     private MonopolyTestServer server = default!;
 
     [TestInitialize]
-
     public void SetUp()
     {
         server = new MonopolyTestServer();
@@ -48,13 +45,17 @@ public class MortgageTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
+        await hub.Requests.PlayerMortgage("A1");
 
         // Assert
         // A 抵押房地產
-        hub.Verify(nameof(IMonopolyResponses.PlayerMortgageEvent),
-            (PlayerMortgageEventArgs e) => e is { PlayerId: "A", PlayerMoney: 5700, LandId: "A1", DeadLine: 10 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerMortgageEvent(new PlayerMortgageEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = 5700,
+            LandId = a1.Id,
+            DeadLine = 10
+        });
     }
 
     [TestMethod]
@@ -87,14 +88,16 @@ public class MortgageTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
+        await hub.Requests.PlayerMortgage("A1");
 
         // Assert
         // A 抵押房地產
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotMortgageEvent),
-                                (PlayerCannotMortgageEventArgs e)
-                                => e is { PlayerId: "A", PlayerMoney: 1000, LandId: "A1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotMortgageEvent(new PlayerCannotMortgageEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = a.Money,
+            LandId = a1.Id
+        });
     }
 
     [TestMethod]
@@ -123,13 +126,16 @@ public class MortgageTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerMortgage), "A1");
+        await hub.Requests.PlayerMortgage("A1");
 
         // Assert
         // A 抵押房地產
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotMortgageEvent),
-                    (PlayerCannotMortgageEventArgs e) => e is { PlayerId: "A", PlayerMoney: 5000, LandId: "A1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotMortgageEvent(new PlayerCannotMortgageEventArgs
+        {
+            PlayerId = a.Id,
+            PlayerMoney = a.Money,
+            LandId = "A1"
+        });
     }
 }
 

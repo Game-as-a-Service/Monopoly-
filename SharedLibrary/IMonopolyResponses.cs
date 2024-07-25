@@ -71,7 +71,7 @@ public interface IMonopolyResponses
 
     Task SuspendRoundEvent(SuspendRoundEventArgs e);
 
-    Task PlayerBankruptEvent(PlayerBankruptEvent e);
+    Task PlayerBankruptEvent(PlayerBankruptEventArgs e);
 
     Task SettlementEvent(SettlementEventArgs e);
 

@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class CannotGetRewardBecauseStandOnStartEventArgs : EventArgs
+public record CannotGetRewardBecauseStandOnStartEventArgs
 {
     public required string PlayerId { get; init; }
 }

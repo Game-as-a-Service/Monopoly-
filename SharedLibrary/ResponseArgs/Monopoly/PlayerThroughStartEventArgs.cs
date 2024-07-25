@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerThroughStartEventArgs : EventArgs
+public record PlayerThroughStartEventArgs
 {
     public required string PlayerId { get; init; }
     public required decimal GainMoney { get; init; }

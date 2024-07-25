@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class ChessMovedEventArgs : EventArgs
+public record ChessMovedEventArgs
 {
     public required string PlayerId { get; init; }
     public required string BlockId { get; init; }

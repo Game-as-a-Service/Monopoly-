@@ -208,7 +208,9 @@ public class AssertionHubGenerator : IIncrementalGenerator
                          {
                              var @event = Pop(_cancellationToken); 
                              Assert.AreEqual("{{x.Name}}", @event.EventName);
-                             CollectionAssert.AreEqual(new object[]{ {{parametersInOn}} }, @event.EventArgs);
+                             var expected = new object[]{ {{parametersInOn}} };
+                             var assertionFailedMessage = $"Expected: {System.Text.Json.JsonSerializer.Serialize(expected)}{System.Environment.NewLine}Actual: {System.Text.Json.JsonSerializer.Serialize(@event.EventArgs)}";
+                             CollectionAssert.AreEqual(expected, @event.EventArgs, assertionFailedMessage);
                              
                              return this;
                          }

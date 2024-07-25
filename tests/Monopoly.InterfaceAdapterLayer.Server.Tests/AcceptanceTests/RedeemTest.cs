@@ -50,13 +50,16 @@ public class RedeemTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), "A1");
+        await hub.Requests.PlayerRedeem("A1");
 
         // Assert
         // A 贖回房地產
-        hub.Verify(nameof(IMonopolyResponses.PlayerRedeemEvent),
-                (PlayerRedeemEventArgs e) => e is { PlayerId: "A", LandId: "A1", PlayerMoney: 2000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerRedeemEvent(new PlayerRedeemEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = a1.Id,
+            PlayerMoney = 2000
+        });
     }
 
     [TestMethod]
@@ -93,13 +96,16 @@ public class RedeemTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerRedeem), "A1");
+        await hub.Requests.PlayerRedeem("A1");
 
         // Assert
         // A 贖回房地產
-        hub.Verify(nameof(IMonopolyResponses.PlayerTooPoorToRedeemEvent),
-            (PlayerTooPoorToRedeemEventArgs e) =>
-                e is { PlayerId: "A", LandId: "A1", PlayerMoney: 2000, RedeemPrice: 3000 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerTooPoorToRedeemEvent(new PlayerTooPoorToRedeemEventArgs
+        {
+            PlayerId = a.Id,
+            LandId = a1.Id,
+            PlayerMoney = 2000,
+            RedeemPrice = 3000
+        });
     }
 }

@@ -53,13 +53,17 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
         // A 蓋房子
-        hub.Verify(nameof(IMonopolyResponses.PlayerBuildHouseEvent),
-                  (PlayerBuildHouseEventArgs e) => e is { PlayerId: "A", LandId: "A1", PlayerMoney: 1000, HouseCount: 2 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerBuildHouseEvent(new PlayerBuildHouseEventArgs
+        {
+            PlayerId = "A",
+            LandId = "A1",
+            PlayerMoney = 1000,
+            HouseCount = 2
+        });
     }
 
     [TestMethod]
@@ -94,13 +98,16 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
         // A 蓋房子
-        hub.Verify(nameof(IMonopolyResponses.HouseMaxEvent),
-                (HouseMaxEventArgs e) => e is { PlayerId: "A", LandId: "A1", HouseCount: 5 });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.HouseMaxEvent(new HouseMaxEventArgs
+        {
+            PlayerId = "A",
+            LandId = "A1",
+            HouseCount = 5
+        });
     }
 
     [TestMethod]
@@ -133,13 +140,15 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
         // A 蓋房子
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotBuildHouseEvent),
-            (PlayerCannotBuildHouseEventArgs e) => e is { PlayerId: "A", LandId: "Station1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotBuildHouseEvent(new PlayerCannotBuildHouseEventArgs
+        {
+            PlayerId = "A",
+            LandId = "Station1"
+        });
     }
 
     [TestMethod]
@@ -177,14 +186,15 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
         // A 蓋房子
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotBuildHouseEvent),
-                                  (PlayerCannotBuildHouseEventArgs e)
-                                  => e is { PlayerId: "A", LandId: "A1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotBuildHouseEvent(new PlayerCannotBuildHouseEventArgs
+        {
+            PlayerId = "A",
+            LandId = "A1"
+        });
     }
 
     [TestMethod]
@@ -221,13 +231,14 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotBuildHouseEvent),
-                                  (PlayerCannotBuildHouseEventArgs e)
-                                  => e is { PlayerId: "A", LandId: "A1" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotBuildHouseEvent(new PlayerCannotBuildHouseEventArgs
+        {
+            PlayerId = "A",
+            LandId = "A1"
+        });
     }
 
     [TestMethod]
@@ -264,12 +275,14 @@ public class BuildHouseTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.SendAsync(nameof(MonopolyHub.PlayerBuildHouse));
+        await hub.Requests.PlayerBuildHouse();
 
         // Assert
         // A 蓋房子失敗
-        hub.Verify(nameof(IMonopolyResponses.PlayerCannotBuildHouseEvent),
-                   (PlayerCannotBuildHouseEventArgs e) => e is { PlayerId: "A", LandId: "A2" });
-        hub.VerifyNoElseEvent();
+        hub.FluentAssert.PlayerCannotBuildHouseEvent(new PlayerCannotBuildHouseEventArgs
+        {
+            PlayerId = "A",
+            LandId = "A2"
+        });
     }
 }

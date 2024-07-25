@@ -1,6 +1,6 @@
 ﻿namespace SharedLibrary.ResponseArgs.Monopoly;
 
-public class PlayerBuildHouseEventArgs : EventArgs
+public record PlayerBuildHouseEventArgs
 {
     public required string PlayerId { get; init; }
     public required string LandId { get; init; }
