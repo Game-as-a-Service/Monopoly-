@@ -52,7 +52,7 @@ public sealed class ReadyRoomAggregate(string id, List<Player> players, string h
 
     public void StartGame(string playerId)
     {
-        if (hostId != playerId) throw new PlayerNotHostException();
+        if (hostId != playerId) throw new PlayerNotHostException(playerId);
         var unreadyPlayers = players.Where(p => p.IsReady is not true && p.Id != hostId);
         if (unreadyPlayers.Any()) throw new HostCannotStartGameException();
 
