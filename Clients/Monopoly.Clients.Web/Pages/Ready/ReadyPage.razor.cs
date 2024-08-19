@@ -45,6 +45,11 @@ public partial class ReadyPage
         Connection.GameStartedEventHandler += OnGameStartEvent;
         await client.StartAsync();
         var readyRoomInfos = await Connection.GetReadyRoomInfos();
+        if (readyRoomInfos.GameId is not null)
+        {
+            NavigateToGamePage(readyRoomInfos.GameId);
+            return;
+        }
         Players = [
             ..readyRoomInfos.Players.Select(x =>
             {
@@ -78,6 +83,11 @@ public partial class ReadyPage
         UserId = readyRoomInfos.RequestPlayerId;
     }
 
+    private void NavigateToGamePage(string gameId)
+    {
+        NavigationManager.NavigateTo($"/GamingPage?gameid={gameId}&token={AccessToken}");
+    }
+
     private Task OnPlayerSelectLocationEvent(PlayerSelectLocationEventArgs e)
     {
         var player = Players.First(x => x.Id == e.PlayerId);
@@ -109,7 +119,7 @@ public partial class ReadyPage
             return Task.CompletedTask;
         }
 
-        NavigationManager.NavigateTo($"/GamingPage?gameid={e.GameId}&token={AccessToken}");
+        NavigateToGamePage(e.GameId);
         return Task.CompletedTask;
     }
     

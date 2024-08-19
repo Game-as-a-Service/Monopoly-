@@ -22,7 +22,8 @@ public class ReadyRoomInfosValueReturningPresenter : ValueReturningPresenter<Rea
             [
                 ..players
             ],
-            readyRoom.HostId
+            readyRoom.HostId,
+            readyRoom.GameId
         );
         return Task.FromResult(readyRoomInfos);
     }
