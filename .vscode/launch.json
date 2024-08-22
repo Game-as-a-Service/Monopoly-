@@ -5,22 +5,25 @@
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": ".NET Core Launch (console)",
+            "name": "Debug Server",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build server",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Test/Shared/bin/Debug/net7.0/SharedTests.dll",
+            "program": "${workspaceFolder}/InterfaceAdapterLayer/Monopoly.InterfaceAdapterLayer.Server/bin/Debug/net8.0/Monopoly.InterfaceAdapterLayer.Server.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Test/Shared",
+            "cwd": "${workspaceFolder}/InterfaceAdapterLayer/Monopoly.InterfaceAdapterLayer.Server",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
+            "name": "Debug Client",
+            "type": "blazorwasm",
+            "request": "launch",
+            "preLaunchTask": "build client",
+            // "program": "${workspaceFolder}/Clients/Monopoly.Clients.Web/bin/Debug/net8.0/Monopoly.Clients.Web.dll",
+            "cwd": "${workspaceFolder}/Clients/Monopoly.Clients.Web",
         }
     ]
 }
