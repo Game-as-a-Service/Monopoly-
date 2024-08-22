@@ -51,7 +51,7 @@
 
 .player-item {
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #eee;
 }
 
 .player-item.in-room {
@@ -121,14 +121,14 @@
     padding: 15px;
     margin: 10px;
     background-color: #f9f9f9;
-    border: 1px solid #ccc;
+    border: 5px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 300px; /* 卡片宽度 */
 }
 
 .room-card.selected {
-    border: 2px solid #5c68b8;
+    border: 5px solid #5c68b8;
 }
 
 .room-url {

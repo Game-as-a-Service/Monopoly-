@@ -13,6 +13,7 @@ public partial class DevPage
     private DevPlayer? HostToCreateRoom { get; set; }
     private List<DevPlayer> PlayersToCreateRoom { get; set; } = [];
     private DevRoom? SelectedRoom { get; set; }
+    private DevRoom? RoomToOpen { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,7 +50,7 @@ public partial class DevPage
 
     private async Task CreatePlayerAsync()
     {
-        var token = await _monopolyDevelopmentApiClient.CreateUserAsync(PlayerName);
+        var token = await MonopolyDevelopmentApiClient.CreateUserAsync(PlayerName);
         _players.Add(new DevPlayer(PlayerName, token));
         PlayerName = Guid.NewGuid().ToString();
     }
@@ -63,7 +64,7 @@ public partial class DevPage
 
         var hostToken = HostToCreateRoom.Token;
         var playerIds = PlayersToCreateRoom.Select(p => p.Token.GetMonopolyPlayerId()).ToArray();
-        var roomUrl = await _monopolyDevelopmentApiClient.CreateRoomAsync(hostToken, playerIds);
+        var roomUrl = await MonopolyDevelopmentApiClient.CreateRoomAsync(hostToken, playerIds);
         var players = playerIds.Select(id => _players.Single(p => p.Token.GetMonopolyPlayerId() == id))
             .ToImmutableArray();
         _rooms.Add(new DevRoom(roomUrl, hostToken, players));
@@ -113,4 +114,10 @@ public partial class DevPage
     private record DevPlayer(string Name, JwtSecurityToken Token);
 
     private record DevRoom(string Url, JwtSecurityToken HostToken, ImmutableArray<DevPlayer> Players);
+
+    private Task OpenBelow(DevRoom room)
+    {
+        RoomToOpen = room;
+        return Task.CompletedTask;
+    }
 }
