@@ -1,6 +1,4 @@
-﻿using Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
-using SharedLibrary;
-using SharedLibrary.ResponseArgs.Monopoly;
+﻿using SharedLibrary.ResponseArgs.Monopoly;
 using static Monopoly.InterfaceAdapterLayer.Server.Tests.Utils;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Tests.AcceptanceTests;
@@ -54,10 +52,10 @@ public class RollDiceTest
         // A 移動到 A3，方向為 Down，剩下 1 步
         // A 移動到 A4，方向為 Down，剩下 0 步
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
-            {
-                PlayerId = a.Id,
-                DiceCount = 6
-            })
+        {
+            PlayerId = a.Id,
+            DicePoints = [6]
+        })
             .ThroughStartEvent(new PlayerThroughStartEventArgs
             {
                 PlayerId = a.Id,
@@ -116,7 +114,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 8
+            DicePoints = [2, 6]
         });
         hub.FluentAssert.ThroughStartEvent(new PlayerThroughStartEventArgs
         {
@@ -184,7 +182,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 4
+            DicePoints = [2, 2]
         });
         VerifyChessMovedEvent(hub, "A", "Station4", "Up", 3);
         VerifyChessMovedEvent(hub, "A", "F4", "Up", 2);
@@ -246,7 +244,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 3
+            DicePoints = [2, 1]
         });
         VerifyChessMovedEvent(hub, "A", "Station4", "Up", 2);
         VerifyChessMovedEvent(hub, "A", "F4", "Up", 1);
@@ -300,7 +298,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 2
+            DicePoints = [1, 1]
         });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
@@ -361,7 +359,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 2
+            DicePoints = [2]
         });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
@@ -409,7 +407,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 2
+            DicePoints = [2]
         });
         VerifyChessMovedEvent(hub, "A", "Station1", "Right", 1);
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 0);
@@ -457,7 +455,7 @@ public class RollDiceTest
         hub.FluentAssert.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = a.Id,
-            DiceCount = 2
+            DicePoints = [2]
         });
         VerifyChessMovedEvent(hub, "A", "D1", "Down", 1);
         VerifyChessMovedEvent(hub, "A", "R2", "Left", 0);

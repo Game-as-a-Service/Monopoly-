@@ -33,7 +33,7 @@ public class RollDiceTest
     {
         // Arrange
         var A = new { Id = "A", CurrentBlockId = "F4", Direction = "Up", Money = 2000m };
-        var dicePoints = 6;
+        int[] dicePoints = [6];
         var expected = new
         {
             BlockId = "A4",
@@ -87,7 +87,7 @@ public class RollDiceTest
     {
         // Arrange
         var A = new { Id = "A", CurrentBlockId = "A4", Direction = "Down" };
-        var dicePoints = 2;
+        int[] dicePoints = [2];
         var expected = new
         {
             BlockId = "ParkingLot",
@@ -141,7 +141,7 @@ public class RollDiceTest
     {
         // Arrange
         var A = new { Id = "A", CurrentBlockId = "F3", Direction = "Up" };
-        var dicePoints = 4;
+        int[] dicePoints = [4];
         var expected = new
         {
             BlockId = "A1",
@@ -200,7 +200,7 @@ public class RollDiceTest
     {
         // Arrange
         var A = new { Id = "A", CurrentBlockId = "F3", Direction = "Up", Money = 1000m };
-        var dicePoints = 3;
+        int[] dicePoints = [3];
         var expected = new
         {
             BlockId = "Start",
@@ -257,7 +257,7 @@ public class RollDiceTest
         // Arrange
         var A = new { Id = "A", CurrentBlockId = "A1", Direction = "Right" };
         var A2 = new { Id = "A2", Price = 1000m, HouseCount = 3 };
-        var dicePoints = 2;
+        int[] dicePoints = [2];
         var expected = new
         {
             BlockId = "A2",

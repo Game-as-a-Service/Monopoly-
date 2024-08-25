@@ -2,4 +2,4 @@
 
 namespace Monopoly.DomainLayer.Domain.Events;
 
-public record PlayerRolledDiceEvent(string PlayerId, int DiceCount) : DomainEvent;
+public record PlayerRolledDiceEvent(string PlayerId, int[] DicePoints) : DomainEvent;

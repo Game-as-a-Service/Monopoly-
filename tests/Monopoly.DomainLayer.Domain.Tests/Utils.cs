@@ -45,6 +45,12 @@ static class DomainEventsExtension
             Assert.AreEqual(GameStage, somePlayersPreparingEvent.GameStage);
             CollectionAssert.AreEqual(Players, somePlayersPreparingEvent.PlayerIds);
         }
+        else if (first is PlayerRolledDiceEvent playerRolledDiceEvent)
+        {
+            var (PlayerId, Dice) = (((PlayerRolledDiceEvent)e).PlayerId, ((PlayerRolledDiceEvent)e).DicePoints);
+            Assert.AreEqual(PlayerId, playerRolledDiceEvent.PlayerId);
+            CollectionAssert.AreEquivalent(Dice, playerRolledDiceEvent.DicePoints);
+        }
         else
         {
             Assert.AreEqual(e, first);

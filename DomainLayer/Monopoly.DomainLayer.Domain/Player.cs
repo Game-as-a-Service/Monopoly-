@@ -119,7 +119,7 @@ public class Player
         {
             dice.Roll();
         }
-        yield return new PlayerRolledDiceEvent(Id, dices.Sum(d => d.Value));
+        yield return new PlayerRolledDiceEvent(Id, [.. dices.Select(d => d.Value)]);
         var events = chess.Move(map, dices.Sum(dice => dice.Value));
 
         foreach (var e in events)

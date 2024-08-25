@@ -14,7 +14,7 @@ public class PlayerRollDiceEventHandler(IHubContext<MonopolyHub, IMonopolyRespon
         return hubContext.Clients.All.PlayerRolledDiceEvent(new PlayerRolledDiceEventArgs
         {
             PlayerId = e.PlayerId,
-            DiceCount = e.DiceCount
+            DicePoints = e.DicePoints
         });
     }
 }
