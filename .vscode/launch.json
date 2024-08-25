@@ -26,6 +26,39 @@
             "url": "http://localhost:5184/dev-page",
             // "program": "${workspaceFolder}/Clients/Monopoly.Clients.Web/bin/Debug/net8.0/Monopoly.Clients.Web.dll",
             "cwd": "${workspaceFolder}/Clients/Monopoly.Clients.Web",
+        },
+        {
+            "name": "Watch Client",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Clients/Monopoly.Clients.Web",
+            "program": "dotnet",
+            "launchSettingsProfile": "https",
+            "args": [
+                "watch",
+                "--project",
+                ".",
+                "--verbose" // Let's us confirm browser connects with hot reload capabilities
+            ],
+            "preLaunchTask": "build client" // Ensure we don't watch an unbuilt site
+        },
+        {
+            "name": "Attach Client",
+            "type": "blazorwasm",
+            "request": "attach",
+            "cwd": "${workspaceFolder}/Clients/Monopoly.Clients.Web",
+            "url": "http://localhost:5184/dev-page",
+            "timeout": 120000, // Allows time for the site to launch
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug All",
+            "configurations": ["Debug Server", "Debug Client"]
+        },
+        {
+            "name": "Debug Client with Host Reload",
+            "configurations": ["Watch Client", "Attach Client"]
         }
     ]
 }
