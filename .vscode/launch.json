@@ -22,6 +22,8 @@
             "type": "blazorwasm",
             "request": "launch",
             "preLaunchTask": "build client",
+            "launchSettingsProfile": "https",
+            "url": "http://localhost:5184/dev-page",
             // "program": "${workspaceFolder}/Clients/Monopoly.Clients.Web/bin/Debug/net8.0/Monopoly.Clients.Web.dll",
             "cwd": "${workspaceFolder}/Clients/Monopoly.Clients.Web",
         }
