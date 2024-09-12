@@ -1,11 +1,24 @@
 ﻿using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using Client.HttpClients;
+using Client.Options;
+using Client.Pages.Enums;
+using Client.Pages.Ready;
+using Client.Pages.Ready.Components;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Options;
 
 namespace Client.Pages;
 
 public partial class DevPage
 {
+    private string _tabItem = "tab1";
+
+    private void OpenTab1() => _tabItem = "tab1";
+
+    private void OpenTab2() => _tabItem = "tab2";
+
     private readonly List<DevPlayer> _players = [];
     private readonly List<DevRoom> _rooms = [];
     private string PlayerName { get; set; } = Guid.NewGuid().ToString();
@@ -34,7 +47,7 @@ public partial class DevPage
         {
             // Randomly set player to host
             HostToCreateRoom = _players.First();
-           
+
             var skipCount = playerCount == 4 ? 1 : 0;
 
             // Add other players to create room
@@ -62,19 +75,17 @@ public partial class DevPage
             return;
         }
 
-        var hostToken = HostToCreateRoom.Token;
         var playerIds = PlayersToCreateRoom.Select(p => p.Token.GetMonopolyPlayerId()).ToArray();
-        var roomUrl = await MonopolyDevelopmentApiClient.CreateRoomAsync(hostToken, playerIds);
+        var roomUrl = await MonopolyDevelopmentApiClient.CreateRoomAsync(HostToCreateRoom.Token, playerIds);
         var players = playerIds.Select(id => _players.Single(p => p.Token.GetMonopolyPlayerId() == id))
             .ToImmutableArray();
-        _rooms.Add(new DevRoom(roomUrl, hostToken, players));
+        _rooms.Add(new DevRoom(roomUrl, HostToCreateRoom, players));
         HostToCreateRoom = null;
         PlayersToCreateRoom.Clear();
     }
 
     private static string ReadyRoomUrl(DevPlayer devPlayer, DevRoom devRoom)
     {
-        // navigate to {devRoom.Url}?token={devPlayer.Token.RowData}
         return $"{devRoom.Url}?token={devPlayer.Token.RawData}";
     }
 
@@ -91,20 +102,12 @@ public partial class DevPage
 
     private void AddPlayerToCreateRoom()
     {
-        if (SelectedPlayer is null)
-        {
+        if (SelectedPlayer is null
+            && PlayersToCreateRoom.Count is 4)
             return;
-        }
 
-        if (PlayersToCreateRoom.Count == 4)
-        {
+        if (SelectedPlayer is null || PlayersToCreateRoom.Contains(SelectedPlayer))
             return;
-        }
-
-        if (PlayersToCreateRoom.Contains(SelectedPlayer))
-        {
-            return;
-        }
 
         PlayersToCreateRoom.Add(SelectedPlayer);
 
@@ -113,11 +116,48 @@ public partial class DevPage
 
     private record DevPlayer(string Name, JwtSecurityToken Token);
 
-    private record DevRoom(string Url, JwtSecurityToken HostToken, ImmutableArray<DevPlayer> Players);
+    private record DevRoom(string Url, DevPlayer Host, ImmutableArray<DevPlayer> Players);
 
     private Task OpenBelow(DevRoom room)
     {
         RoomToOpen = room;
         return Task.CompletedTask;
+    }
+
+    [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
+
+    private async Task AutoStartGame()
+    {
+        if (SelectedRoom is null)
+        {
+            return;
+        }
+
+        for (var index = 0; index < SelectedRoom.Players.Length; index++)
+        {
+            var player = SelectedRoom.Players[index];
+            var connection = await CreateReadyRoomHubConnection(player, SelectedRoom.Url.Split("/")[^1]);
+            var role = Enum.GetValues<RoleEnum>()[index + 1].ToString();
+            await connection.SelectRole(role);
+            var color = Enum.GetValues<ColorEnum>()[index + 1];
+            await connection.SelectLocation(color.ToLocationEnum());
+            await connection.PlayerReady();
+        }
+
+        var hostConnection = await CreateReadyRoomHubConnection(SelectedRoom.Host, SelectedRoom.Url.Split("/")[^1]);
+        await hostConnection.StartGame();
+    }
+
+    private async Task<ReadyRoomHubConnection> CreateReadyRoomHubConnection(DevPlayer player, string gameId)
+    {
+        var baseUri = new Uri(BackendApiOptions.Value.BaseUrl);
+        var url = new Uri(baseUri, $"/ready-room?gameid={gameId}");
+        var client = new HubConnectionBuilder()
+            .WithUrl(url,
+                options => { options.AccessTokenProvider = async () => await Task.FromResult(player.Token.RawData); })
+            .Build();
+        var connection = new ReadyRoomHubConnection(client);
+        await client.StartAsync();
+        return connection;
     }
 }
