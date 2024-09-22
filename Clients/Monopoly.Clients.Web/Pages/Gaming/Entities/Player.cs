@@ -12,8 +12,14 @@ public class Player
     public int Order { get; set; } = 0;
 
     public int Money { get; set; } = 0;
+    public Chess Chess { get; set; }
     public IEnumerable<ILandContract> LandContracts { get; set; } = [];
     public GamingStatusEnum Status { get; set; } = GamingStatusEnum.None;
 
     public int GetTotalMoney => Money + LandContracts.Sum(x => x.Money + x.HouseMoney);
+
+    public Player()
+    {
+        Chess = new Chess(this);
+    }
 }

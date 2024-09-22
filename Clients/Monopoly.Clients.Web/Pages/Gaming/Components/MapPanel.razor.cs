@@ -1,4 +1,5 @@
-﻿using Client.Pages.Gaming.Entities;
+﻿using System.Collections.Immutable;
+using Client.Pages.Gaming.Entities;
 using Microsoft.AspNetCore.Components;
 
 namespace Client.Pages.Gaming.Components;
@@ -8,10 +9,17 @@ public partial class MapPanel
 	[CascadingParameter] public GamingPage Parent { get; set; } = default!;
 
 	private Block?[][] Blocks  => Parent.Map.Blocks;
+    
 	private int rowSize => Blocks.Length-1;
 	private int colSize => Blocks[0].Length-1;
 
 	private static string cssScope = "b-9s5izdb9cc";
+
+	[Parameter, EditorRequired]
+	public required IEnumerable<Player> Players { get; set; }
+
+	[Parameter, EditorRequired]
+    public required Player? CurrentPlayer { get; set; }
 
 	public int GetMapRow()
 	{

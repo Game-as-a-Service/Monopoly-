@@ -145,7 +145,7 @@ public class Land : Block
                 }
             }
         }
-        return string.Format("<div class='{1}' {0}><img class='{2}' {0}><img class='{3}' {0}></div>", cssScope, divRoad, imgLand, imgRoad);
+        return string.Format("<div class='{1}' {0}><div class='{2} lot-{4}' {0}></div><img class='{3}' {0}></div>", cssScope, divRoad, imgLand, imgRoad, lot);
     }
 }
 
@@ -214,7 +214,7 @@ public class Station : Land
             imgLand = "landH";
             imgRoad = "railH";
         }
-        return string.Format("<div class='{1}' {0}><img class='{2}' {0}><img class='{3}' {0}></div>", cssScope, divRoad, imgLand, imgRoad);
+        return string.Format("<div class='{1}' {0}><div class='{2} lot-{4}' {0}></div><img class='{3}' {0}></div>", cssScope, divRoad, imgLand, imgRoad, lot);
     }
 }
 

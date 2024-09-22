@@ -1,8 +1,7 @@
 ﻿.container {
     width: calc(1277 * var(--unit));
     top: calc(1080 * var(--unit) * 0.2);
-    margin: auto;
-    /* background-color: antiquewhite; */
+    margin: auto auto auto calc(360 * var(--unit));
     position: relative;
     font-size: 0;
     user-select: none; 
@@ -84,6 +83,12 @@ div.pathV {
     }
 
     .roadTop .landH {
+        width: calc(133 * var(--unit));
+        height: calc(64 * var(--unit));
+        border-radius: 10%;
+        box-sizing: border-box;
+        display: flex;
+        margin: 0;
         position: absolute;
         top: -48%;
     }
@@ -106,6 +111,12 @@ div.pathV {
     }
 
     .roadLeft .landV {
+        width: calc(107 * var(--unit));
+        height: calc(148 * var(--unit));
+        border-radius: 10%;
+        box-sizing: border-box;
+        display: flex;
+        margin: 0;
         position: absolute;
         right: 105%;
     }
@@ -128,28 +139,78 @@ div.pathV {
     }
 
     .roadRight .landV {
+        width: calc(107 * var(--unit));
+        height: calc(148 * var(--unit));
+        border-radius: 10%;
+        box-sizing: border-box;
+        display: flex;
+        margin: 0;
         position: absolute;
         left: 105%;
     }
 
 /* #endregion */
 
+/* #region owner */
+.owner-green {
+    border:  calc(7 * var(--unit)) solid rgb(0, 130, 39);
+}
+
+.owner-red {
+    border:  calc(7 * var(--unit)) solid rgb(186, 0, 0);
+}
+
+.owner-yellow {
+    border:  calc(7 * var(--unit)) solid rgb(255, 223, 66);
+}
+
+.owner-blue {
+    border:  calc(7 * var(--unit)) solid rgb(1, 124, 177);
+}
+
+/* #endregion */
+
+/* #region lot */
+
+.lot-A {
+    background-color: rgba(250, 192, 192, .7);
+}
+
+.lot-B {
+    background-color: rgba(255, 227, 198, .7);
+}
+
+.lot-C {
+    background-color: rgba(252, 251, 157, .7);
+}
+
+.lot-D {
+    background-color: rgba(184, 224, 129, .7);
+}
+
+.lot-E {
+    background-color: rgba(165, 220, 203, .7);
+}
+
+.lot-F {
+    background-color: rgba(159, 208, 244, .7);
+}
+
+.lot-G {
+    background-color: rgba(200, 189, 252, .7);
+}
+
+.lot-H {
+    background-color: rgba(240, 194, 250, 0.7);
+}
+
+/* station */
+.lot-S {
+    background-color: rgba(140, 140, 140, 0.7);
+}
+/* #endregion */
+
 /* #region img */
-
-img.empty {
-    content: url('images/gamepage/empty.svg');
-}
-
-img.landH {
-    content: url('images/gamepage/land_horizontal.svg');
-    opacity: 0.7;
-}
-
-img.landV {
-    content: url('images/gamepage/land_vertical.svg');
-    width: 80%;
-    opacity: 0.7;
-}
 
 img.railH {
     content: url('images/gamepage/railway_horizontal.svg');
@@ -181,6 +242,92 @@ img.roadTopR {
 
 img.roadV {
     content: url('images/gamepage/road_vertical.svg');
+}
+
+/* #endregion */
+
+/* #region chess */
+
+.chess .color {
+    width: 95%;
+}
+.chess .avatar {
+    width: 70%;
+}
+
+img.Yellow {
+    content: url(images/roles/chesses/yellow.svg);
+    position: absolute;
+}
+
+img.Red {
+    content: url(images/roles/chesses/red.svg);
+    position: absolute;
+}
+
+img.Green {
+    content: url(images/roles/chesses/green.svg);
+    position: absolute;
+}
+
+img.Blue {
+    content: url(images/roles/chesses/blue.svg);
+    position: absolute;
+}
+
+img.OldMan {
+    content: url(images/roles/avatars/老人頭.svg);
+    position: absolute;
+    top: calc(14 * var(--unit));
+    left: calc(14 * var(--unit));
+}
+
+img.Baby {
+    content: url(images/roles/avatars/寶寶頭.svg);
+    position: absolute;
+    top: calc(21 * var(--unit));
+    left: calc(11 * var(--unit));
+}
+
+img.Dai {
+    content: url(images/roles/avatars/阿呆頭.svg);
+    position: absolute;
+    top: calc(8 * var(--unit));
+    left: calc(11 * var(--unit));
+}
+
+img.Mei {
+    content: url(images/roles/avatars/小美頭.svg);
+    position: absolute;
+    top: calc(10 * var(--unit));
+    left: calc(14 * var(--unit));
+}
+
+div.chess {
+    width: calc(104 * var(--unit));
+    height: calc(104 * var(--unit));
+    position: absolute;
+    z-index: 1;
+}
+
+div.pos-1 {
+    top: calc(20 * var(--unit));
+    left: calc(5 * var(--unit));
+}
+
+div.pos-2 {
+    top: calc(20 * var(--unit));
+    left: calc(10 * var(--unit));
+}
+
+div.pos-3 {
+    top: calc(20 * var(--unit));
+    left: calc(15 * var(--unit));
+}
+
+div.pos-4 {
+    top: calc(20 * var(--unit));
+    left: calc(20 * var(--unit));
 }
 
 /* #endregion */

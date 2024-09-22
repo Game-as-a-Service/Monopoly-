@@ -1,5 +1,6 @@
 ﻿@using Client.Pages.Gaming.Entities
 @using System.Web;
+@using Player = Client.Pages.Ready.Entities.Player
 <div class="container">
     <!--
 
@@ -22,5 +23,10 @@
                 @((MarkupString)GetBlockTag(i, j))
             }
         </div>
+    }
+
+    @foreach (var player in Players)
+    {
+        <div class="chess pos-@player.Order"><img class="color @player.Color"><img class="avatar @player.Role"></div>
     }
 </div>

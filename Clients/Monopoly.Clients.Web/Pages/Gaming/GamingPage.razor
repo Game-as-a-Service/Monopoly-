@@ -1,9 +1,12 @@
 ﻿@page "/GamingPage"
+@using System.Collections.Immutable
 @using Client.Pages.Gaming.Components
+@using Client.Pages.Gaming.Entities
 
 <div class="background">
     <CascadingValue Value="this">
-    	<MapPanel />
+        <MapPanel 
+            Players="Players"/>
 
         <GameRound></GameRound>
         <PlayerRankList></PlayerRankList>
