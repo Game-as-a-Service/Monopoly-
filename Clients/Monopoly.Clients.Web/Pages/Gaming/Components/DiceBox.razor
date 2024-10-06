@@ -1,0 +1,6 @@
+﻿<dlv class="DiceBox">
+    @foreach (var Dice in GetShowDices())
+    {
+        <img class="Dice" src="@($"images/gamepage/Dice{Dice}.svg")" alt="@($"Dice {Dice}")" />
+    }
+</dlv>

@@ -40,6 +40,8 @@ public partial class GamingPage
     private GamingHubConnection Connection { get; set; } = default!;
     public IEnumerable<Player> Players { get; set; } = [];
 
+    public List<int> ShowDice { get; set; } = [];
+
     protected override void OnInitialized()
     {
         Map = new Map("1", Blocks);
@@ -102,11 +104,21 @@ public partial class GamingPage
         await client.StartAsync();
     }
 
-    private Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
+    private async Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
     {
-        var player = Players.First(x => x.Id == e.PlayerId);
+        // 顯示骰子點數
+        ShowDice = [.. e.DicePoints];
         StateHasChanged();
-        return Task.CompletedTask;
+
+        await Task.Delay(3000);
+
+        // TODO 角色移動
+
+        // 關閉骰子點數
+        ShowDice = [];
+        StateHasChanged();
+
+        await Task.CompletedTask;
     }
 
     private async Task OnRolledDice()
