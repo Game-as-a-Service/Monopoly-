@@ -1,6 +1,7 @@
 ﻿@using Client.Pages.Gaming.Entities
 @using System.Web;
 @using Player = Client.Pages.Ready.Entities.Player
+
 <div class="container">
     <!--
 
@@ -27,6 +28,6 @@
 
     @foreach (var player in Players)
     {
-        <div class="chess pos-@player.Order"><img class="color @player.Color"><img class="avatar @player.Role"></div>
+        <div class="chess pos-@player.Order" style="--top: @player.Chess.Top; --left: @player.Chess.Left"><img class="color @player.Color"><img class="avatar @player.Role"></div>
     }
 </div>

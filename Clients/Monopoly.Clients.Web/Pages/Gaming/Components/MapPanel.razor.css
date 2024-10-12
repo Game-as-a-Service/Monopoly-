@@ -311,23 +311,31 @@ div.chess {
 }
 
 div.pos-1 {
-    top: calc(20 * var(--unit));
-    left: calc(5 * var(--unit));
+    --top: 20;
+    --left: 5;
+    top: calc(var(--top) * var(--unit));
+    left: calc(var(--left) * var(--unit));
 }
 
 div.pos-2 {
-    top: calc(20 * var(--unit));
-    left: calc(10 * var(--unit));
+    --top: 20;
+    --left: 10;
+    top: calc(var(--top) * var(--unit));
+    left: calc(var(--left) * var(--unit));
 }
 
 div.pos-3 {
-    top: calc(20 * var(--unit));
-    left: calc(15 * var(--unit));
+    --top: 20;
+    --left: 15;
+    top: calc(var(--top) * var(--unit));
+    left: calc(var(--left) * var(--unit));
 }
 
 div.pos-4 {
-    top: calc(20 * var(--unit));
-    left: calc(20 * var(--unit));
+    --top: 20;
+    --left: 20;
+    top: calc(var(--top) * var(--unit));
+    left: calc(var(--left) * var(--unit));
 }
 
 /* #endregion */

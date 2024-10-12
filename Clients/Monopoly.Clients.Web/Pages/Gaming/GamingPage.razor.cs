@@ -13,8 +13,8 @@ public partial class GamingPage
     [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
 
     public Map Map;
-    //private static Block?[][] Blocks =>
-	private static Block?[][] Blocks7x7 =>
+    private static Block?[][] Blocks =>
+	//private static Block?[][] Blocks7x7 =>
 	[
 		[new StartPoint("Start"), new Land("A1", lot:"A"),    new Station("Station1"),    new Land("A2", lot:"A"),    new Land("A3", lot:"A"),    null,                       null],
 		[new Land("F4", lot:"F"), null,                       null,                       null,                       new Land("A4", lot:"A"),    null,                       null],
@@ -25,8 +25,8 @@ public partial class GamingPage
 		[null,                    null,                       new Land("E2", lot:"E"),    new Land("E1", lot:"E"),    new Station("Station3"),    new Land("D3", lot:"D"),    new Land("D2", lot:"D")],
 	];
 
-	private static Block?[][] Blocks =>
-	//private static Block?[][] Blocks5x9 =>
+	//private static Block?[][] Blocks =>
+	private static Block?[][] Blocks5x9 =>
 	[
 		[new StartPoint("Start"), new Land("A1", lot:"A"),	  new Land("A2", lot:"A"),    new Station("Station1"),    new Land("B1", lot:"B"),    new Land("B2", lot:"B"),	  new Land("B3", lot:"B"),    	  null,         				  null],
 		[new Land("H1", lot:"H"), null,                       null,                       null,    					  null,                   	  null,						  new Road("R1"),    	  		  null,                       	  null],
@@ -100,13 +100,15 @@ public partial class GamingPage
 
         Connection = new GamingHubConnection(client);
         Connection.PlayerRolledDiceEventHandler += OnRolledDiceEvent;
+        Connection.ChessMovedEventHandler += ChessMovedEvent;
+        Connection.PlayerNeedToChooseDirectionEventHandler += ChooseDirectionEvent;
         await client.StartAsync();
     }
 
     private Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
     {
         var player = Players.First(x => x.Id == e.PlayerId);
-        var dice = e.DicePoints;
+        
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -114,5 +116,28 @@ public partial class GamingPage
     private async Task OnRolledDice()
     {
         await Connection.PlayerRollDice();
+    }
+
+    private Task ChessMovedEvent(ChessMovedEventArgs e)
+    {
+        //var player = Players.First(x => x.Id == e.PlayerId);
+        var player = Players.First(x => x.Order == 1);
+        
+        player.Chess.Move();
+        player.Chess.CurrentDirection = Enum.Parse<Map.Direction>(e.Direction);
+        player.Chess.CurrentBlockId = e.BlockId;
+        player.Chess.RemainingSteps = e.RemainingSteps;
+        
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task ChooseDirectionEvent(PlayerNeedToChooseDirectionEventArgs e)
+    {
+        //var player = Players.First(x => x.Id == e.PlayerId);
+        var player = Players.First(x => x.Order == 1);
+        
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }
