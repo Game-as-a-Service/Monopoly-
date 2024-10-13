@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace Client.Pages.Gaming.Components;
+﻿namespace Client.Pages.Gaming.Components;
 
 public partial class DiceBox
 {
-    [CascadingParameter] public GamingPage Parent { get; set; } = default!;
+    private IEnumerable<int> Dices { get; set; } = [];
 
-    public List<int> ShowDice => Parent.ShowDice;
-
-    public List<int> GetShowDices()
+    public async Task ShowDices(IEnumerable<int> dices)
     {
-        return ShowDice.TrueForAll(x => x > 0) ? ShowDice : [];
+        Console.WriteLine("ShowDices");
+        Dices = dices;
+        StateHasChanged();
+        await Task.Delay(3000);
+        Dices = [];
+        StateHasChanged();
     }
 }

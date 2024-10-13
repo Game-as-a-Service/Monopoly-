@@ -1,5 +1,6 @@
 ﻿using Client.Options;
 using Client.Pages.Enums;
+using Client.Pages.Gaming.Components;
 using Client.Pages.Gaming.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -40,7 +41,7 @@ public partial class GamingPage
     private GamingHubConnection Connection { get; set; } = default!;
     public IEnumerable<Player> Players { get; set; } = [];
 
-    public List<int> ShowDice { get; set; } = [];
+    private DiceBox DiceBox { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -106,19 +107,7 @@ public partial class GamingPage
 
     private async Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
     {
-        // 顯示骰子點數
-        ShowDice = [.. e.DicePoints];
-        StateHasChanged();
-
-        await Task.Delay(3000);
-
-        // TODO 角色移動
-
-        // 關閉骰子點數
-        ShowDice = [];
-        StateHasChanged();
-
-        await Task.CompletedTask;
+        await DiceBox.ShowDices(e.DicePoints);
     }
 
     private async Task OnRolledDice()
