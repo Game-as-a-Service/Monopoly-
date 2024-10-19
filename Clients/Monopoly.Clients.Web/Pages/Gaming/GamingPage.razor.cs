@@ -14,8 +14,8 @@ public partial class GamingPage
     [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
 
     public Map Map;
-    private static Block?[][] Blocks =>
-    //private static Block?[][] Blocks7x7 =>
+    //private static Block?[][] Blocks =>
+    private static Block?[][] Blocks7x7 =>
     [
         [new StartPoint("Start"), new Land("A1", lot:"A"),    new Station("Station1"),    new Land("A2", lot:"A"),    new Land("A3", lot:"A"),    null,                       null],
         [new Land("F4", lot:"F"), null,                       null,                       null,                       new Land("A4", lot:"A"),    null,                       null],
@@ -25,8 +25,8 @@ public partial class GamingPage
         [null,                    null,                       new Land("E3", lot:"E"),    null,                       null,                       null,                       new Land("D1", lot:"D")],
         [null,                    null,                       new Land("E2", lot:"E"),    new Land("E1", lot:"E"),    new Station("Station3"),    new Land("D3", lot:"D"),    new Land("D2", lot:"D")],
     ];
-    //private static Block?[][] Blocks =>
-    private static Block?[][] Blocks5x9 =>
+    private static Block?[][] Blocks =>
+    //private static Block?[][] Blocks5x9 =>
     [
         [new StartPoint("Start"), new Land("A1", lot:"A"),    new Land("A2", lot:"A"),    new Station("Station1"),    new Land("A3", lot:"A"),    new Land("A4", lot:"A"),    new Land("A5", lot:"A"),        null,                           null],
         [new Land("D1", lot:"D"), null,                       null,                       null,                       null,                       null,                       new Road("R1"),                 null,                           null],
