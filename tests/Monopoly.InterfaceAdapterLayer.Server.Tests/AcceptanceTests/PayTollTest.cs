@@ -178,7 +178,7 @@ public class PayTollTest
     [Description(
         """
         Given:  目前輪到A
-                A 在 A1 上，持有 30元，持有土地 A3
+                A 在 A1 上，持有 30元，持有土地 A2
                 B 持有 1000元
                 A1 是 B 的土地，價值 1000元
         When:   A 付過路費
@@ -190,7 +190,7 @@ public class PayTollTest
         var a = new { Id = "A", Money = 30m };
         var b = new { Id = "B", Money = 1000m };
         var a1 = new { Id = "A1", Price = 1000m };
-        var a3 = new { Id = "A3" };
+        var a2 = new { Id = "A2" };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
@@ -198,7 +198,7 @@ public class PayTollTest
             new PlayerBuilder(a.Id)
             .WithMoney(a.Money)
             .WithPosition(a1.Id, Direction.Right)
-            .WithLandContract(a3.Id)
+            .WithLandContract(a2.Id)
             .Build()
         )
         .WithPlayer(

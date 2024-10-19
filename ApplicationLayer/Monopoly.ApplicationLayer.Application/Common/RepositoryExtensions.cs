@@ -103,7 +103,7 @@ public static class RepositoryExtensions
         //                   return row.Select(block => block?.ToDomainBlock()).ToArray();
         //               }).ToArray()
         //           );
-        DomainLayer.Domain.Map map = new SevenXSevenMap();
+        DomainLayer.Domain.Map map = new FiveXNineMap();
         var builder = new MonopolyBuilder()
             .WithId(monopolyDataModel.Id)
             .WithHost(monopolyDataModel.HostId)
