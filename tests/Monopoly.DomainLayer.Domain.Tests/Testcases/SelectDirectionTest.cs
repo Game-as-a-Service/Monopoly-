@@ -138,8 +138,8 @@ public class SelectDirectionTest
             .NextShouldBe(new ChessMovedEvent(A.Id, "B6", "Left", 3))
             .NextShouldBe(new ChessMovedEvent(A.Id, "B5", "Down", 2))
             .NextShouldBe(new ChessMovedEvent(A.Id, "B4", "Down", 1))
-            //.NextShouldBe(new ChessMovedEvent(A.Id, "Jail", "Down", 0))
-            .NextShouldBe(new PlayerNeedToChooseDirectionEvent(A.Id, "Left", "Right", "Down"))
+            .NextShouldBe(new ChessMovedEvent(A.Id, "Jail", "Down", 0))
+            .NextShouldBe(new PlayerNeedToChooseDirectionEvent(A.Id, ["Left", "Right", "Down"]))
             .NoMore();
     }
 

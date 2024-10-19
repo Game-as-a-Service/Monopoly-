@@ -10,11 +10,11 @@ public class CheckGameExistenceQuery(IGameExistenceInquiry inquiry)
 
     public record Response(bool IsExist) : Common.Response;
 
-    public override Task ExecuteAsync(Request request,
+    public override async Task ExecuteAsync(Request request,
         IPresenter<Response> presenter,
         CancellationToken cancellationToken = default)
     {
-        var isExist = inquiry.CheckGameExistence(request.GameId);
-        return presenter.PresentAsync(new Response(isExist), cancellationToken);
+        var isExist = await inquiry.CheckGameExistenceAsync(request.GameId);
+        await presenter.PresentAsync(new Response(isExist), cancellationToken);
     }
 }

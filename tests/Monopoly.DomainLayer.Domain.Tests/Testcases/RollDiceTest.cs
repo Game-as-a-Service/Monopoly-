@@ -114,8 +114,8 @@ public class RollDiceTest
 
         monopoly.DomainEvents
             .NextShouldBe(new PlayerRolledDiceEvent(player.Id, dicePoints))
-            //.NextShouldBe(new ChessMovedEvent(player.Id, "ParkingLot", "Down", 1))
-            .NextShouldBe(new PlayerNeedToChooseDirectionEvent(player.Id, "Left", "Right", "Down"))
+            .NextShouldBe(new ChessMovedEvent(player.Id, "ParkingLot", "Down", 1))
+            .NextShouldBe(new PlayerNeedToChooseDirectionEvent(player.Id, ["Left", "Right", "Down"]))
             .NoMore();
     }
 

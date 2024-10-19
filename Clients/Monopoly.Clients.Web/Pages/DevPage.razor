@@ -6,49 +6,66 @@
     <h1 class="">Development Page</h1>
     <div class="dev-content">
         <div class="left-panel">
-            <div class="create-player-form">
-                <InputText style="padding: 10px; margin-right: 10px; width: 200px; border: 1px solid #ccc; border-radius: 4px;"
-                           @bind-Value="PlayerName" DisplayName="Enter player name"/>
-                <button @onclick="CreatePlayerAsync">Create Player</button>
-            </div>
+            <!-- Tab -->
+            <button @onclick="() => OpenTab1()">Player Control</button>
+            <button @onclick="() => OpenTab2()">Room Detail Control</button>
 
-            <div class="player-list">
-                @foreach (var player in _players)
+            @_tabItem
+            <!-- Tab Content -->
+            @switch (_tabItem)
+            {
+                case "tab1":
                 {
-                    var isSelected = SelectedPlayer == player;
-                    var selectCss = isSelected ? "selected" : "";
-                    var isInRoom = SelectedRoom?.Players.Contains(player) ?? false;
-                    var isInRoomCss = isInRoom ? "in-room" : "";
-
-                    <div class="player-item block-highlight @(selectCss) @(isInRoomCss)" @onclick="() => SelectedPlayer = player">
-                        <div class="player-name">@player.Name</div>
-                        <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                    <div class="create-player-form">
+                        <InputText style="padding: 10px; margin-right: 10px; width: 200px; border: 1px solid #ccc; border-radius: 4px;"
+                                   @bind-Value="PlayerName" DisplayName="Enter player name"/>
+                        <button @onclick="CreatePlayerAsync">Create Player</button>
                     </div>
-                }
-            </div>
-            <div class="room-setup">
-                <div class="host-to-create-room block-highlight" @onclick="AddHostToCreateRoom">
-                    @if (HostToCreateRoom is not null)
-                    {
-                        <div class="player-name">@HostToCreateRoom.Name</div>
-                        <div class="player-token">@HostToCreateRoom.Token.GetMonopolyPlayerId()</div>
-                    }
-                    else
-                    {
-                        <div class="player-name">Host</div>
-                    }
-                </div>
-                <div class="players-to-create-room block-highlight" @onclick="AddPlayerToCreateRoom">
-                    @foreach (var player in PlayersToCreateRoom)
-                    {
-                        <div class="player-item">
-                            <div class="player-name">@player.Name</div>
-                            <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                    <div class="player-list">
+                        @foreach (var player in _players)
+                        {
+                            var isSelected = SelectedPlayer == player;
+                            var selectCss = isSelected ? "selected" : "";
+                            var isInRoom = SelectedRoom?.Players.Contains(player) ?? false;
+                            var isInRoomCss = isInRoom ? "in-room" : "";
+
+                            <div class="player-item block-highlight @selectCss @isInRoomCss" @onclick="() => SelectedPlayer = player">
+                                <div class="player-name">@player.Name</div>
+                                <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                            </div>
+                        }
+                    </div>
+                    <div class="room-setup">
+                        <div class="host-to-create-room block-highlight" @onclick="AddHostToCreateRoom">
+                            @if (HostToCreateRoom is not null)
+                            {
+                                <div class="player-name">@HostToCreateRoom.Name</div>
+                                <div class="player-token">@HostToCreateRoom.Token.GetMonopolyPlayerId()</div>
+                            }
+                            else
+                            {
+                                <div class="player-name">Host</div>
+                            }
                         </div>
-                    }
-                </div>
-                <button @onclick="CreateRoomAsync">Create Room</button>
-            </div>
+                        <div class="players-to-create-room block-highlight" @onclick="AddPlayerToCreateRoom">
+                            @foreach (var player in PlayersToCreateRoom)
+                            {
+                                <div class="player-item">
+                                    <div class="player-name">@player.Name</div>
+                                    <div class="player-token">@player.Token.GetMonopolyPlayerId()</div>
+                                </div>
+                            }
+                        </div>
+                        <button @onclick="CreateRoomAsync">Create Room</button>
+                    </div>
+                    break;
+                }
+                case "tab2":
+                {
+                    <button @onclick="AutoStartGame">自動開始遊戲</button>
+                    break;
+                }
+            }
         </div>
 
         <div class="right-panel">
@@ -78,6 +95,8 @@
             </div>
         </div>
     </div>
+
+    <h2 class="">Rooms (Iframe)</h2>
     @if (RoomToOpen is not null)
     {
         <button @onclick="() => RoomToOpen = null">Clear</button>

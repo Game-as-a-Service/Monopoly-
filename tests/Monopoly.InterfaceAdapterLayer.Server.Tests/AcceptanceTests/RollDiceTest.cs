@@ -128,7 +128,7 @@ public class RollDiceTest
         VerifyChessMovedEvent(hub, "A", "A2", "Right", 4);
         VerifyChessMovedEvent(hub, "A", "A3", "Down", 3);
         VerifyChessMovedEvent(hub, "A", "A4", "Down", 2);
-        //VerifyChessMovedEvent(hub, "A", "ParkingLot", "Down", 1);
+        VerifyChessMovedEvent(hub, "A", "ParkingLot", "Down", 1);
         hub.FluentAssert.PlayerNeedToChooseDirectionEvent(new PlayerNeedToChooseDirectionEventArgs
         {
             PlayerId = a.Id,

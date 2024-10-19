@@ -12,9 +12,9 @@ public class Chess
     private int remainingSteps;
 
     public Chess(Player player,
-                 string currentBlockId,
-                 Direction currentDirection,
-                 int remainingSteps)
+        string currentBlockId,
+        Direction currentDirection,
+        int remainingSteps)
     {
         this.player = player;
         this.currentBlockId = currentBlockId;
@@ -37,7 +37,8 @@ public class Chess
     {
         while (remainingSteps > 0)
         {
-            var nextBlock = map.FindBlockById(currentBlockId).GetDirectionBlock(CurrentDirection) ?? throw new Exception("找不到下一個區塊");
+            var nextBlock = map.FindBlockById(currentBlockId).GetDirectionBlock(CurrentDirection) ??
+                            throw new Exception("找不到下一個區塊");
             currentBlockId = nextBlock.Id;
             remainingSteps--;
             if (currentBlockId == "Start" && remainingSteps > 0) // 如果移動到起點，且還有剩餘步數，則獲得獎勵金
@@ -45,9 +46,13 @@ public class Chess
                 player.Money += 3000;
                 yield return new ThroughStartEvent(player.Id, 3000, player.Money);
             }
+
             var directions = DirectionOptions(map);
+
             if (directions.Count > 1)
             {
+                yield return new ChessMovedEvent(player.Id, currentBlockId, currentDirection.ToString(),
+                    remainingSteps);
                 // 可選方向多於一個
                 // 代表棋子會停在這個區塊
                 yield return new PlayerNeedToChooseDirectionEvent(
@@ -55,11 +60,14 @@ public class Chess
                     directions.Select(d => d.ToString()).ToArray());
                 yield break;
             }
+
             // 只剩一個方向
             // 代表棋子會繼續往這個方向移動
             currentDirection = directions.First();
-            yield return new ChessMovedEvent(player.Id, currentBlockId, currentDirection.ToString(), remainingSteps);
+            yield return new ChessMovedEvent(player.Id, currentBlockId, currentDirection.ToString(),
+                remainingSteps);
         }
+
         map.FindBlockById(currentBlockId).DoBlockAction(player);
         var onBlockEvent = map.FindBlockById(currentBlockId).OnBlockEvent(player);
         if (onBlockEvent is not null)
@@ -76,7 +84,7 @@ public class Chess
 
     internal IEnumerable<DomainEvent> ChangeDirection(Map map, Direction direction)
     {
-        List<DomainEvent> events = new() { };
+        List<DomainEvent> events = [];
         currentDirection = direction;
         events.Add(new PlayerChooseDirectionEvent(player.Id, direction.ToString()));
         events.AddRange(Move(map));

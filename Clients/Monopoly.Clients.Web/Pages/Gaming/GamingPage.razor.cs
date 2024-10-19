@@ -1,5 +1,6 @@
 ﻿using Client.Options;
 using Client.Pages.Enums;
+using Client.Pages.Gaming.Components;
 using Client.Pages.Gaming.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -14,26 +15,25 @@ public partial class GamingPage
 
     public Map Map;
     private static Block?[][] Blocks =>
-	//private static Block?[][] Blocks7x7 =>
-	[
-		[new StartPoint("Start"), new Land("A1", lot:"A"),    new Station("Station1"),    new Land("A2", lot:"A"),    new Land("A3", lot:"A"),    null,                       null],
-		[new Land("F4", lot:"F"), null,                       null,                       null,                       new Land("A4", lot:"A"),    null,                       null],
-		[new Station("Station4"), null,                       new Land("B5", lot:"B"),    new Land("B6", lot:"B"),    new ParkingLot("ParkingLot"),     new Land("C1", lot:"C"),    new Land("C2", lot:"C")],
-		[new Land("F3", lot:"F"), null,                       new Land("B4", lot:"B"),    null,                       new Land("B1", lot:"B"),    null,                       new Land("C3", lot:"C")],
-		[new Land("F2", lot:"F"), new Land("F1", lot:"F"),    new Jail("Jail"),           new Land("B3", lot:"B"),    new Land("B2", lot:"B"),    null,                       new Station("Station2")],
-		[null,                    null,                       new Land("E3", lot:"E"),    null,                       null,                       null,                       new Land("D1", lot:"D")],
-		[null,                    null,                       new Land("E2", lot:"E"),    new Land("E1", lot:"E"),    new Station("Station3"),    new Land("D3", lot:"D"),    new Land("D2", lot:"D")],
-	];
-
-	//private static Block?[][] Blocks =>
-	private static Block?[][] Blocks5x9 =>
-	[
-		[new StartPoint("Start"), new Land("A1", lot:"A"),	  new Land("A2", lot:"A"),    new Station("Station1"),    new Land("B1", lot:"B"),    new Land("B2", lot:"B"),	  new Land("B3", lot:"B"),    	  null,         				  null],
-		[new Land("H1", lot:"H"), null,                       null,                       null,    					  null,                   	  null,						  new Road("R1"),    	  		  null,                       	  null],
-		[new Station("Station4"), null,       				  null,               		  new Land("D1", lot:"D"),    new Land("D2", lot:"D"),	  new Land("D3", lot:"D"),    new ParkingLot("ParkingLot"),   new Land("C1", lot:"C"),		  new Land("C2", lot:"C")],
-		[new Land("H2", lot:"H"), new Land("G1", lot:"G"),    new Land("G2", lot:"G"),    new Jail("Jail"),   		  null,    					  null,						  null,							  null,     					  new Station("Station2")],
-		[null, 					  null,						  null,						  new Land("F1", lot:"F"), 	  new Land("F2", lot:"F"),    new Station("Station3"),    new Land("E1", lot:"E"),    	  new Land("E2", lot:"E"),   	  new Road("R2")]
-	];
+    //private static Block?[][] Blocks7x7 =>
+    [
+        [new StartPoint("Start"), new Land("A1", lot:"A"),    new Station("Station1"),    new Land("A2", lot:"A"),    new Land("A3", lot:"A"),    null,                       null],
+        [new Land("F4", lot:"F"), null,                       null,                       null,                       new Land("A4", lot:"A"),    null,                       null],
+        [new Station("Station4"), null,                       new Land("B5", lot:"B"),    new Land("B6", lot:"B"),    new ParkingLot("ParkingLot"),     new Land("C1", lot:"C"),    new Land("C2", lot:"C")],
+        [new Land("F3", lot:"F"), null,                       new Land("B4", lot:"B"),    null,                       new Land("B1", lot:"B"),    null,                       new Land("C3", lot:"C")],
+        [new Land("F2", lot:"F"), new Land("F1", lot:"F"),    new Jail("Jail"),           new Land("B3", lot:"B"),    new Land("B2", lot:"B"),    null,                       new Station("Station2")],
+        [null,                    null,                       new Land("E3", lot:"E"),    null,                       null,                       null,                       new Land("D1", lot:"D")],
+        [null,                    null,                       new Land("E2", lot:"E"),    new Land("E1", lot:"E"),    new Station("Station3"),    new Land("D3", lot:"D"),    new Land("D2", lot:"D")],
+    ];
+    //private static Block?[][] Blocks =>
+    private static Block?[][] Blocks5x9 =>
+    [
+        [new StartPoint("Start"), new Land("A1", lot:"A"),    new Land("A2", lot:"A"),    new Station("Station1"),    new Land("A3", lot:"A"),    new Land("A4", lot:"A"),    new Land("A5", lot:"A"),        null,                           null],
+        [new Land("D1", lot:"D"), null,                       null,                       null,                       null,                       null,                       new Road("R1"),                 null,                           null],
+        [new Station("Station4"), null,                       null,                       new Land("B1", lot:"B"),    new Land("B2", lot:"B"),    new Land("B3", lot:"B"),    new ParkingLot("ParkingLot"),   new Land("B4", lot:"B"),        new Land("B5", lot:"B")],
+        [new Land("D2", lot:"D"), new Land("D3", lot:"D"),    new Land("D4", lot:"D"),    new Jail("Jail"),           null,                       null,                       null,                           null,                           new Station("Station2")],
+        [null,                    null,                       null,                       new Land("C1", lot:"C"),    new Land("C2", lot:"C"),    new Station("Station3"),    new Land("C3", lot:"C"),        new Land("C4", lot:"C"),        new Road("R2")]
+    ];
 
     [Parameter, SupplyParameterFromQuery(Name = "gameid")] public string GameId { get; set; } = string.Empty;
     [Parameter, SupplyParameterFromQuery(Name = "token")]
@@ -41,11 +41,13 @@ public partial class GamingPage
     private GamingHubConnection Connection { get; set; } = default!;
     public IEnumerable<Player> Players { get; set; } = [];
 
+    private DiceBox DiceBox { get; set; } = default!;
+
     protected override void OnInitialized()
     {
         Map = new Map("1", Blocks);
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         //玩家假資料
@@ -105,12 +107,9 @@ public partial class GamingPage
         await client.StartAsync();
     }
 
-    private Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
+    private async Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
     {
-        var player = Players.First(x => x.Id == e.PlayerId);
-        
-        StateHasChanged();
-        return Task.CompletedTask;
+        await DiceBox.ShowDices(e.DicePoints);
     }
 
     private async Task OnRolledDice()
