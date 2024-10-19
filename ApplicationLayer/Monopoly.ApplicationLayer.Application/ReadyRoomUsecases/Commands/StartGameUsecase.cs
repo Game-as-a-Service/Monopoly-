@@ -33,7 +33,7 @@ public class StartGameUsecase(
         builder.WithId(readyRoom.GameId)
             .WithHost(readyRoom.HostId)
             .WithCurrentPlayer(readyRoom.Players[0].Id)
-            .WithMap(new SevenXSevenMap());
+            .WithMap(new FiveXNineMap());
         var game = builder.Build();
 
         //存

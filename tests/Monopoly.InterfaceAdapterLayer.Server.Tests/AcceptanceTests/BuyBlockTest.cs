@@ -19,25 +19,25 @@ public class BuyBlockTest
     [TestMethod]
     [Description(
         """
-        Given:  玩家A資產5000元、沒有房地產、目前輪到A、Ａ在F4上
+        Given:  玩家A資產5000元、沒有房地產、目前輪到A、Ａ在B1上
                 F4是空地、購買價1000元
         When:   玩家A購買土地
         Then:   玩家A持有金額為4000
                 玩家A持有房地產數量為1
-                玩家A持有房地產為F4
+                玩家A持有房地產為B1
         """)]
     public async Task 玩家在空地上可以購買土地()
     {
         // Arrange
         var a = new { Id = "A", Money = 5000m };
-        var f4 = new { Id = "F4", Price = 1000m };
+        var b1 = new { Id = "B1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder(gameId)
         .WithPlayer(
             new PlayerBuilder(a.Id)
             .WithMoney(a.Money)
-            .WithPosition(f4.Id, Direction.Up)
+            .WithPosition(b1.Id, Direction.Up)
             .Build()
         )
         .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
@@ -49,14 +49,14 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.Requests.PlayerBuyLand(f4.Id);
+        await hub.Requests.PlayerBuyLand(b1.Id);
 
         // Assert
         // A 購買土地
         hub.FluentAssert.PlayerBuyBlockEvent(new PlayerBuyBlockEventArgs
         {
             PlayerId = a.Id,
-            LandId = f4.Id
+            LandId = b1.Id
         });
     }
 
@@ -64,7 +64,7 @@ public class BuyBlockTest
     [Description(
         """
         Given:  玩家A資產500元,沒有房地產
-                目前輪到A,A在F4上
+                目前輪到A,A在C1上
                 F4是空地,購買價1000元
         When:   玩家A購買土地
         Then:   顯示錯誤訊息"金額不足"
@@ -75,14 +75,14 @@ public class BuyBlockTest
     {
         // Arrange
         var a = new { Id = "A", Money = 500m };
-        var f4 = new { Id = "F4", Price = 1000m };
+        var c1 = new { Id = "C1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
             new PlayerBuilder(a.Id)
             .WithMoney(a.Money)
-            .WithPosition(f4.Id, Direction.Up)
+            .WithPosition(c1.Id, Direction.Up)
             .Build()
         )
         .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
@@ -94,14 +94,14 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.Requests.PlayerBuyLand(f4.Id);
+        await hub.Requests.PlayerBuyLand(c1.Id);
 
         // Assert
         // A 購買土地金額不足
         hub.FluentAssert.PlayerBuyBlockInsufficientFundsEvent(new PlayerBuyBlockInsufficientFundsEventArgs
         {
             PlayerId = a.Id,
-            LandId = f4.Id,
+            LandId = c1.Id,
             Price = 1000
         });
     }
@@ -110,34 +110,34 @@ public class BuyBlockTest
     [Description(
         """
         Given:  玩家A資產5000元、沒有房地產
-                玩家B資產5000元、擁有房地產F4
-                目前輪到A、Ａ在F4上
-        When:   玩家A購買土地F4
+                玩家B資產5000元、擁有房地產B1
+                目前輪到A、Ａ在B1上
+        When:   玩家A購買土地B1
         Then:   顯示錯誤訊息“無法購買”
                 玩家A持有金額為5000
                 玩家A持有房地產數量為0
                 玩家B持有金額為5000
-                玩家B持有房地產數量為1，持有F4
+                玩家B持有房地產數量為1，持有B1
         """)]
     public async Task 玩家在有地主的土地上不可以購買土地()
     {
         // Arrange
         var a = new { Id = "A", Money = 5000m };
         var b = new { Id = "B", Money = 5000m };
-        var f4 = new { Id = "F4", Price = 1000m };
+        var b1 = new { Id = "B1", Price = 1000m };
 
         const string gameId = "1";
         var monopolyBuilder = new MonopolyBuilder("1")
         .WithPlayer(
             new PlayerBuilder(a.Id)
             .WithMoney(a.Money)
-            .WithPosition(f4.Id, Direction.Right)
+            .WithPosition(b1.Id, Direction.Right)
             .Build()
         )
         .WithPlayer(
             new PlayerBuilder(b.Id)
             .WithMoney(b.Money)
-            .WithLandContract(f4.Id)
+            .WithLandContract(b1.Id)
             .Build()
         )
         .WithCurrentPlayer(new CurrentPlayerStateBuilder(a.Id)
@@ -149,14 +149,14 @@ public class BuyBlockTest
         var hub = await server.CreateHubConnectionAsync(gameId, "A");
 
         // Act
-        await hub.Requests.PlayerBuyLand(f4.Id);
+        await hub.Requests.PlayerBuyLand(b1.Id);
 
         // Assert
         // A 購買土地非空地
         hub.FluentAssert.PlayerBuyBlockOccupiedByOtherPlayerEvent(new PlayerBuyBlockOccupiedByOtherPlayerEventArgs
         {
             PlayerId = a.Id,
-            LandId = f4.Id
+            LandId = b1.Id
         });
     }
 
