@@ -1,5 +1,4 @@
 ﻿using Client.Options;
-using Client.Pages.Enums;
 using Client.Pages.Extensions;
 using Client.Pages.Gaming.Components;
 using Client.Pages.Gaming.Entities;
@@ -49,55 +48,16 @@ public partial class GamingPage
     private GamingHubConnection Connection { get; set; } = default!;
     public IEnumerable<Player> Players { get; set; } = [];
     private string CurrentPlayerId { get; set; } = string.Empty;
+
+    private Player _activePlayer = new();
     
-    private string ActivePlayerId { get; set; } = string.Empty;
-    
-    private bool IsYourTurn => CurrentPlayerId == ActivePlayerId;
+    private bool IsYourTurn => CurrentPlayerId == _activePlayer.Id;
 
     private DiceBox DiceBox { get; set; } = default!;
 
-    protected override void OnInitialized()
-    {
-        Map = new Map("1", Blocks);
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        //玩家假資料
-        Players =
-        [
-            new Player
-            {
-                Name = "Player1",
-                Money = 1000,
-                Color = ColorEnum.Red,
-                Role = RoleEnum.Baby,
-
-                IsHost = true
-            },
-            new Player
-            {
-                Name = "Player2",
-                Money = 1000,
-                Color = ColorEnum.Blue,
-                Role = RoleEnum.Dai,
-            },
-            new Player
-            {
-                Name = "Player3",
-                Money = 1000,
-                Color = ColorEnum.Green,
-                Role = RoleEnum.Mei,
-            },
-            new Player
-            {
-                Name = "Player4",
-                Money = 1000,
-                Color = ColorEnum.Yellow,
-                Role = RoleEnum.OldMan,
-            }
-        ];
-
+        Map = new Map("1", Blocks);
         var baseUri = new Uri(BackendApiOptions.Value.BaseUrl);
         var url = new Uri(baseUri, $"/monopoly?gameid={GameId}");
         var client = new HubConnectionBuilder()
@@ -115,17 +75,18 @@ public partial class GamingPage
 
         var monopolyInfos = await Connection.GetMonopolyInfos();
 
-        Players = monopolyInfos.Players.Select(p => new Player
+        Players = monopolyInfos.Players.Select((p, index) => new Player
         {
             Id = p.Id,
             Name = p.Name,
             Money = 1000,
             Color = Enum.Parse<LocationEnum>(p.Color).ToColorEnum(),
             Role = Enum.Parse<RoleEnum>(p.Role),
+            Order = index + 1
         });
         
         CurrentPlayerId = monopolyInfos.CurrentPlayerId;
-        ActivePlayerId = monopolyInfos.WhoAmI;
+        _activePlayer = Players.First(x => x.Id == monopolyInfos.WhoAmI);
     }
 
     private async Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
@@ -140,8 +101,7 @@ public partial class GamingPage
 
     private Task ChessMovedEvent(ChessMovedEventArgs e)
     {
-        //var player = Players.First(x => x.Id == e.PlayerId);
-        var player = Players.First(x => x.Order == 1);
+        var player = Players.First(x => x.Id == e.PlayerId);
         
         player.Chess.Move();
         player.Chess.CurrentDirection = Enum.Parse<Map.Direction>(e.Direction);
@@ -154,8 +114,7 @@ public partial class GamingPage
 
     private Task ChooseDirectionEvent(PlayerNeedToChooseDirectionEventArgs e)
     {
-        //var player = Players.First(x => x.Id == e.PlayerId);
-        var player = Players.First(x => x.Order == 1);
+        var player = Players.First(x => x.Id == e.PlayerId);
         
         StateHasChanged();
         return Task.CompletedTask;

@@ -16,6 +16,7 @@ public class Player
     public GamingStatusEnum Status { get; set; } = GamingStatusEnum.None;
 
     public int GetTotalMoney => Money + LandContracts.Sum(x => x.Money + x.HouseMoney);
+    public int Order { get; set; }
 
     public Player()
     {
