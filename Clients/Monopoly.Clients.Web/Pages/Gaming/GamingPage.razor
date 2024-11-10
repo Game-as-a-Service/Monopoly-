@@ -1,5 +1,4 @@
 ﻿@page "/GamingPage"
-@using System.Collections.Immutable
 @using Client.Pages.Gaming.Components
 @using Client.Pages.Gaming.Entities
 
@@ -9,13 +8,16 @@
             Players="Players"/>
 
         <GameRound></GameRound>
-        <PlayerRankList></PlayerRankList>
+        <PlayerRankList PlayerList="Players" CurrentPlayerId="@CurrentPlayerId"/>
         <ChatBox></ChatBox>
 
         <Settings></Settings>
         <PlayerInfo></PlayerInfo>
-        <Go OnRolledDice="OnRolledDice"></Go>
+        @if (IsYourTurn)
+        {
+            <Go OnRolledDice="OnRolledDice"/>
+        }
 
-        <DiceBox @ref="DiceBox" />
+        <DiceBox @ref="DiceBox"/>
     </CascadingValue>
 </div>

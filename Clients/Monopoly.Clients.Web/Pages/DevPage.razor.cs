@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Client.HttpClients;
 using Client.Options;
 using Client.Pages.Enums;
+using Client.Pages.Extensions;
 using Client.Pages.Ready;
 using Client.Pages.Ready.Components;
 using Microsoft.AspNetCore.Components;

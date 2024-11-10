@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Client.Options;
 using Client.Pages.Enums;
+using Client.Pages.Extensions;
 using Client.Pages.Ready.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR;

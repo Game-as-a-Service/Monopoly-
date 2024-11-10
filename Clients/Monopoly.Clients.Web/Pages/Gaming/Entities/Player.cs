@@ -9,7 +9,6 @@ public class Player
     public bool IsHost { get; set; } = false;
     public ColorEnum Color { get; set; } = ColorEnum.None;
     public RoleEnum Role { get; set; } = RoleEnum.None;
-    public int Order { get; set; } = 0;
 
     public int Money { get; set; } = 0;
     public Chess Chess { get; set; }

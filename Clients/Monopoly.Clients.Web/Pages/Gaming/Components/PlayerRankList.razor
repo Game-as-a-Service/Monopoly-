@@ -1,18 +1,22 @@
 ﻿@using Client.Pages.Gaming.Entities
 @code {
-    [CascadingParameter] 
-    public GamingPage Parent { get; set; } = default!;
-    private IEnumerable<Player> players => Parent?.Players;
+    [Parameter, EditorRequired]
+    public required string CurrentPlayerId { get; set; }
+    
+    [Parameter, EditorRequired]
+    public required IEnumerable<Player> PlayerList { get; set; }
 }
 
 <div class="PlayerRankList">
-    @foreach (var (player, index) in players.OrderBy(p=>p.GetTotalMoney).Select((item, index) => (item, index)))
+    @foreach (var (player, index) in PlayerList.OrderBy(p=>p.GetTotalMoney).Select((item, index) => (item, index)))
     {
-        <div class="Player">
-            <div class="PlayerInfo">
+        var isCurrentPlayer = player.Id == CurrentPlayerId;
+        var currentPlayerClass = isCurrentPlayer ? "current-player" : "";
+        <div class="Player ">
+            <div class="PlayerInfo @currentPlayerClass">
                 <div class="Rank">
                     <div class="Round">
-                        <span class="Number">@(@index + 1)</span>
+                        <span class="Number">@(index + 1)</span>
                     </div>
                     <p class="Name">
                         <span>@player.Name</span>

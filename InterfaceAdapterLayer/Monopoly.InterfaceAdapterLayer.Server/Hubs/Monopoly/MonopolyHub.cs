@@ -4,6 +4,7 @@ using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Commands;
 using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Queries;
 using Monopoly.InterfaceAdapterLayer.Server.Presenters;
 using SharedLibrary;
+using SharedLibrary.ResponseArgs.Monopoly.Models;
 
 namespace Monopoly.InterfaceAdapterLayer.Server.Hubs.Monopoly;
 
@@ -88,6 +89,16 @@ public class MonopolyHub(CheckGameExistenceQuery checkGameExistenceQuery) : Hub<
         await usecase.ExecuteAsync(
             new SettlementRequest(GameId, PlayerId)
         );
+    }
+    
+    public async Task<MonopolyInfos> GetMonopolyInfos(GetMonopolyInfosUsecase usecase)
+    {
+        var presenter = new MonopolyInfosValueReturningPresenter();
+        await usecase.ExecuteAsync(
+            new GetMonopolyInfosRequest(GameId, PlayerId),
+            presenter
+        );
+        return await presenter.GetResultAsync();
     }
 
     public override async Task OnConnectedAsync()

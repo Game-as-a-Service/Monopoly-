@@ -2,6 +2,7 @@
 using Monopoly.ApplicationLayer.Application.Common;
 using Monopoly.ApplicationLayer.Application.MonopolyUsecases.Queries.Interfaces;
 using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Commands;
+using Monopoly.ApplicationLayer.Application.ReadyRoomUsecases.Queries.Interfaces;
 using Monopoly.DomainLayer.Common;
 using Monopoly.DomainLayer.Domain;
 using Monopoly.DomainLayer.ReadyRoom;
@@ -40,5 +41,6 @@ public static class DependencyInjection
     private static void AddInquiries(this IServiceCollection services)
     {
         services.AddTransient<IGameExistenceInquiry, GameExistenceInquiry>();
+        services.AddTransient<IGetReadyRoomAllPlayerInfosInquiry, GetReadyRoomAllPlayerInfosInquiry>();
     }
 }
