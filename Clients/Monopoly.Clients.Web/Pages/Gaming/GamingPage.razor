@@ -1,10 +1,11 @@
 ﻿@page "/GamingPage"
 @using Client.Pages.Gaming.Components
-@using Client.Pages.Gaming.Entities
+@using Client.Components
 
 <div class="background">
+    <PopupComponent @ref="Popup"/>
     <CascadingValue Value="this">
-        <MapPanel 
+        <MapPanel
             Players="Players"/>
 
         <GameRound></GameRound>

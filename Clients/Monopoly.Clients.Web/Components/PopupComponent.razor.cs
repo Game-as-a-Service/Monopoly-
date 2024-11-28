@@ -7,7 +7,7 @@ public partial class PopupComponent : ComponentBase
     private PopupParameter? Parameter { get; set; }
     private bool IsVisible { get; set; }
     
-    public async Task Show(PopupParameter parameter)
+    public async Task ShowAsync(PopupParameter parameter)
     {
         Parameter = parameter;
         IsVisible = true;

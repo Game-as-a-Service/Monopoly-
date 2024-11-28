@@ -137,7 +137,7 @@ public partial class ReadyPage
         }
         catch (HubException)
         {
-            Popup?.Show(new PopupComponent.PopupParameter
+            Popup?.ShowAsync(new PopupComponent.PopupParameter
             {
                 Message = "無法選擇此位置",
                 Delay = 1000
@@ -171,7 +171,7 @@ public partial class ReadyPage
         }
         catch (HubException)
         {
-            Popup?.Show(new PopupComponent.PopupParameter
+            Popup?.ShowAsync(new PopupComponent.PopupParameter
             {
                 Message = "有人還沒準備，無法開始遊戲",
                 Delay = 1000

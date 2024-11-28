@@ -1,4 +1,5 @@
-﻿using Client.Options;
+﻿using Client.Components;
+using Client.Options;
 using Client.Pages.Extensions;
 using Client.Pages.Gaming.Components;
 using Client.Pages.Gaming.Entities;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
 using SharedLibrary.ResponseArgs.Monopoly;
 using SharedLibrary.ResponseArgs.ReadyRoom.Models;
+using Map = Client.Pages.Gaming.Entities.Map;
 using Player = Client.Pages.Gaming.Entities.Player;
 using RoleEnum = Client.Pages.Enums.RoleEnum;
 
@@ -55,6 +57,8 @@ public partial class GamingPage
     private bool HaveRolledDice { get; set; } = false;
 
     private DiceBox DiceBox { get; set; } = default!;
+    
+    private PopupComponent Popup { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,6 +97,11 @@ public partial class GamingPage
     private async Task OnRolledDiceEvent(PlayerRolledDiceEventArgs e)
     {
         await DiceBox.ShowDices(e.DicePoints);
+        await Popup.ShowAsync(new PopupComponent.PopupParameter
+        {
+            Delay = 2000,
+            Message = $"{e.PlayerId} 擲出了 {e.DicePoints.Sum()}",
+        });
     }
 
     private async Task OnRolledDice()
@@ -101,8 +110,13 @@ public partial class GamingPage
         await Connection.PlayerRollDice();
     }
 
-    private Task ChessMovedEvent(ChessMovedEventArgs e)
+    private async Task ChessMovedEvent(ChessMovedEventArgs e)
     {
+        await Popup.ShowAsync(new PopupComponent.PopupParameter
+        {
+            Delay = 2000,
+            Message = $"{e.PlayerId} 移動到了 {e.BlockId}",
+        });
         var player = Players.First(x => x.Id == e.PlayerId);
         
         player.Chess.Move();
@@ -111,7 +125,6 @@ public partial class GamingPage
         player.Chess.RemainingSteps = e.RemainingSteps;
         
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
     private Task ChooseDirectionEvent(PlayerNeedToChooseDirectionEventArgs e)
