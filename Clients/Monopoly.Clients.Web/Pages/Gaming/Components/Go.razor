@@ -1,11 +1,11 @@
 ﻿<dlv class="Go">
-    <dlv class="GoBetton" @onclick="OnRolledDice"></dlv>
-    <dlv class="AutoBetton"></dlv>
+    <dlv class="GoButton" @onclick="OnRolledDice"></dlv>
+    <dlv class="AutoButton"></dlv>
 </dlv>
 
 <script>
     //按下Go按鈕時切換圖片，放開時還原圖片
-    const dlv_Go = document.querySelector('.GoBetton');
+    const dlv_Go = document.querySelector('.GoButton');
 
     dlv_Go.addEventListener('mousedown', () => {
         dlv_Go.classList.add('Pressed');
@@ -18,7 +18,7 @@
 
 <script>
     //按Auto按鈕切換狀態、圖片
-    const dlv_Auto = document.querySelector('.AutoBetton');
+    const dlv_Auto = document.querySelector('.AutoButton');
 
     dlv_Auto.addEventListener('click', () => {
         const classList = dlv_Auto.classList;

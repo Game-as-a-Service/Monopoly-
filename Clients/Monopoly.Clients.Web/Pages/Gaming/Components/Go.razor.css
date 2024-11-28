@@ -8,7 +8,7 @@
     /*background-color: coral;*/
 }
 
-.GoBetton {
+.GoButton {
         position: absolute;
         width: calc(224 * var(--unit));
         height: calc(224 * var(--unit));
@@ -20,11 +20,11 @@
 
     }
 
-    .GoBetton.Pressed {
+    .GoButton.Pressed {
         background-image: url('./images/gamepage/Go_Pressed.svg');
     }
 
-.AutoBetton {
+.AutoButton {
     position: absolute;
     width: calc(72 * var(--unit));
     height: calc(32 * var(--unit));
@@ -35,6 +35,6 @@
     background-position: center;
 }
 
-    .AutoBetton.Open {
+    .AutoButton.Open {
         background-image: url('./images/gamepage/AutoButtun_On.svg');
     }
