@@ -1,7 +1,8 @@
 @page "/ready-room/{roomId}"
 @using Client.Pages.Ready.Components
+@using Client.Components
 <div class="background">
-    <Popup @ref="Popup"/>
+    <PopupComponent @ref="Popup"/>
     <ColorChoicePanel 
         CurrentPlayer="CurrentPlayer" 
         OnSelectColor="OnSelectColor" 

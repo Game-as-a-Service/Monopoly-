@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
+using Client.Components;
 using Client.Options;
 using Client.Pages.Enums;
 using Client.Pages.Extensions;
-using Client.Pages.Ready.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -27,7 +27,7 @@ public partial class ReadyPage
     [Inject] private IOptions<MonopolyApiOptions> BackendApiOptions { get; set; } = default!;
     private ReadyRoomHubConnection Connection { get; set; } = default!;
     public Player? CurrentPlayer => Players.FirstOrDefault(x => x.Id == UserId);
-    private Popup? Popup { get; set; }
+    private PopupComponent? Popup { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,7 +137,7 @@ public partial class ReadyPage
         }
         catch (HubException)
         {
-            Popup?.Show(new Popup.PopupParameter
+            Popup?.Show(new PopupComponent.PopupParameter
             {
                 Message = "無法選擇此位置",
                 Delay = 1000
@@ -171,7 +171,7 @@ public partial class ReadyPage
         }
         catch (HubException)
         {
-            Popup?.Show(new Popup.PopupParameter
+            Popup?.Show(new PopupComponent.PopupParameter
             {
                 Message = "有人還沒準備，無法開始遊戲",
                 Delay = 1000

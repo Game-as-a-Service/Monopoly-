@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Client.Pages.Ready.Components;
+namespace Client.Components;
 
-public partial class Popup : ComponentBase
+public partial class PopupComponent : ComponentBase
 {
     private PopupParameter? Parameter { get; set; }
     private bool IsVisible { get; set; }
