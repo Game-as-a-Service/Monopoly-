@@ -52,6 +52,7 @@ public partial class GamingPage
     private Player _activePlayer = new();
     
     private bool IsYourTurn => CurrentPlayerId == _activePlayer.Id;
+    private bool HaveRolledDice { get; set; } = false;
 
     private DiceBox DiceBox { get; set; } = default!;
 
@@ -96,6 +97,7 @@ public partial class GamingPage
 
     private async Task OnRolledDice()
     {
+        HaveRolledDice = true;
         await Connection.PlayerRollDice();
     }
 

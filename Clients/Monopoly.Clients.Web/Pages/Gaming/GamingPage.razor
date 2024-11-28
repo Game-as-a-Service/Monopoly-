@@ -13,7 +13,7 @@
 
         <Settings></Settings>
         <PlayerInfo Player="_activePlayer"/>
-        @if (IsYourTurn)
+        @if (IsYourTurn && HaveRolledDice is false)
         {
             <Go OnRolledDice="OnRolledDice"/>
         }
