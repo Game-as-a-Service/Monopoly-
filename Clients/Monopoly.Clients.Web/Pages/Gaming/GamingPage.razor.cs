@@ -88,7 +88,7 @@ public partial class GamingPage
             Color = Enum.Parse<LocationEnum>(p.Color).ToColorEnum(),
             Role = Enum.Parse<RoleEnum>(p.Role),
             Order = index + 1
-        });
+        }).ToList();
         
         CurrentPlayerId = monopolyInfos.CurrentPlayerId;
         _activePlayer = Players.First(x => x.Id == monopolyInfos.WhoAmI);
